@@ -70,9 +70,11 @@ After the data are normalized, if both fend and enrichment data were calculated,
 - [Normalized fend data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt)
 - [Normalized enrichment data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_enrich.txt)
 
-To download the data use the command wget on the unix shell:
+To download the data use the command wget on the unix shell and copy the url link from the file above, here the example for the normalized fend and enrichment data chr 6 (40 kb):
 
 ```unix
-wget link_to_the_file
+wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt
+
+wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_enrich.txt
 ```
 
