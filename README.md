@@ -78,4 +78,17 @@ wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40
 wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_enrich.txt
 ```
 
-Then download and execute the Python script [HiCtool_normalization_visualization.py](./HiCtool_normalization_visualization.py)
+Then download the Python script [HiCtool_normalization_visualization.py](./HiCtool_normalization_visualization.py):
+
+```unix
+wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py
+```
+
+And execute the script into a Python or iPython console:
+
+```unix
+# Open a Python console
+Python
+```
+```Python
+execfile("HiCtool_normalization_visualization.py")
