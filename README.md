@@ -64,8 +64,6 @@ After the data are normalized, if both fend and enrichment data were calculated,
 
 - [Observed data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_observed.txt)
 - [Normalized fend data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_normalized_fend.txt)
-- [Normalized enrichment data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_normalized_enrich.txt)
-
 - [Observed data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_observed.txt)
 - [Normalized fend data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt)
 - [Normalized enrichment data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_enrich.txt)
@@ -84,11 +82,25 @@ Then download the Python script [HiCtool_normalization_visualization.py](./HiCto
 wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py
 ```
 
-And execute the script into a Python or iPython console:
-
+Open a Python or iPython console:
 ```unix
 # Open a Python console
-Python
+python
 ```
+Execute the script:
 ```Python
 execfile("HiCtool_normalization_visualization.py")
+```
+Plot the normalized fend data:
+```Python
+plot_chromosome_fend_data('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6', bin_size=4000, full_matrix=False, start_coord=50000000, end_coord=54000000, species='hg38', my_colormap=['white', 'red'], cutoff_type='percentile', cutoff=95, max_color='#460000', plot_histogram=True)
+```
+Here we plot data of chromosome 6, from 50 Mb to 54 Mb at a bin size of 40 kb, for species hg38. We use a colormap which goes from white (no contacts) to red (maximum contact) and we use a upper cut-off of the 95th percentile of the data to enhance higher order chromatin structure such as topological domains. We assign to the bins over the cut-off a spefic color (#460000) and also we choose to plot the distribution of the contact data as well.
+
+**Note!**  
+For more information refer to the [full documentation](https://doc.genomegitar.org/data_analysis_and_visualization.html).
+
+The same can be done for the "observed over expected" data:
+```Python
+plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt', a_chr='6', bin_size=40000, full_matrix=False, start_coord=50000000, end_coord=54000000, species='hg38', plot_histogram=True)
+```

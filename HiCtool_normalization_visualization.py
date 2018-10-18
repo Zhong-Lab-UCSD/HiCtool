@@ -237,10 +237,11 @@ def normalize_chromosome_fend_data(a_chr,
     return normalized_fend
 
 def plot_chromosome_fend_data(contact_matrix,
-                              a_chr, 
-                              start_coord, 
-                              end_coord, 
+                              a_chr,
                               bin_size,
+                              full_matrix=True,
+                              start_coord=0, 
+                              end_coord=0,
                               species='hg38',
                               chr_size=0,
                               my_colormap=['white', 'red'],
@@ -255,9 +256,10 @@ def plot_chromosome_fend_data(contact_matrix,
         contact_matrix (str | obj): txt file of the contact matrix generated with the function "normalize_chromosome_fend_data" 
         or contact matrix returned by "normalize_chromosome_fend_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
+        bin_size (int): bin size in bp of the contact matrix.
+        full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
         start_coord (int): start coordinate for the plot in bp.
         end_coord (int): end coordinate for the plot in bp.
-        bin_size (int): bin size in bp of the contact matrix.
         species (str): 'hg38' or 'mm10' or any other species label in string format.
         chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
         my_colormap (str | list): colormap to be used to plot the data. 1) Use a string if you choose among any colorbar here 
@@ -298,24 +300,28 @@ def plot_chromosome_fend_data(contact_matrix,
         matrix_data_full = contact_matrix
     
     # Selecting a part
-    start_bin = start_coord/bin_size
-    end_bin = end_coord/bin_size
+    if full_matrix == False:
+        start_bin = start_coord/bin_size
+        end_bin = end_coord/bin_size
     
-    if start_coord >= end_coord:
-        print "WARNING! Start coordinate should be lower than end coordinate"
-        return
+        if start_coord >= end_coord:
+            print "WARNING! Start coordinate should be lower than end coordinate"
+            return
         
-    if start_bin >= end_bin:
-        print "WARNING! Start coordinate should be much lower than the end coordinate given the bin size"
-        return
+        if start_bin >= end_bin:
+            print "WARNING! Start coordinate should be much lower than the end coordinate given the bin size"
+            return
     
-    if end_coord > end_pos:
-        if species == 'hg38' or species == 'mm10':
-            print "WARNING! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
-            return
-        else:
-            print "WARNING! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
-            return
+        if end_coord > end_pos:
+            if species == 'hg38' or species == 'mm10':
+                print "WARNING! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
+                return
+            else:
+                print "WARNING! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+                return
+    else:
+        start_bin = 0
+        end_bin = chromosomes[species][a_chr]/bin_size
     
     matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1] 
     
@@ -483,10 +489,11 @@ def normalize_chromosome_enrich_data(a_chr,
     return normalized_enrich
 
 def plot_chromosome_enrich_data(contact_matrix,
-                                a_chr, 
-                                start_coord, 
-                                end_coord, 
+                                a_chr,
                                 bin_size,
+                                full_matrix=True,
+                                start_coord=0, 
+                                end_coord=0,
                                 species='hg38',
                                 chr_size=0,
                                 my_dpi=1000,
@@ -498,9 +505,10 @@ def plot_chromosome_enrich_data(contact_matrix,
         contact_matrix (str | obj): txt file of the "observed / expected" contact matrix generated with the function 
         "normalize_chromosome_enrich_data" or contact matrix returned by the function "normalize_chromosome_enrich_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
+        bin_size (int): bin size in bp of the contact matrix.
+        full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
         start_coord (int): start coordinate for the plot in bp.
         end_coord (int): end coordinate for the plot in bp.
-        bin_size (int): bin size in bp of the contact matrix.
         species (str): 'hg38' or 'mm10' or any other species label in string format.
         chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
         my_dpi (int): resolution of the contact map in dpi.
@@ -538,26 +546,30 @@ def plot_chromosome_enrich_data(contact_matrix,
         matrix_data_full = contact_matrix
     
     # Selecting a part
-    start_bin = start_coord/bin_size
-    end_bin = end_coord/bin_size
+    if full_matrix==False:
+        start_bin = start_coord/bin_size
+        end_bin = end_coord/bin_size
     
-    if start_coord >= end_coord:
-        print "WARNING! Start coordinate should be lower than end coordinate"
-        return
+        if start_coord >= end_coord:
+            print "WARNING! Start coordinate should be lower than end coordinate"
+            return
         
-    if start_bin >= end_bin:
-        print "WARNING! Start coordinate should be much lower than the end coordinate given the bin size"
-        return
-    
-    if end_coord > end_pos:
-        if species == 'hg38' or species == 'mm10':
-            print "WARNING! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
-            return
-        else:
-            print "WARNING! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+        if start_bin >= end_bin:
+            print "WARNING! Start coordinate should be much lower than the end coordinate given the bin size"
             return
     
-    matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1]
+        if end_coord > end_pos:
+            if species == 'hg38' or species == 'mm10':
+                print "WARNING! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
+                return
+            else:
+                print "WARNING! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+                return
+    else:
+        start_bin = 0
+        end_bin = chromosomes[species][a_chr]/bin_size
+    
+matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1]
     n = len(matrix_data_full)
     
     # Heatmap plotting
