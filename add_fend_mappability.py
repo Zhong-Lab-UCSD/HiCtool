@@ -14,7 +14,7 @@ chr_list = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13',
 restrictionsites_gc_path='insert_path_here'
 
 # 3) Filename used for the fend files generated with add_fend_gc_content.py (same parameter used there)
-restrictionsites_gc_filename='restrictionsites_gc.bed'
+restrictionsites_gc_filename='restrictionsites_gc'
 
 # 4) Path of the artificial reads files (one per each chromosome)
 artificial_reads_path='insert_path_here'
@@ -48,7 +48,7 @@ def add_mappability_score(chromosome):
     import pandas as pd
     
     content = []
-    with open(restrictionsites_gc_path + 'chr' + chromosome + '_' + restrictionsites_gc_filename) as f:
+    with open(restrictionsites_gc_path + 'chr' + chromosome + '_' + restrictionsites_gc_filename + '.bed') as f:
         for line in f:
             content.append(line.strip().split())
     content = np.array(content)
