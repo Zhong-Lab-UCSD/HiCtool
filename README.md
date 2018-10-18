@@ -60,4 +60,12 @@ Data analysis and visualization steps:
 7. Normalizing the data.
 8. Visualizing the data.
 
-After the data are normalized, they 
+After the data are normalized, if both fend and enrichment data were calculated, these files will be available (here for chromosome 6 only at 1 mb and 40 kb resolution for GEO accession number GMS1551550):
+
+- [Observed data chr 6 (1 mb)](https://sysbio.ucsd.ed/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_observed.txt)
+- [Normalized fend data chr 6 (1 mb)]()
+- [Normalized enrichment data chr 6 (1 mb)]()
+
+- [Observed data chr 6 (40 kb)]()
+- [Normalized fend data chr 6 (40 kb)]()
+- [Normalized enrichment data chr 6 (40 kb)]()
