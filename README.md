@@ -63,9 +63,16 @@ Data analysis and visualization steps:
 After the data are normalized, if both fend and enrichment data were calculated, these files will be available (here for chromosome 6 only at 1 mb and 40 kb resolution for GEO accession number GMS1551550):
 
 - [Observed data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_observed.txt)
-- [Normalized fend data chr 6 (1 mb)]()
-- [Normalized enrichment data chr 6 (1 mb)]()
+- [Normalized fend data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_normalized_fend.txt)
+- [Normalized enrichment data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_normalized_enrich.txt)
 
-- [Observed data chr 6 (40 kb)]()
-- [Normalized fend data chr 6 (40 kb)]()
-- [Normalized enrichment data chr 6 (40 kb)]()
+- [Observed data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_observed.txt)
+- [Normalized fend data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt)
+- [Normalized enrichment data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_enrich.txt)
+
+To download the data use the command wget on the unix shell:
+
+```unix
+wget link_to_the_file
+```
+
