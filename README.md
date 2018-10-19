@@ -116,10 +116,10 @@ plot_chromosome_fend_data('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6', bi
 
 <div class="row">
 <div class="column">
-<img src="./Figures/HiCtool_chr6_40kb_normalized_fend.png" alt="drawing" width="500"/>
+<img src="./Figures/HiCtool_chr6_40kb_normalized_fend.png" alt="drawing" width="100%"/>
 </div>
 <div class="column">
-<img src="./Figures/HiCtool_chr6_40kb_normalized_fend_histogram.png" alt="drawing" width="500"/>
+<img src="./Figures/HiCtool_chr6_40kb_normalized_fend_histogram.png" alt="drawing" width="100%"/>
 </div>
 </div>
 
