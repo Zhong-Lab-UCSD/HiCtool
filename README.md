@@ -32,7 +32,7 @@ Preprocessing steps:
 4. Filtering reads and selecting reads that are paired.
 5. Creating the fragment-end (FEND) bed file.
 
-The following are the two BAM files and the FEND bed file produced as output of the preprocessing if you want to proceed with the entire data normalization pipeline of the [full documentation](https://doc.genomegitar.org/data_analysis_and_visualization.html):
+The following are the two BAM files and the FEND bed file produced as output of the preprocessing, to be used only if you want to proceed with the entire data normalization pipeline of the [full documentation](https://doc.genomegitar.org/data_analysis_and_visualization.html):
 
 - [BAM file pair 1](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCfile_pair1.bam)
 - [BAM file pair 2](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCfile_pair2.bam)
@@ -42,7 +42,7 @@ Download the data using ```wget``` followed by the link address of each file.
 
 ## Data analysis and visualization
 
-The data analysis and visualization section provides the pipeline to normalize the data and plot the heatmaps. The normalization has been done using the Python package [HiFive](http://bxlab-hifive.readthedocs.org/en/latest/introduction.html) while for plotting Matplotlib is used, with the possibility also to add a histogram of the distribution of the data. Both observed and normalized counts can be plotted. In addition, we provide the possibility of plotting “observed over expected” (enrichment) contact heatmaps, where the expected counts are calculated considering both the learned correction parameters and the distance between read pairs, given the property that the average intrachromosomal contact probability for pairs of loci decreases monotonically with increasing of their linear genomic distance.
+The data analysis and visualization section provides the pipeline to normalize the data and plot the heatmaps. The normalization has been done using the Python package [HiFive](http://bxlab-hifive.readthedocs.org/en/latest/introduction.html) while for plotting Matplotlib is used, with the possibility also to add a histogram of the distribution of the data. Observed, expected and normalized (FEND) contact counts can be plotted. FEND stands for fragment end and it refers to data corrected of technical and biological biases. In addition, we provide the possibility of plotting “observed over expected” (enrichment) contact heatmaps, where the expected counts are calculated considering both the learned correction parameters for biases and the distance between read pairs, given the property that the average intrachromosomal contact probability for pairs of loci decreases monotonically with increasing of their linear genomic distance.
 
 Data analysis and visualization steps:
 
@@ -56,7 +56,7 @@ Data analysis and visualization steps:
 8. **Visualizing the data** (reported here).
 
 Here for simplicity, we show examples only on how to plot the data (step 8).  
-After the data are normalized (step 7), if both fend and enrichment data were calculated, these files will be produced (here only for chromosome 6, at 1 mb and 40 kb resolution):
+After the data are normalized (step 7), if both FEND and enrichment data were calculated, these files will be produced (here only for chromosome 6, at 1 mb and 40 kb resolution):
 
 - [Observed data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_observed.txt)
 - [Normalized fend data chr 6 (1 mb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_1mb_normalized_fend.txt)
