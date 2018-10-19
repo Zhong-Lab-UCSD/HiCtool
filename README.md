@@ -19,7 +19,7 @@ If a module is not installed, go to your **unix console** and type the following
 ```unix
 pip install my_module
 ```
-All the modules should be already included into Pythin except for ```hmmlearn```. To install ```hmmlearn``` download the package from GitHub (link above) then go inside the package folder and run the following on the **unix shell**:
+All the modules should be already included into Python except for ```hmmlearn```. To install ```hmmlearn``` download the package from GitHub (link above) then go inside the package folder and run the following on the **unix shell**:
 ```unix
 python setup.py install
 ```
