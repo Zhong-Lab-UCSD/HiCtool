@@ -107,16 +107,16 @@ Then download the Python script [HiCtool_normalization_visualization.py](https:/
 wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py
 ```
 
-Open a Python or iPython console on the unix shell:
+Open a Python or iPython console on the **unix shell**:
 ```unix
 # Open a Python console
 python
 ```
-Execute the script:
+Execute the script on the **Python console**:
 ```Python
 execfile("HiCtool_normalization_visualization.py")
 ```
-Plot the normalized fend data:
+Plot the normalized fend data for chromosome 6 at 40 kb resolution:
 ```Python
 plot_chromosome_fend_data('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6', bin_size=40000, full_matrix=False, start_coord=50000000, end_coord=54000000, species='hg38', my_colormap=['white', 'red'], cutoff_type='percentile', cutoff=95, max_color='#460000', plot_histogram=True)
 ```
@@ -134,5 +134,39 @@ In this case we plot the entire contact matrix and we changed the color of the h
 
 
 ## Topological domain analysis
+
+The topological domain analysis section provides the code to calculate both the observed DI (Directionality Index) and the “true DI” using a Hidden Markov Model. Also the code to calculate topological domain coordinates is provided, therefore the user can infer systematically about the location of topological domain and boundaries over the genome.
+
+To calculate the DI normalized fend data at 40 kb resolution are used (see the [full documentation](https://doc.genomegitar.org/DI_calculation.html) for more details).
+
+First, download the script from the **unix shell**:
+```unix
+wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_DI.py
+```
+Then, execute the script in the **Python console**:
+```Python
+execfile("HiCtool_DI.py")
+```
+To calculate the DI values and save them to file run:
+```Python
+calculate_chromosome_DI(input_contact_matrix='HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6')
+```
+The DI values are used as emissions of a Hidden Markov Model (HMM) to calculate the true DI values as HMM states:
+```Python
+calculate_chromosome_true_DI(input_file_DI='HiCtool_chr6_DI.txt', a_chr='6')
+```
+Now we can plot the DI and true DI values:
+```Python
+plot_chromosome_DI(input_file_DI='HiCtool_chr6_DI.txt', a_chr='6', start_pos=50000000, end_pos=54000000, input_file_hmm='HiCtool_chr6_hmm_states.txt', species='hg38', plot_legend=True, plot_grid=True)
+```
+The true DI values allow to infer the locations of the topological domains in the genome. A domain is initiated at the beginning of a single downstream biased HMM state (red color in the above figure). The domain is continuous throughout any consecutive downstream biased state. The domain will then end when the last in a series of upstream biased states (green color in the above figure) is reached, with the domain ending at the end of the last HMM upstream biased state.
+
+To calculate the topological domain coordinates run:
+Now we can plot the DI and true DI values:
+```Python
+calculate_chromosome_topological_domains(input_file_hmm='HiCtool_chr6_hmm_states.txt', a_chr='6')
+```
+Coordinates will be saved in a tab separated format where each line corresponds to a topological domain.
+
 
 
