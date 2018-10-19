@@ -1,7 +1,23 @@
 # HiCtool
 
 HiCtool is a Python library for processing and visualizing Hi-C data, including topological domain analysis.  
-This is a short documentation to give an overview of the tool, the full documentation and code are available at [http://www.genomegitar.org](https:genomegitar.org).
+This is a short documentation to give an overview of the tool, the full documentation and code are available at [http://www.genomegitar.org](https:genomegitar.org).  
+
+The cell line used here is from human (hg38) with GEO accession number [GSM1551550](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550). To run the example in this short tutorial you do not need to have installed all the following software/libraries but only:
+
+- [numpy](http://scipy.org/)
+- [scipy](http://scipy.org/)
+- [matplotlib](http://matplotlib.org/)
+- [math](https://docs.python.org/2/library/math.html)
+
+Open your python console and try to import each module by typing:
+```python
+import my_module
+```
+If a module is not installed, go to your unix console and type:
+```unix
+python install my_module
+```
 
 ## Installation
 
@@ -9,16 +25,16 @@ HiCtool is in a pipeline format to allow extreme flexibility and easy usage. You
 
 **1. Python libraries [for python >2.7]:**
 
-- [Numpy](http://scipy.org/)
-- [Scipy](http://scipy.org/)
-- [Math](https://docs.python.org/2/library/math.html)
-- [Matplotlib](http://matplotlib.org/)
-- [Matplotlib.pyplot](http://matplotlib.org/api/pyplot_api.html#module-matplotlib.pyplot)
+- [numpy](http://scipy.org/)
+- [scipy](http://scipy.org/)
+- [math](https://docs.python.org/2/library/math.html)
+- [matplotlib](http://matplotlib.org/)
+- [matplotlib.pyplot](http://matplotlib.org/api/pyplot_api.html#module-matplotlib.pyplot)
 - [csv](https://docs.python.org/2/library/csv.html)
 - [pybedtools](https://daler.github.io/pybedtools/)
 - [pandas](https://pandas.pydata.org/)
 - [multiprocessing](https://docs.python.org/2/library/multiprocessing.html)
-- [Biopython](http://biopython.org/)
+- [biopython](http://biopython.org/)
 
 **2. Python packages:**
 
