@@ -355,11 +355,11 @@ def plot_chromosome_data(contact_matrix,
     if cutoff_type == 'None':
         plt.close("all")
         plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
-        plt.title('Normalized contact map (' + my_bin_size + ')', fontsize=14)
+        plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=14)
         plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
         plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
         cbar = plt.colorbar()
-        cbar.ax.set_ylabel('Normalized contact counts', rotation=270, labelpad=20)
+        cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
         ticks = (np.arange(0, n, n/4) * bin_size) + start_coord
         format_ticks = [format_e(i) for i in ticks.tolist()]
         plt.xticks(np.arange(0, n, n/4), format_ticks)
@@ -379,12 +379,12 @@ def plot_chromosome_data(contact_matrix,
         
         plt.close("all")
         plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
-        plt.title('Normalized contact map (' + my_bin_size + ')', fontsize=14)
+        plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=14)
         plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
         plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
         cbar = plt.colorbar(extend='max')
         cbar.cmap.set_over(max_color)
-        cbar.ax.set_ylabel('Normalized contact counts', rotation=270, labelpad=20)
+        cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
         ticks = (np.arange(0, n, n/4) * bin_size) + start_coord
         format_ticks = [format_e(i) for i in ticks.tolist()]
         plt.xticks(np.arange(0, n, n/4), format_ticks)
@@ -406,8 +406,8 @@ def plot_chromosome_data(contact_matrix,
         plt.close("all")
         histogram_bins = int(pow(len(histogram),0.3))
         plt.hist(histogram, bins=histogram_bins)
-        plt.title('Normalized contact counts distribution', fontsize=18)
-        plt.xlabel('Normalized contact counts', fontsize=16)
+        plt.title(data_type + ' contact counts distribution', fontsize=18)
+        plt.xlabel(data_type + ' contact counts', fontsize=16)
         plt.ylabel('Number of bins', fontsize=16)
         plt.xticks(fontsize=16)
         plt.yticks(fontsize=16)

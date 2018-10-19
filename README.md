@@ -1,9 +1,9 @@
 # HiCtool
 
 HiCtool is a Python library for processing and visualizing Hi-C data, including topological domain analysis.  
-This is a short documentation to give a quick overview of the tool, the full documentation and code are available at [http://www.genomegitar.org](https:genomegitar.org).  
+This is a short version of the documentation to give a quick overview of the tool and run few examples, the full documentation and code are available at [http://www.genomegitar.org](https:genomegitar.org).  
 
-The cell line used here is of human (hg38) with GEO accession number [GSM1551550](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550). To run the example in this short tutorial you do not need the entire list software/libraries but only the following:
+The cell line used here is of human (hg38) with GEO accession number [GSM1551550](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550). To run the examples in this short tutorial you do not need the [entire list software/libraries](https://doc.genomegitar.org/overview.html#installation) but only the following:
 
 - [numpy](http://scipy.org/)
 - [scipy](http://scipy.org/)
@@ -20,35 +20,6 @@ If a module is not installed, go to your **unix console** and type the following
 python install my_module
 ```
 
-## Installation
-
-HiCtool is in a pipeline format to allow extreme flexibility and easy usage. You do not need to install anything besides the following Python libraries, packages and software. Everything is open source.
-
-**1. Python libraries [for python >2.7]:**
-
-- [numpy](http://scipy.org/)
-- [scipy](http://scipy.org/)
-- [math](https://docs.python.org/2/library/math.html)
-- [matplotlib](http://matplotlib.org/)
-- [matplotlib.pyplot](http://matplotlib.org/api/pyplot_api.html#module-matplotlib.pyplot)
-- [csv](https://docs.python.org/2/library/csv.html)
-- [pybedtools](https://daler.github.io/pybedtools/)
-- [pandas](https://pandas.pydata.org/)
-- [multiprocessing](https://docs.python.org/2/library/multiprocessing.html)
-- [biopython](http://biopython.org/)
-
-**2. Python packages:**
-
-- [hifive](http://bxlab-hifive.readthedocs.org/en/latest/introduction.html)
-- [hmmlearn](https://github.com/hmmlearn/hmmlearn)
-
-**3. Other software needed (for preprocessing only):**
-
-- [BEDTools](http://bedtools.readthedocs.org/en/latest/)
-- [Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-- [SAMTools](http://samtools.sourceforge.net/)
-- [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump)
-
 ## Data preprocessing
 
 HiCtool provides a complete pipeline from the downloading of the raw data (SRA format) to the final BAM files that are used for the following analysis steps. In addition, instructions on how to generate a fragment end BED file to correct biases are provided.
@@ -61,7 +32,7 @@ Preprocessing steps:
 4. Filtering reads and selecting reads that are paired.
 5. Creating the fragment-end (FEND) bed file.
 
-These are the two BAM files and the FEND bed file produced as output of the preprocessing if you want to proceed with the entire data normalization pipeline of the [full documentation](https://doc.genomegitar.org/data_analysis_and_visualization.html):
+The following are the two BAM files and the FEND bed file produced as output of the preprocessing if you want to proceed with the entire data normalization pipeline of the [full documentation](https://doc.genomegitar.org/data_analysis_and_visualization.html):
 
 - [BAM file pair 1](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCfile_pair1.bam)
 - [BAM file pair 2](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCfile_pair2.bam)
@@ -93,7 +64,7 @@ After the data are normalized (step 7), if both fend and enrichment data were ca
 - [Normalized fend data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt)
 - [Normalized enrichment data chr 6 (40 kb)](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_enrich.txt)
 
-To download the data use the command ```wget``` on the **unix shell** and copy the url link from a file above, here an example for the normalized fend data chr 6 (40 kb):
+To download the data use the command ```wget``` on the **unix shell** and copy the url link from a file above, here an example for the normalized fend data of chr 6 (40 kb):
 
 ```unix
 wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt
@@ -119,7 +90,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6', bin_siz
 
 Here we plot normalized fend data (```data_type```) of chromosome 6 (```a_chr```), from 50 Mb (```start_coord```) to 54 Mb (```end_coord```) at a bin size of 40 kb (```bin_size```), for species hg38 (```species```). We use a colormap (```my_colormap```) which goes from white (no contacts) to red (maximum contact) and we use a upper cut-off of the 95th percentile of the data (```cutoff_type``` and ```cutoff```) to enhance higher order chromatin structure such as topological domains on the heatmap. We assign to the bins over the cut-off a specific color (```max_color```) and also we choose to plot the distribution of the contact data as well on a separate histogram (```plot_histogram```).
 
-The same can be done for the "observed over expected" data:
+The same can be done for the "observed over expected" (enrichment) data:
 ```Python
 plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt', a_chr='6', bin_size=40000, full_matrix=False, start_coord=50000000, end_coord=54000000, species='hg38', plot_histogram=True)
 ```
