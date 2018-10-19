@@ -569,7 +569,7 @@ def plot_chromosome_enrich_data(contact_matrix,
         start_bin = 0
         end_bin = chromosomes[species][a_chr]/bin_size
     
-matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1]
+    matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1]
     n = len(matrix_data_full)
     
     # Heatmap plotting

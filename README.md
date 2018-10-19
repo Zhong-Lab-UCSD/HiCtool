@@ -119,7 +119,14 @@ The same can be done for the "observed over expected" data:
 ```Python
 plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt', a_chr='6', bin_size=40000, full_matrix=False, start_coord=50000000, end_coord=54000000, species='hg38', plot_histogram=True)
 ```
-Or the normalized fend data at 1 mb resolution:
+Red pixels are loci where there are more contacts than expected, blue pixels less contacts than expected. Note that the scale is log2.
+
+Plot the observed data at 1 mb resolution:
+```Python
+plot_chromosome_fend_data('HiCtool_chr6_1mb_observed.txt', a_chr='6', bin_size=1000000, full_matrix=True, species='hg38', my_colormap=['white', 'blue'], cutoff_type='percentile', cutoff=95, max_color='#460000', plot_histogram=True)
+```
+
+Plot normalized fend data at 1 mb resolution:
 ```Python
 plot_chromosome_fend_data('HiCtool_chr6_1mb_normalized_fend.txt', a_chr='6', bin_size=1000000, full_matrix=True, species='hg38', my_colormap=['white', 'blue'], cutoff_type='percentile', cutoff=95, max_color='#460000', plot_histogram=True)
 ```
