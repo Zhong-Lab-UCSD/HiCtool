@@ -82,7 +82,7 @@ Data analysis and visualization steps:
 5. Estimating the HiC distance function.
 6. Learning the correction model.
 7. Normalizing the data.
-8. **Visualizing the data.**
+8. **Visualizing the data** (reported here).
 
 Here for simplicity, we show examples only on how to plot the data (step 8).  
 After the data are normalized (step 7), if both fend and enrichment data were calculated, these files will be produced (here only for chromosome 6, at 1 mb and 40 kb resolution):
