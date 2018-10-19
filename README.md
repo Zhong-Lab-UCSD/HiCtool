@@ -166,6 +166,8 @@ Now we can plot the DI and true DI values:
 ```Python
 plot_chromosome_DI(input_file_DI='HiCtool_chr6_DI.txt', a_chr='6', start_pos=50000000, end_pos=54000000, input_file_hmm='HiCtool_chr6_hmm_states.txt', species='hg38', plot_legend=True, plot_grid=True)
 ```
+<img src="./Figures/HiCtool_chr6_DI_full.png" alt="drawing" width="450"/>
+
 The true DI values allow to infer the locations of the topological domains in the genome. A domain is initiated at the beginning of a single downstream biased HMM state (red color in the above figure). The domain is continuous throughout any consecutive downstream biased state. The domain will then end when the last in a series of upstream biased states (green color in the above figure) is reached, with the domain ending at the end of the last HMM upstream biased state.
 
 To calculate the topological domain coordinates run:
