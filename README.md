@@ -130,11 +130,11 @@ execfile("HiCtool_DI.py")
 ```
 To calculate the DI values and save them to file run:
 ```Python
-calculate_chromosome_DI(input_contact_matrix='HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6')
+DI = calculate_chromosome_DI(input_contact_matrix='HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6')
 ```
 The DI values are used as emissions in a Hidden Markov Model (HMM) to calculate the true DI values as HMM biased states:
 ```Python
-calculate_chromosome_true_DI(input_file_DI='HiCtool_chr6_DI.txt', a_chr='6')
+true_DI = calculate_chromosome_true_DI(input_file_DI='HiCtool_chr6_DI.txt', a_chr='6')
 ```
 Now we can plot the DI and true DI values:
 ```Python
@@ -146,7 +146,7 @@ The true DI values allow to infer the locations of the topological domains in th
 
 To calculate the topological domain coordinates run:
 ```Python
-calculate_chromosome_topological_domains(input_file_hmm='HiCtool_chr6_hmm_states.txt', a_chr='6')
+topological_domains = calculate_chromosome_topological_domains(input_file_hmm='HiCtool_chr6_hmm_states.txt', a_chr='6')
 ```
 Start and end coordinates will be saved in a [tab separated format file](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_topological_domains.txt) where each line corresponds to a topological domain. Domain coordinates for the window (50-54 Mb) of the plot above are:
 ```
