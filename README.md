@@ -117,7 +117,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6', bin_siz
 <img src="./Figures/HiCtool_chr6_40kb_normalized_fend.png" alt="drawing" width="450"/>
 <img src="./Figures/HiCtool_chr6_40kb_normalized_fend_histogram.png" alt="drawing" width="400"/>
 
-Here we plot data of chromosome 6 (```a_chr```), from 50 Mb (```start_coord```) to 54 Mb (```end_coord```) at a bin size of 40 kb (```bin_size```), for species hg38 (```species```). We use a colormap (```my_colormap```) which goes from white (no contacts) to red (maximum contact) and we use a upper cut-off of the 95th percentile of the data (```cutoff_type``` and ```cutoff```) to enhance higher order chromatin structure such as topological domains on the heatmap. We assign to the bins over the cut-off a specific color (```max_color```) and also we choose to plot the distribution of the contact data as well on a separate histogram (```plot_histogram```).
+Here we plot normalized fend data (```data_type```) of chromosome 6 (```a_chr```), from 50 Mb (```start_coord```) to 54 Mb (```end_coord```) at a bin size of 40 kb (```bin_size```), for species hg38 (```species```). We use a colormap (```my_colormap```) which goes from white (no contacts) to red (maximum contact) and we use a upper cut-off of the 95th percentile of the data (```cutoff_type``` and ```cutoff```) to enhance higher order chromatin structure such as topological domains on the heatmap. We assign to the bins over the cut-off a specific color (```max_color```) and also we choose to plot the distribution of the contact data as well on a separate histogram (```plot_histogram```).
 
 The same can be done for the "observed over expected" data:
 ```Python
@@ -128,15 +128,15 @@ plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt', a_chr='6'
 
 Red pixels are loci where there are more contacts than expected, blue pixels less contacts than expected. Note that the scale is log2.
 
-Plot the observed data at 1 mb resolution:
-```Python
-plot_chromosome_data('HiCtool_chr6_1mb_observed.txt', a_chr='6', bin_size=1000000, full_matrix=True, species='hg38', data_type='observed', my_colormap=['white', 'blue'], cutoff_type='percentile', cutoff=95, max_color='#460000', plot_histogram=True)
-```
 
 Plot the normalized fend data at 1 mb resolution:
 ```Python
 plot_chromosome_data('HiCtool_chr6_1mb_normalized_fend.txt', a_chr='6', bin_size=1000000, full_matrix=True, species='hg38', data_type="normalized_fend", my_colormap=['white', 'blue'], cutoff_type='percentile', cutoff=95, max_color='#460000', plot_histogram=True)
 ```
+
+<img src="./Figures/HiCtool_chr6_1mb_normalized_fend.png" alt="drawing" width="450"/>
+<img src="./Figures/HiCtool_chr6_1mb_normalized_fend_histogram.png" alt="drawing" width="400"/>
+
 In this case we plot the entire contact matrix (```full_matrix=True```) and we changed the color of the heatmap to blue (```my_colormap```).
 
 
