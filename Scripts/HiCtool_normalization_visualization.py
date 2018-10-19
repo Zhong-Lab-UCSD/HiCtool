@@ -236,22 +236,23 @@ def normalize_chromosome_fend_data(a_chr,
     print "Done!"
     return normalized_fend
 
-def plot_chromosome_fend_data(contact_matrix,
-                              a_chr,
-                              bin_size,
-                              full_matrix=True,
-                              start_coord=0, 
-                              end_coord=0,
-                              species='hg38',
-                              chr_size=0,
-                              my_colormap=['white', 'red'],
-                              cutoff_type='percentile',
-                              cutoff=95,
-                              max_color='#460000',
-                              my_dpi=1000,
-                              plot_histogram=False):
+def plot_chromosome_data(contact_matrix,
+                        a_chr,
+                        bin_size,
+                        full_matrix=True,
+                        start_coord=0, 
+                        end_coord=0,
+                        species='hg38',
+                        data_type='normalized_fend',
+                        chr_size=0,
+                        my_colormap=['white', 'red'],
+                        cutoff_type='percentile',
+                        cutoff=95,
+                        max_color='#460000',
+                        my_dpi=1000,
+                        plot_histogram=False):
     """
-    Plot a contact map and histogram of the contact distribution generated with the function "normalize_chromosome_fend_data".
+    Plot a contact map and histogram of the contact distribution for observed data, normalized fend data, expected fend and enrichment data.
     Parameters:
         contact_matrix (str | obj): txt file of the contact matrix generated with the function "normalize_chromosome_fend_data" 
         or contact matrix returned by "normalize_chromosome_fend_data".
@@ -261,6 +262,7 @@ def plot_chromosome_fend_data(contact_matrix,
         start_coord (int): start coordinate for the plot in bp.
         end_coord (int): end coordinate for the plot in bp.
         species (str): 'hg38' or 'mm10' or any other species label in string format.
+        data_type (str): type of data to plot either "observed", "normalized_fend", "expected_fend", "expected_enrich".
         chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
         my_colormap (str | list): colormap to be used to plot the data. 1) Use a string if you choose among any colorbar here 
         https://matplotlib.org/examples/color/colormaps_reference.html 2) Use a list of strings with colors if you want
@@ -281,10 +283,10 @@ def plot_chromosome_fend_data(contact_matrix,
     
     if bin_size >= 1000000:
         bin_size_str = str(bin_size/1000000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'mb_normalized_fend'
+        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'mb_' + data_type
     elif bin_size < 1000000:
         bin_size_str = str(bin_size/1000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_normalized_fend'
+        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_' + data_type
     
     if species == 'hg38' or species == 'mm10':
         end_pos = (chromosomes[species][a_chr]/bin_size)*bin_size
