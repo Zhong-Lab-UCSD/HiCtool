@@ -74,6 +74,13 @@ To download the data use the command ```wget``` on the **unix shell** and copy t
 wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt
 ```
 
+If you do not have ```wget``` installed, you way check these links for instructions of installation:
+
+- [Windows](https://builtvisible.com/download-your-website-with-wget/)
+- [MacOS](https://esgf.github.io/esgf-swt/wget/2016/03/16/wget-command-not-found.html)
+
+**Otherwise just go to the [Google Drive folder with all the files](https://drive.google.com/drive/u/1/folders/1Q4RwOGlVZ4m42nfQMgihzh_7xnVllIxH).**
+
 Then download the Python script [HiCtool_normalization_visualization.py](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py):
 
 ```unix
