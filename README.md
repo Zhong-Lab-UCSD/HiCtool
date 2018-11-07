@@ -73,6 +73,11 @@ To download the data use the command ```wget``` on the **unix shell** and copy t
 ```unix
 wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_chr6_40kb_normalized_fend.txt
 ```
+Then download the Python script [HiCtool_normalization_visualization.py](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py):
+
+```unix
+wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py
+```
 
 If you do not have ```wget``` installed, you may want to check these links for installation instructions:
 
@@ -80,12 +85,6 @@ If you do not have ```wget``` installed, you may want to check these links for i
 - [MacOS](https://esgf.github.io/esgf-swt/wget/2016/03/16/wget-command-not-found.html)
 
 **In this case go to the [Google Drive folder with all the files](https://drive.google.com/drive/u/1/folders/1Q4RwOGlVZ4m42nfQMgihzh_7xnVllIxH) and download the files.**
-
-Then download the Python script [HiCtool_normalization_visualization.py](https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py):
-
-```unix
-wget https://sysbio.ucsd.edu/public/rcalandrelli/hictool_example/HiCtool_normalization_visualization.py
-```
 
 Go to the directory where you downloaded the files and open a Python console on the **unix shell** (by simply typing ```python```) and then execute the script on the **Python console**:
 ```Python
