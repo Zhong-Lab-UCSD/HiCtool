@@ -11,17 +11,27 @@ The cell line used here is B-lymphoblastoids GM12878 of human (hg38) with GEO ac
 - [math](https://docs.python.org/2/library/math.html)
 - [hmmlearn](https://github.com/hmmlearn/hmmlearn)
 
-To check if a module is installed, open your **python console** (simply type ```python``` on your unix shell)  and try to import each module by typing:
+To check if a module is installed, open your **python console** and try to import each module by typing:
 ```python
 import my_module
 ```
+(simply type ```python``` on your unix shell or you could use any other environment such as Spyder or Jupyter QtConsole in [Anaconda](https://www.anaconda.com/download/#macos)) 
+
 If a module is not installed, go back to your **unix console** and type the following to install it:
 ```unix
 pip install my_module
 ```
+If you are into an iPython console (Spyder or Jupyter QtConsole for example) type the following:
+```python
+!pip install my_module
+```
 All the modules should be already included into Python except for ```hmmlearn```. To install ```hmmlearn``` download the package from GitHub (link above) then go inside the package folder and run the following on the **unix shell**:
 ```unix
 python setup.py install
+```
+Otherwise in iPython type the following:
+```python
+!pip install hmmlearn
 ```
 
 ## Data preprocessing
@@ -84,7 +94,7 @@ If you do not have ```wget``` installed, you may want to check these links for i
 - [Windows](https://builtvisible.com/download-your-website-with-wget/)
 - [MacOS](https://esgf.github.io/esgf-swt/wget/2016/03/16/wget-command-not-found.html)
 
-**In this case go to the [Google Drive folder with all the files](https://drive.google.com/drive/u/1/folders/1Q4RwOGlVZ4m42nfQMgihzh_7xnVllIxH) and download the files.**
+**Otherwise go to the [Google Drive folder with all the files](https://drive.google.com/drive/u/1/folders/1Q4RwOGlVZ4m42nfQMgihzh_7xnVllIxH) and download the files.**
 
 Go to the directory where you downloaded the files and open a Python console on the **unix shell** (by simply typing ```python```) and then execute the script on the **Python console**:
 ```Python
