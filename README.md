@@ -15,7 +15,7 @@ To check if a module is installed, open your **python console** and try to impor
 ```python
 import my_module
 ```
-(simply type ```python``` on your unix shell or you could use any other environment such as Spyder or Jupyter QtConsole in [Anaconda](https://www.anaconda.com/download/#macos)) 
+You can simply type ```python``` on your unix shell or you could use any other environment such as for example Spyder or Jupyter QtConsole in [Anaconda](https://www.anaconda.com/download/#macos) (suggested).
 
 If a module is not installed, go back to your **unix console** and type the following to install it:
 ```unix
@@ -30,7 +30,7 @@ All the modules should be already included into Python except for ```hmmlearn```
 python setup.py install
 ```
 Otherwise in iPython type the following:
-```python
+```ipython
 !pip install hmmlearn
 ```
 
