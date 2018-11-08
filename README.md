@@ -22,7 +22,7 @@ If a module is not installed, go back to your **unix console** and type the foll
 pip install my_module
 ```
 If you are into an iPython console (Spyder or Jupyter QtConsole for example) type the following:
-```python
+```ipython
 !pip install my_module
 ```
 All the modules should be already included into Python except for ```hmmlearn```. To install ```hmmlearn``` download the package from GitHub (link above) then go inside the package folder and run the following on the **unix shell**:
