@@ -37,5 +37,5 @@ To produce our final results, use this GEO accession number: **[GSM1551550](http
 
 ## 2. Pre-trunction of the reads that contain potential ligation junction
 
-After the fastq files are obtained, pre-truncation is performed on the reads that contain potential ligation junctions to keep the longest piece without a junction sequence ([Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7)). To do so, use the code in [pre_truncation.py](/HiCtool/scripts/pre_truncation.py) (see API Documentation) and run the following code on your Python or iPython console:
+After the fastq files are obtained, pre-truncation is performed on the reads that contain potential ligation junctions to keep the longest piece without a junction sequence ([Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7)). To do so, use the code in [pre_truncation.py](/scripts/pre_truncation.py) (see API Documentation) and run the following code on your Python or iPython console:
 
