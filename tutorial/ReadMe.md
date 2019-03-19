@@ -4,9 +4,9 @@ This is a full tutorial of HiCtool. The tutorial steps have to be followed in se
 
 ## Table of Contents
 
-- [Data preprocessing]
+- [Data preprocessing](./tutorial/data-preprocessing.md)
 - Data normalization and visualization
-  - [Explicit-factor correction model of Yaffe and Tanay]
-  - [Matrix balancing approach of HiCorrector]
-- [TAD analysis]
+  - [Explicit-factor correction model of Yaffe and Tanay](./tutorial/normalization-explicit-factor.md)
+  - [Matrix balancing approach of HiCorrector](./tutorial/normalization-matrix-balancing.md)
+- [TAD analysis](./tutorial/tad-analysis.md)
 
