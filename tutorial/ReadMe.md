@@ -57,7 +57,7 @@ HiCtool is in a pipeline format to allow extreme flexibility and easy usage. You
 
 ## Tutorial
 
-We have compiled a full tutorial to show the usage of the pipeline. Please check the [Tutorial Homepage](./tutorial/ReadMe.md).
+We have compiled a full tutorial to show the usage of the pipeline. Please check the [Tutorial Homepage].
 
 ## Reference
 
