@@ -1,79 +1,38 @@
-# HiCtool: a standardized pipeline to process and visualize Hi-C data
+# HiCtool
 
-HiCtool is an open-source bioinformatic tool based on Python, which integrates several software to perform a standardized Hi-C data analysis, from the processing of raw data, to the visualization of heatmaps and the identification of topologically associated domains (TADs).
+HiCtool is a Python library for processing and visualizing Hi-C data, including topological domain analysis.  
+This is a short version of the documentation to give a quick overview of the tool and run few examples, the full documentation and code are available at [http://www.genomegitar.org](https:genomegitar.org).  
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Installation](#installation)
-- [Tutorial](#tutorial)
-- [Reference](#reference)
-- [Support](#support)
-
-## Overview
-
-We implemented a pipeline that is divided into three main sections:
-
-- Data preprocessing
-- Data normalization and visualization
-- TAD analysis
-
-HiCtool leads the user step-by-step through a pipeline, which goes from the raw Hi-C data to the computation, visualization, and optimized storage of contact matrices and TAD coordinates. 
-
-HiCtool can implement contact data normalization following two approaches: 
-
-- The explicit-factor correction method reported by [Yaffe and Tanay](https://www.nature.com/articles/ng.947) and performed by the library [HiFive](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0806-y). In this case, only intra-chromosomal analysis is performed, per each chromosome singularly.
-- The matrix balancing approach performed by [HiCorrector](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4380031/). In this case, a global analysis is performed including all the chromosomes and both intra- and inter-chromosomal maps.
-
-## Installation
-
-HiCtool is in a pipeline format to allow extreme flexibility and easy usage. You do need to install the following Python libraries, packages and software. Everything is open source.
-
-**1. Python libraries [for python>2.7]:**
+The cell line used here is B-lymphoblastoids GM12878 of human (hg38) with GEO accession number [GSM1551550](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550). To run the examples in this short tutorial you do not need the [entire list of software/libraries](https://doc.genomegitar.org/overview.html#installation) but only the following:
 
 - [numpy](http://scipy.org/)
 - [scipy](http://scipy.org/)
 - [matplotlib](http://matplotlib.org/)
 - [math](https://docs.python.org/2/library/math.html)
-- [matplotlib.pyplot](http://matplotlib.org/api/pyplot_api.html#module-matplotlib.pyplot/)
-- [csv](https://docs.python.org/2/library/csv.html)
-- [pybedtools](https://daler.github.io/pybedtools/)
-- [pandas](https://pandas.pydata.org/)
-- [multiprocessing](https://docs.python.org/2/library/multiprocessing.html)
-- [biopython](http://biopython.org/)
-
-**2. Python packages:**
-
-- [hifive](http://bxlab-hifive.readthedocs.org/en/latest/introduction.html)
 - [hmmlearn](https://github.com/hmmlearn/hmmlearn)
 
-**3. Other software:**
+To check if a module is installed, open your **python console** and try to import each module by typing:
+```python
+import my_module
+```
+You can simply type ```python``` on your unix shell or you could use any other environment such as for example Spyder or Jupyter QtConsole in [Anaconda](https://www.anaconda.com/download/#macos) (suggested).
 
-- [BEDTools](http://bedtools.readthedocs.org/en/latest/)
-- [Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-- [SAMTools](http://samtools.sourceforge.net/)
-- [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump)
-- [HiCorrector](http://zhoulab.usc.edu/Hi-Corrector/)
-
-## Tutorial
-
-We have compiled a full tutorial to show the usage of the pipeline. Please check the [Tutorial Homepage].
-
-## Reference
-
-HiCtool was developed by Riccardo Calandrelli and Qiuyang Wu from Dr. Sheng Zhong's Lab at University of California, San Diego. If you use HiCtool, please cite the paper: 
-
-Calandrelli, R., Wu, Q., Guan, J., & Zhong, S. (2018). GITAR: An open source tool for analysis and visualization of Hi-C data. *Genomics, proteomics & bioinformatics.*
-
-## Support
-
-For issues related to the use of HiCtool or if you want to report a bug, please contact Riccardo Calandrelli at <rcalandrelli@eng.ucsd.edu>.
-
-
-
-
-
-
+If a module is not installed, go back to your **unix console** and type the following to install it:
+```unix
+pip install my_module
+```
+If you are into an iPython console (Spyder or Jupyter QtConsole for example) type the following:
+```ipython
+!pip install my_module
+```
+All the modules should be already included into Python except for ```hmmlearn```. To install ```hmmlearn``` download the package from GitHub (link above) then go inside the package folder and run the following on the **unix shell**:
+```unix
+python setup.py install
+```
+Otherwise in iPython type the following:
+```ipython
+!pip install hmmlearn
+```
 
 ## Data preprocessing
 
