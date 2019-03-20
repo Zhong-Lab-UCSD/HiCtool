@@ -4,20 +4,20 @@ This pipeline illustrates the procedure to normalize Hi-C **intra-chromosomal co
 
 ## Table of contents
 
-1. [Running HiFive functions]()
-   - [1.1. Creating the Fend object]()
-   - [1.2. Creating the HiCData object]()
-   - [1.3. Creating the HiC project object]()
-   - [1.4. Filtering HiC fends]()
-   - [1.5. Estimating the HiC distance function]()
-   - [1.6. Learning the correction model]()
-2. [Normalizing the data]()
-   - [2.1. Normalized fend data]()
-   - [2.2. Normalized enrichment data]()
-   - [2.3. Multi-processing normalization]()
-3. [Visualizing the data]()
-   - [3.1. Visualizing the contact data]()
-   - [3.2. Visualizing the enrichment data]()
+1. [Running HiFive functions](#1-running-hifive-functions)
+   - [1.1. Creating the Fend object](#11-creating-the-fend-object)
+   - [1.2. Creating the HiCData object](#12-creating-the-hicdata-object)
+   - [1.3. Creating the HiC project object](#13-creating-the-hic-project-object)
+   - [1.4. Filtering HiC fends](#14-filtering-hic-fends)
+   - [1.5. Estimating the HiC distance function](#15-estimating-the-hic-distance-function)
+   - [1.6. Learning the correction model](#16-learning-the-correction-model)
+2. [Normalizing the data](#2-normalizing-the-data)
+   - [2.1. Normalized fend data](#21-normalized-fend-data)
+   - [2.2. Normalized enrichment data](#22-normalized-enrichment-data)
+   - [2.3. Multi-processing normalization](#23-multi-processing-normalization)
+3. [Visualizing the data](#3-visualizing-the-data)
+   - [3.1. Visualizing the contact data](#31-visualizing-the-contact-data)
+   - [3.2. Visualizing the enrichment data](#32-visualizing-the-enrichment-data)
 
 ## 1. Running HiFive functions
 
@@ -34,7 +34,7 @@ More details about all the steps performed here are illustrated in the following
 
 ### 1.1. Creating the Fend object
 
-A Fragment-end (Fend) object (hdf5 format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (```restrictionsites_gc_map_valid.bed```) containing information about the fragment ends like coordinates, GC content and mappability score (see preprocessing, step 5).
+A Fragment-end (Fend) object (hdf5 format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (```restrictionsites_gc_map_valid.bed```) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)).
 
 To create a Fend object use the function ```hifive.fend```:
 ```Python
@@ -143,8 +143,7 @@ To calculate and save the **normalized intra-chromosomal contact matrix** for a 
 fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', 
                                                       bin_size=40000, 
                                                       input_file='HiC_norm_binning.hdf5', 
-                                                      species='hg38', 
-                                                      chr_size=0, 
+                                                      species='hg38',
                                                       save_obs=True, 
                                                       save_expect=False)
 ```
@@ -161,8 +160,7 @@ To calculate and save the **"observed/expected" intra-chromosomal contact matrix
 enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', 
                                                           bin_size=40000, 
                                                           input_file='HiC_norm_binning.hdf5', 
-                                                          species='hg38', 
-                                                          chr_size=0, 
+                                                          species='hg38',
                                                           save_obs=True, 
                                                           save_expect=False)
 ```
