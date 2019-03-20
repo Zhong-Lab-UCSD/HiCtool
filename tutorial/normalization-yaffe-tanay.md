@@ -2,8 +2,6 @@
 
 This pipeline illustrates the procedure to normalize Hi-C **intra-chromosomal contact data only** following the explicit-factor model of [Yaffe and Tanay](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html).
 
-If you are looking for a global normalization procedure for both intra- and inter-chromosomal maps, go to [this section where the data are normalizing using a matrix balancing approach](/tutorial/normalization-matrix-balancing.md).
-
 ## Table of contents
 
 1. [Running HiFive functions]()
@@ -213,7 +211,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
 ```
 Instead of the filename, the fend contact matrix generated above can be passed as well (```fend_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_fend.txt'```).
 
-**Result figures**
+![](/figures/HiCtool_chr6_40kb_normalized_fend.png)
 
 
 
