@@ -211,7 +211,9 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
 ```
 Instead of the filename, the fend contact matrix generated above can be passed as well (```fend_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_fend.txt'```).
 
-![](/figures/HiCtool_chr6_40kb_normalized_fend.png)
+Heatmap             |  Histogram
+:-------------------------:|:-------------------------:
+![](/figures/HiCtool_chr6_40kb_normalized_fend.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_fend_histogram.png)
 
 
 
