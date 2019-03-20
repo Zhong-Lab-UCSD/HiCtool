@@ -215,9 +215,6 @@ Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_40kb_normalized_fend.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_fend_histogram.png)
 
-
-
-
 ### 3.2. Visualizing the enrichment data
 
 This part is to plot the heatmap and histogram for the enrichment normalized data (“observed over expected”). The **log2 of the data** is plotted to quantify the positive enrichment (red) and the negative enrichment (blue). Loci (pixels) equal to zero before performing the log2 (deriving from zero observed contacts) are shown in gray. Loci (pixels) where enrichment expected contact was zero before performing the ratio (observed / expected) are shown in black.
@@ -234,4 +231,7 @@ plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt',
 ```
 Instead of the filename, the enrichment contact matrix generated above can be passed as well (```enrich_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_enrich.txt'```).
 
-**Result figures**
+Heatmap             |  Histogram
+:-------------------------:|:-------------------------:
+![](/figures/HiCtool_chr6_40kb_normalized_enrich.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_enrich_histogram.png)
+
