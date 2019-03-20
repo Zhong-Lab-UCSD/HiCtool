@@ -249,7 +249,7 @@ done
 ```
 The GC content and mappability score information must be in comma-separated format. First, each feature is computed for each separate chromosome, finally the files are merged together and parsed to generate a unique bed file. For this part, **Python multiprocessing** is used to consistently reduce the computation time. It is recommended to use the highest number of threads available in your processor (the highest up to the total number of chromosomes of your species).
 
-- 1) Download the GC content information for the species of interest from the UCSC website at http://hgdownload.cse.ucsc.edu/gbdb/hg38/bbi/ (replace the species name in the link if needed) and use the file **gc5Base.bw**. This file is in BigWig format, before running step 2) we need to convert it to BedGraph format (tab separated file with 4 columns: chromosome, start, end, score; in this case “score” is the GC content). After this, the file has to be splitted into separate txt files, one per each chromosome, named as **chr1.txt, chr2.txt, … , chrX.txt, chrY.txt**. To do so, run the following Unix script (note that given the dimension of the files, this process may require sometime):
+- Download the GC content information for the species of interest from the UCSC website at http://hgdownload.cse.ucsc.edu/gbdb/hg38/bbi/ (replace the species name in the link if needed) and use the file **gc5Base.bw**. This file is in BigWig format, before running step 2) we need to convert it to BedGraph format (tab separated file with 4 columns: chromosome, start, end, score; in this case “score” is the GC content). After this, the file has to be splitted into separate txt files, one per each chromosome, named as **chr1.txt, chr2.txt, … , chrX.txt, chrY.txt**. To do so, run the following Unix script (note that given the dimension of the files, this process may require sometime):
 ```unix
 wget link_to_gc5Base.bw
 bigWigToBedGraph gc5Base.bw gc5Base.bedGraph
@@ -259,33 +259,33 @@ for i in "${chromosomes[@]}"; do
 awk -v var="$i" '(NR>1) && ($1==var)' gc5Base.bedGraph | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
 done
 ```
-- 2) Add the GC content information using the Python script [add_fend_gc_content.py](/scripts/add_fend_gc_content.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the gc content information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
+- Add the GC content information using the Python script [add_fend_gc_content.py](/scripts/add_fend_gc_content.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the gc content information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
 ```Python
 execfile('add_fend_gc_content.py')
 ```
-- 3) Generate artificial reads using the Python function inside [artificial_reads.py](/scripts/artificial_reads.py) (this step is required only once per reference genome):
+- Generate artificial reads using the Python function inside [artificial_reads.py](/scripts/artificial_reads.py) (this step is required only once per reference genome):
 ```Python
 execfile('artificial_reads.py')
 generate_artificial_reads(genome_file, output_reads_file)
 ```
-- 4) Align the artificial reads to the reference genome, remove unmapped reads and generate a bed formatted file where the last field is the MAPQ score (this step is required only once per reference genome). This is the same format of the GC content files downloaded from UCSC, where the last field was the GC percentage instead of MAPQ:
+- Align the artificial reads to the reference genome, remove unmapped reads and generate a bed formatted file where the last field is the MAPQ score (this step is required only once per reference genome). This is the same format of the GC content files downloaded from UCSC, where the last field was the GC percentage instead of MAPQ:
 ```unix
 (bowtie2 -p 32 -x your_genome_index artificial_reads.fastq -S artificial_reads.sam) 2>artificial_reads.log
 samtools view -F 4 artificial_reads.sam > artificial_reads_mapped.sam
 awk -v OFS='\t' '{print $3, $4-1, $4-1+50, $5}' artificial_reads_mapped.sam > artificial_reads_mapped.txt
 ```
-- 5) Split the mapped reads into separate files, one per chromosome (update the list of chromosome names if a different species is used):
+- Split the mapped reads into separate files, one per chromosome (update the list of chromosome names if a different species is used):
 ```unix
 chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
 for i in "${chromosomes[@]}"; do
 awk -v var="$i" '(NR>1) && ($1==var)' artificial_reads_mapped.txt | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
 done
 ```
-- 6. Add the mappability score information using the Python script [add_fend_mappability.py](/scripts/add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
+- Add the mappability score information using the Python script [add_fend_mappability.py](/scripts/add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
 ```Python
 execfile('add_fend_mappability.py')
 ```
-- 7) Sort by coordinate, merge the files together, remove fragment ends with a mappability score < 0.5, parse GC content and mappability score in comma separated format and add the header:
+- Sort by coordinate, merge the files together, remove fragment ends with a mappability score < 0.5, parse GC content and mappability score in comma separated format and add the header:
 ```unix
 chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
 
