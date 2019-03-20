@@ -281,7 +281,7 @@ for i in "${chromosomes[@]}"; do
 awk -v var="$i" '(NR>1) && ($1==var)' artificial_reads_mapped.txt | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
 done
 ```
-- 6) Add the mappability score information using the Python script [add_fend_mappability.py](/scripts/add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
+- 6. Add the mappability score information using the Python script [add_fend_mappability.py](/scripts/add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
 ```Python
 execfile('add_fend_mappability.py')
 ```
