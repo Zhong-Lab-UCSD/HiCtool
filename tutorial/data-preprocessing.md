@@ -211,3 +211,91 @@ HiCfile2_log.txt
 
 ## 5. Creating the fragment-end (FEND) bed file
 
+The fragment-end (FEND) bed file is used to normalize the data and it contains restriction site coordinates and additional information related to fragment properties (GC content and mappability score). Specifically, for each fragment the GC content of 200 bp upstream and downstream to the restriction site is computed. For the mappability score, the entire genome sequence is split into artificial reads (50 bp reads, starting every 10 bp) and then mapped back to the genome. For each fragment end the mappability score is then defined to be the portion of artificial reads mapped uniquely to the genome (MAPQ > 30) within a 500-bp window upstream and downstream to the fragment. Fragment ends with a mappability score less than 0.5 are then discarded (Yaffe and Tanay, 2011).
+
+Since the following steps may be time consuming, we provide the most common FEND files available for download (DpnII is the same restriction site than MboI):
+
+- [HindIII-hg38](http://data.genomegitar.org/HindIII_hg38_gc_map_valid.zip)
+- [MboI-hg38](http://data.genomegitar.org/MboI_hg38_gc_map_valid.zip) (file used in this documentation)
+- [NcoI-hg38](http://data.genomegitar.org/NcoI_hg38_gc_map_valid.zip)
+- [HindIII-mm10](http://data.genomegitar.org/HindIII_mm10_gc_map_valid.zip)
+- [MboI-mm10](http://data.genomegitar.org/MboI_mm10_gc_map_valid.zip)
+
+**ONLY if you need to generate a new fragment end bed file (because you are using another species or a different restriction enzyme) follow these instructions.**
+
+In order to align all the restriction sites for a certain cutting enzyme, a fastq file related to the enzyme cutting site has to be provided. For the quality score of the restriction enzyme sequence, we can simply add a default average score “I”:
+```unix
+echo -e "@HindIII\nAAGCTT\n+\nIIIIII" > HindIII.fastq
+echo -e "@MboI\nGATC\n+\nIIII" > MboI.fastq
+echo -e "@NcoI\nCCATGG\n+\nIIIIII" > NcoI.fastq
+```
+After this, implement the multiple alignment command in Bowtie 2 to locate all the coordinates of the restriction enzyme sites:
+```unix
+(bowtie2 -p 32 -k 8000000 -x your_genome_index -U MboI.fastq -S restrictionsites.sam) 2>restrictionsites_log.txt
+```
+where the ```-k``` argument changes Bowtie 2 research behavior. By default, ```bowtie2``` searches for distinct, valid alignments for each read. When it finds a valid alignment, it continues looking for alignments that are nearly as good or better and the best alignment found is reported. When ```-k <int>``` is specified, ```bowtie2``` searches for at most <int> distinct, valid alignments for each read. The search terminates when it can not find more distinct valid alignments, or when it finds <int>, which happens first.
+
+In order to use the restriction sites file as an input for the following analysis, we have to convert the sam format file to **bed** format via [SAMtools](http://samtools.sourceforge.net/) and [bedtools](http://bedtools.readthedocs.org/en/latest/):
+```unix
+samtools view -b restrictionsites.sam | bedtools bamtobed -i > restrictionsites.bed
+```
+Now ```restrictionsites.bed``` is split into separate files, one per each chromosome (update the chromosomes list according to your species):
+```unix
+chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
+
+for i in "${chromosomes[@]}"; do
+awk -v var="$i" '(NR>1) && ($1==var)' restrictionsites.bed > $i.bed
+done
+```
+The GC content and mappability score information must be in comma-separated format. First, each feature is computed for each separate chromosome, finally the files are merged together and parsed to generate a unique bed file. For this part, **Python multiprocessing** is used to consistently reduce the computation time. It is recommended to use the highest number of threads available in your processor (the highest up to the total number of chromosomes of your species).
+
+- 1) Download the GC content information for the species of interest from the UCSC website at http://hgdownload.cse.ucsc.edu/gbdb/hg38/bbi/ (replace the species name in the link if needed) and use the file **gc5Base.bw**. This file is in BigWig format, before running step 2) we need to convert it to BedGraph format (tab separated file with 4 columns: chromosome, start, end, score; in this case “score” is the GC content). After this, the file has to be splitted into separate txt files, one per each chromosome, named as **chr1.txt, chr2.txt, … , chrX.txt, chrY.txt**. To do so, run the following Unix script (note that given the dimension of the files, this process may require sometime):
+```unix
+wget link_to_gc5Base.bw
+bigWigToBedGraph gc5Base.bw gc5Base.bedGraph
+
+chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
+for i in "${chromosomes[@]}"; do
+awk -v var="$i" '(NR>1) && ($1==var)' gc5Base.bedGraph | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
+done
+```
+- 2) Add the GC content information using the Python script [add_fend_gc_content.py](/scripts/add_fend_gc_content.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the gc content information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
+```Python
+execfile('add_fend_gc_content.py')
+```
+- 3) Generate artificial reads using the Python function inside [artificial_reads.py](/scripts/artificial_reads.py) (this step is required only once per reference genome):
+```Python
+execfile('artificial_reads.py')
+generate_artificial_reads(genome_file, output_reads_file)
+```
+- 4) Align the artificial reads to the reference genome, remove unmapped reads and generate a bed formatted file where the last field is the MAPQ score (this step is required only once per reference genome). This is the same format of the GC content files downloaded from UCSC, where the last field was the GC percentage instead of MAPQ:
+```unix
+(bowtie2 -p 32 -x your_genome_index artificial_reads.fastq -S artificial_reads.sam) 2>artificial_reads.log
+samtools view -F 4 artificial_reads.sam > artificial_reads_mapped.sam
+awk -v OFS='\t' '{print $3, $4-1, $4-1+50, $5}' artificial_reads_mapped.sam > artificial_reads_mapped.txt
+```
+- 5) Split the mapped reads into separate files, one per chromosome (update the list of chromosome names if a different species is used):
+```unix
+chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
+for i in "${chromosomes[@]}"; do
+awk -v var="$i" '(NR>1) && ($1==var)' artificial_reads_mapped.txt | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
+done
+```
+- 6) Add the mappability score information using the Python script [add_fend_mappability.py](/scripts/add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads we took around 9 hours for all the chromosomes of hg38-MboI):
+```Python
+execfile('add_fend_mappability.py')
+```
+- 7) Sort by coordinate, merge the files together, remove fragment ends with a mappability score < 0.5, parse GC content and mappability score in comma separated format and add the header:
+```unix
+chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
+
+for i in "${chromosomes[@]}"; do
+sort -k 2,2n "$i"_restrictionsites_gc_map.bed | cat >> restrictionsites_gc_map.bed
+done
+
+awk '(NR>1) && ($9 >= 0.5) && ($10 >= 0.5)' restrictionsites_gc_map.bed | awk -v OFS='\t' '{print $1, $2, $3, $4, $5, $6, $7 "," $8, $9 "," $10}' > restrictionsites_gc_map_valid_noHeader.bed
+echo -e 'chr\tstart\tstop\tname\tscore\tstrand\tgc\tmappability' | cat - restrictionsites_gc_map_valid_noHeader.bed > restrictionsites_gc_map_valid.bed
+
+rm restrictionsites_gc_map_valid_noHeader.bed
+```
+**restrictionsites_gc_map_valid.bed** is the final fragment end bed file that will be used in the normalization pipeline to remove biases.
