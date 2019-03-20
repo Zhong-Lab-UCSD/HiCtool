@@ -104,14 +104,14 @@ import hifive
 
 hic = hifive.HiC('HiC_project_object.hdf5')
 hic.find_binning_fend_corrections(max_iterations=1000,
-mindistance=500000,
-maxdistance=0,
-num_bins=[20,20,20,20],
-model=['len','gc','mappability','distance'],
-parameters=['even','even','even','even'],
-usereads='cis',
-learning_threshold=1.0)
-hic.save('HiC_norm_binning.hdf5')
+                                mindistance=500000,
+                                maxdistance=0,
+                                num_bins=[20,20,20,20],
+                                model=['len','gc','mappability','distance'],
+                                parameters=['even','even','even','even'],
+                                usereads='cis',
+                                learning_threshold=1.0)
+                                hic.save('HiC_norm_binning.hdf5')
 ```
 
 ## 2. Normalizing the data
