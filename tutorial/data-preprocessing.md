@@ -64,3 +64,150 @@ The length distribution of the truncated reads is also plotted and saved to file
 ![](/figures/SRR1658570_1.fastq_truncated_reads.png)
 
 ![](/figures/SRR1658570_2.fastq_truncated_reads.png)
+
+## 3. Mapping read pairs to reference genome
+
+[Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is used for mapping the read pairs, and reads are mapped **independently** to avoid any proximity constraint. To align the reads, first build a **corresponding index** for the reference genome (execute this step only one time for reference genome):
+```unix
+bowtie2-build hg38.fa index
+```
+```hg38.fa``` is the reference sequence in FASTA format, the output files in bt2 format are named with the prefix 'index'.
+
+Now align the reads to the reference sequence:
+```unix
+(bowtie2 -p 32 -x index SRR1658570_1.trunc.fastq -S HiCfile1.sam) 2>HiCfile1_log.txt
+(bowtie2 -p 32 -x index SRR1658570_2.trunc.fastq -S HiCfile2.sam) 2>HiCfile2_log.txt
+```
+where:
+
+- The ```-p``` argument refers to a specified number of parallel search threads (update it accordingly to your number of available cores). This can be useful to decrease the processing time in aligning the reads.
+- The ```-x``` argument specifies the basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final ‘/.1.bt2’, ‘/.2.bt2’, etc.
+- The ```-S``` argument specifies the output file in sam format.
+- ```HiCfile1_log.txt``` and ```HiCfile2_log.txt``` are log files containing the statistics of the alignment:
+
+```unix
+HiCfile1_log.txt
+202095066 reads; of these:
+202095066 (100.00%) were unpaired; of these:
+5770798 (2.86%) aligned 0 times
+156759009 (77.57%) aligned exactly 1 time
+39565259 (19.58%) aligned >1 times
+97.14% overall alignment rate
+
+HiCfile2_log.txt
+202095066 reads; of these:
+202095066 (100.00%) were unpaired; of these:
+13381441 (6.62%) aligned 0 timess
+149852422 (74.15%) aligned exactly 1 time
+38861203 (19.23%) aligned >1 times
+93.38% overall alignment rate
+```
+
+## 4. Filtering reads and selecting reads that are paired
+
+[SAMtools](http://samtools.sourceforge.net/) is used to extract the headers and perform filtering on the mapped reads ([Yaffe and Tanay, 2011](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html)):
+```unix
+samtools view -H HiCfile1.sam > header1.txt
+samtools view -H HiCfile2.sam > header2.txt
+
+samtools view -F 4 -q 30 HiCfile1.sam > HiCfile1_hq.sam
+samtools view -F 4 -q 30 HiCfile2.sam > HiCfile2_hq.sam
+```
+- ```-F 4``` is used to discard unmapped reads.
+- ```-q 30``` is used to select reads that were uniquely mapped with a MAPQ >= 30, i.e. the estimated probability of mapping error is <= 0.1%.
+
+**Unused files are removed** using the command ```rm``` to reduce memory occupance since they may be quite big. If you want to keep your files, do not run those commands.
+
+To update the log files from mapping with information about reads mapped with MAPQ >= 30, use the following code:
+```unix
+n1=`wc -l HiCfile1_hq.sam | awk '{print $1}'`
+n2=`wc -l HiCfile2_hq.sam | awk '{print $1}'`
+
+nt1=`wc -l HiCfile1.sam | awk '{print $1}'`
+h1=`wc -l header1.txt | awk '{print $1}'`
+ntot1=`expr $nt1 - $h1`
+
+nt2=`wc -l HiCfile2.sam | awk '{print $1}'`
+h2=`wc -l header2.txt | awk '{print $1}'`
+ntot2=`expr $nt2 - $h2`
+
+perc1=$(awk -v n1=$n1 -v ntot1=$ntot1 'BEGIN { print 100*n1/ntot1 }' | cut -c1-5)
+perc2=$(awk -v n2=$n2 -v ntot2=$ntot2 'BEGIN { print 100*n2/ntot2 }' | cut -c1-5)
+
+printf "\n----------\n"$ntot1" reads; of these:\n  "$n1" ("$perc1"%%) aligned with MAPQ>=30" >> HiCfile1_log.txt
+printf "\n----------\n"$ntot2" reads; of these:\n  "$n2" ("$perc2"%%) aligned with MAPQ>=30" >> HiCfile2_log.txt
+
+rm HiCfile1.sam
+rm HiCfile2.sam
+```
+After filtering, reads that are not paired from the two SAM files (HiCfile1_hq.sam and HiCfile2_hq.sam) are screened out and both files are converted to BAM format:
+```unix
+awk '{print $1}' HiCfile1_hq.sam | sort > readnames1.txt
+awk '{print $1}' HiCfile2_hq.sam | sort > readnames2.txt
+comm -12 readnames1.txt readnames2.txt > paired_reads.txt
+
+grep -Fwf paired_reads.txt HiCfile1_hq.sam | \
+cat header1.txt - | \
+samtools view -b -@ 32 - > HiCfile_pair1.bam
+
+grep -Fwf paired_reads.txt HiCfile2_hq.sam | \
+cat header2.txt - | \
+samtools view -b -@ 32 - > HiCfile_pair2.bam
+
+rm HiCfile1_hq.sam
+rm HiCfile2_hq.sam
+```
+- ```readnames1.txt``` contains the names of the high quality mapped reads in HiCfile1_hq.sam.
+- ```readnames2.txt``` contains the names of the high quality mapped reads in HiCfile2_hq.sam.
+- ```paired_reads.txt``` contains the names of the reads that have both high quality sides.
+- ```HiCfile_pair1.bam``` is the bam file associated to the first mate.
+- ```HiCfile_pair2.bam``` is the bam file associated to the second mate.
+
+The -@ parameter is used to set the number of BAM compression threads to use in addition to the main thread (update it accordingly to your number of available cores). This can be useful to decrease the processing time.
+
+**Both the bam files will serve as inputs for the normalization pipeline.**
+
+To update the log files with pairing statistics, use the following code:
+```unix
+n=`wc -l paired_reads.txt | awk '{print $1}'`
+
+ntot1=`wc -l readnames1.txt | awk '{print $1}'`
+ntot2=`wc -l readnames2.txt | awk '{print $1}'`
+
+perc1=$(awk -v n1=$n -v ntot1=$ntot1 'BEGIN { print 100*n1/ntot1 }' | cut -c1-5)
+perc2=$(awk -v n2=$n -v ntot2=$ntot2 'BEGIN { print 100*n2/ntot2 }' | cut -c1-5)
+
+printf "; of these:\n    "$n" ("$perc1"%%) were paired and saved into HiCfile_pair1.bam" >> HiCfile1_log.txt
+printf "; of these:\n    "$n" ("$perc2"%%) were paired and saved into HiCfile_pair2.bam" >> HiCfile2_log.txt
+```
+The final and updated log files look like these:
+```unix
+HiCfile1_log.txt
+202095066 reads; of these:
+202095066 (100.00%) were unpaired; of these:
+5770798 (2.86%) aligned 0 times
+156759009 (77.57%) aligned exactly 1 time
+39565259 (19.58%) aligned >1 times
+97.14% overall alignment rate
+
+----------
+202095066 reads; of these:
+172973813 (85.59%) aligned with MAPQ>=30; of these:
+143415284 (82.91%) were paired and saved into HiCfile_pair1.bam
+
+HiCfile2_log.txt
+202095066 reads; of these:
+202095066 (100.00%) were unpaired; of these:
+13381441 (6.62%) aligned 0 times
+149852422 (74.15%) aligned exactly 1 time
+38861203 (19.23%) aligned >1 times
+93.38% overall alignment rate
+
+----------
+202095066 reads; of these:
+161438783 (79.88%) aligned with MAPQ>=30; of these:
+143415284 (88.83%) were paired and saved into HiCfile_pair2.bam
+```
+
+## 5. Creating the fragment-end (FEND) bed file
+
