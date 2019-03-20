@@ -6,5 +6,16 @@ If you are looking for a global normalization procedure for both intra- and inte
 
 ## Table of contents
 
+1. something
+   1.1 [Creating the Fend object]()
+   1.2 [Creating the HiCData object]()
+3. [Creating the HiC project object]()
+4. [Filtering HiC fends]()
+5. [Estimating the HiC distance function]()
+6. [Learning the correction model]()
+7. [Normalizing the data]()
+8. [Visualizing the data]()
+
+
 
 
