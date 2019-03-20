@@ -4,9 +4,9 @@
 
 1. [Downloading the raw data from GEO](#1-downloading-the-raw-data-from-geo)
 2. [Pre-truncation of the reads that contain potential ligation junctions](#2-pre-trunction-of-the-reads-that-contain-potential-ligation-junction)
-3. Mapping read pairs to the reference genome.
-4. Filtering reads and selecting reads that are paired.
-5. Creating the fragment-end (FEND) bed file.
+3. [Mapping read pairs to the reference genome](#3-mapping-read-pairs-to-reference-genome)
+4. [Filtering reads and selecting reads that are paired](#4-filtering-reads-and-selecting-reads-that-are-paired)
+5. [Creating the fragment-end (FEND) bed file](#5-creating-the-fragment-end-fend-bed-file)
 
 ## 1. Downloading the raw data from GEO
 
