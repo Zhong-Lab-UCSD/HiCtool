@@ -61,5 +61,5 @@ SRR1658570_2.fastq
 ```
 The length distribution of the truncated reads is also plotted and saved to file.
 
-
+![](/figures/SRR1658570_1.fastq_truncated_reads.png)
 
