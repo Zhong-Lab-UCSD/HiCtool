@@ -21,7 +21,7 @@ This pipeline illustrates the procedure to normalize Hi-C **intra-chromosomal co
 
 ## 1. Running HiFive functions
 
-The script [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run all the six steps needed in order to normalize the data, whose outputs are ``hdf5`` files. For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following code on the Python or iPython console:
+The function ``run_hive`` of [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run all the six steps needed in order to normalize the data, whose outputs are ``hdf5`` files. For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following code on the Python or iPython console:
 ```Python
 execfile('HiCtool_hifive.py')
 run_hifive(fend_file='restrictionsites_gc_map_valid.bed',
@@ -31,6 +31,8 @@ run_hifive(fend_file='restrictionsites_gc_map_valid.bed',
            model='Yaffe-Tanay')
 ```
 More details about all the steps performed here are illustrated in the following steps 1.1.-1.6. If not interested, go to [section 2](#2-normalizing-the-data).
+
+***
 
 ### 1.1. Creating the Fend object
 
@@ -261,7 +263,7 @@ Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_40kb_normalized_enrich.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_enrich_histogram.png)
 
-**Additional example of the contact matrix for chromosome 6 at 1 Mb resolution**
+**Additional example of the enrichment contact matrix for chromosome 6 at 1 Mb resolution**
 
 In order to change the heatmap resolution, first data have to be calculated at the desired resolution set with the parameter ``bin_size`` of ``normalize_chromosome_enrich_data`` ([see section 2.2.](#22-normalized-enrichment-data)):
 ```Python
