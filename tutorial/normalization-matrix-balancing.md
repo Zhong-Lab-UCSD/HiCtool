@@ -9,11 +9,11 @@ This pipeline illustrates the procedure to normalize a **global Hi-C contact map
    - [1.2. Creating the HiCData object](#12-creating-the-hicdata-object)
    - [1.3. Creating the HiC project object](#13-creating-the-hic-project-object)
 2. [Generating the global observed contact matrix](#2-generating-the-global-observed-contact-matrix)
+   - [2.1. Multi-processing matrix generation](#21-multi-processing-matrix-generation)
 3. [Normalizing the global contact matrix](#3-normalizing-the-global-contact-matrix)
-   - [3.1. Multi-processing normalization](#31-multi-processing-normalization)
 4. [Visualizing the data](#4-visualizing-the-data)
-   - [3.1. Visualizing the global contact data](#41-visualizing-the-global-contact-data)
-   - [3.2. Visualizing a single heatmap](#42-visualizing-a-single-heatmap)
+   - [4.1. Visualizing the global contact data](#41-visualizing-the-global-contact-data)
+   - [4.2. Visualizing a single heatmap](#42-visualizing-a-single-heatmap)
 
 ## 1. Running HiFive functions
 
@@ -86,7 +86,7 @@ my_global_matrix = compute_matrix_data_full_observed(input_file='HiC_project_obj
 ```
 The function contains easy parameters to be set. It is possible also to use a custom species (see API documentation). Note that the global matrix will be saved as default using a compressed format but to normalize the data using Hi-Corrector a tab separated format is required. The parameter ``save_tab``, if set as ``True``, will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
-After having generated the global contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` as following::
+After having generated the global contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` as following:
 ```Python
 chr1_intra = extract_single_map(input_global_matrix=my_global_matrix, 
                                 tab_sep=False, 
@@ -105,6 +105,15 @@ chr1_2_inter = extract_single_map(input_global_matrix=my_global_matrix,
                                   save_tab=True)
 ```
 
+### 2.1. Multi-processing matrix generation
+
+At higher resolution, the generation of the global observed contact matrix may be computationally expensive and require longer time. Therefore, we implemented a code to allow a job parallelization. Each row of the contact matrix is computed in parallel, meaning all the contact matrices per each chromosome, and finally they are merged together to generate the global matrix. Each row of the matrix is saved as temporary file, which is automatically deleted after merging.
+
+To calculate and save the global observed contact matrix in parallel use the script [HiCtool_full_map_parallel.py](/scripts/HiCtool_full_map_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
+```Python
+execfile('HiCtool_full_map_parallel.py')
+```
+
 ## 3. Normalizing the global contact matrix
 
 Here we normalize the data using the sequential implementation from Hi-Corrector which is "memory efficient and can run on any single computer with limited memory, even for Hi-C datasets of large size. It is designed to overcome the memory limit by loading a portion of data into the memory at each time." ([Li, Wenyuan, et al. "Hi-Corrector: a fast, scalable and memory-efficient package for normalizing large-scale Hi-C data." Bioinformatics 31.6 (2014): 960-962](https://academic.oup.com/bioinformatics/article/31/6/960/215261)).
@@ -114,10 +123,10 @@ First, you should have downloaded Hi-Corrector source code ([see here](https://g
 chmod u+x run_ic_mes.sh
 ./run_ic_mes.sh -q 100 \
                 -m "100" \
-                -r your_rows \
-                -s your_row_sum \
+                -r 3078 \
+                -s 33632 \
                 -h "/path_to_Hi-Corrector/Hi-Corrector1.2" \
-                -i "/your_path/matrix_global_observed_tab.txt"
+                -i "HiCtool_1mb_matrix_global_observed_tab.txt"
 ```
 Where the options are:
 
@@ -153,3 +162,43 @@ chr1_2_inter_norm = extract_single_map(input_global_matrix="output_normalized.tx
                                        save_output=True,
                                        save_tab=True)
 ```
+
+## 4. Visualizing the data
+
+To visualize the data use the function ``plot_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py).
+```Python
+execfile('HiCtool_full_map.py')
+```
+
+### 4.1. Visualizing the global contact data
+
+You can visualize either the observed or the normalized data. Here we plot both at 1 Mb resolution as calculated above.
+```Python
+# Observed data
+plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
+         tab_sep=False,
+         bin_size=1000000,
+         data_type='observed',
+         species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc',
+         cutoff=99,
+         max_color='#460000')
+```
+![](/figures/HiCtool_1mb_observed.png)
+
+```Python
+# Normalized data
+plot_map(input_global_matrix='output_normalized.txt',
+         tab_sep=True,
+         bin_size=1000000,
+         data_type='normalized',
+         species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc',
+         cutoff=99,
+         max_color='#460000')
+```
+![](/figures/HiCtool_1mb_normalized.png)
+
+### 4.2. Visualizing a single heatmap
