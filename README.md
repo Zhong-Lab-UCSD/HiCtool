@@ -18,7 +18,7 @@ We implemented a pipeline that is divided into three main sections:
 - Data normalization and visualization
 - TAD analysis
 
-HiCtool leads the user step-by-step through a pipeline, which goes from the raw Hi-C data to the computation, visualization, and optimized storage of contact matrices and TAD coordinates. 
+HiCtool leads the user step-by-step through a pipeline, which goes from the raw Hi-C data to the computation, visualization, and optimized storage of contact matrices (intra- and inter-chromosomal) and TAD coordinates. 
 
 HiCtool can implement contact data normalization following two approaches: 
 
@@ -27,7 +27,7 @@ HiCtool can implement contact data normalization following two approaches:
 
 ## Installation
 
-HiCtool is in a pipeline format to allow extreme flexibility and easy usage. You do need to install the following Python libraries, packages and software. Everything is open source.
+HiCtool is in a pipeline format to allow extreme flexibility and easy usage. In order to use HiCtool, you need to install the following Python libraries, packages and software. Everything is open source.
 
 **1. Python libraries [for python>2.7]:**
 

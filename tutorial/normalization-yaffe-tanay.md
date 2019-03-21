@@ -132,7 +132,7 @@ For each chromosome, the following five matrices are computed at a bin size of 4
 - The **normalized fend data** contain the corrected reads count for each bin.
 - The **normalized enrichment data** ("observed over expected" matrix) contain the enrichment value (O/E) for each bin.
 
-First execute the script [HiCtool_normalization_visualization.py](/tutorial/HiCtool_normalization_visualization.py) in the Python or iPython console:
+First execute the script [HiCtool_normalization_visualization.py](/scripts/HiCtool_normalization_visualization.py) in the Python or iPython console:
 ```Python
 execfile('HiCtool_normalization_visualization.py')
 ```

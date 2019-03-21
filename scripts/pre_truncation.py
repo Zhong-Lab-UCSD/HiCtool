@@ -2,7 +2,7 @@ def pre_truncation(input_fastq,
                    restriction_enzyme, 
                    custom_ligation_junction='not_used'):
     """
-        Perform pre-truncation on reads that contain potential ligation junctions. 
+        To perform pre-truncation on reads that contain potential ligation junctions. 
         To be executed before the mapping step.
         Parameters:
             input_fastq (str): input fastq file as 'myfile.fastq'

@@ -175,7 +175,7 @@ execfile('HiCtool_full_map.py')
 
 ### 4.1. Visualizing the global contact data
 
-You can visualize either the observed or the normalized data. Here we plot both at 1 Mb resolution as calculated above.
+You can visualize either the observed or the normalized data. Here we plot both the maps at 1 Mb resolution as calculated above.
 ```Python
 # Observed data
 plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
@@ -208,7 +208,7 @@ plot_map(input_global_matrix='output_normalized.txt',
 
 A single contact matrix can be plotted by passing as argument the chromosome in the rows (``chr_row``) and in the columns (``chr_col``). 
 
-To plot the intra-chromosomal heatmap of chromosome 6, run the following:
+To plot the **intra-chromosomal heatmap** of chromosome 6, run the following:
 ```Python
 # Observed contact heatmap
 plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
@@ -238,7 +238,7 @@ Observed (chr 6)           |  Normalized (chr 6)
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_chr6_1mb_170x170_observed.png)  |  ![](/figures/HiCtool_chr6_chr6_1mb_170x170_normalized.png)
 
-An inter-chromosomal heatmap can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col``:
+An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col``:
 ```Python
 # Observed contact heatmap
 plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',

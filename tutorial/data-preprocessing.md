@@ -1,5 +1,7 @@
 # Data preprocessing
 
+This is the first section of the pipeline and it allows to pre-process the raw Hi-C data (fastq files), in order to generate input files for the normalization step.
+
 ## Table of Contents
 
 1. [Downloading the raw data from GEO](#1-downloading-the-raw-data-from-geo)
@@ -10,7 +12,9 @@
 
 ## 1. Downloading the raw data from GEO
 
-The source data in sra format are downloaded via GEO accession number using the command ```fastq-dump``` of [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump).
+**Note!** If you have your fastq files generated from your custom experiment, you can skip this first step and go to [step 2](#2-pre-trunction-of-the-reads-that-contain-potential-ligation-junction).
+
+The source data in sra format are downloaded via GEO accession number using the command ``fastq-dump`` of [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump).
 
 Before proceeding, you may need to [setup the output directory](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration) where the sra files will be saved. After having installed SRA Toolkit, go to the path where the software has been installed, under the subfolder “bin”, and run the following command line:
 ```unix
@@ -22,7 +26,7 @@ To download the data related to a GEO accession number, go to the bottom of that
 ```unix
 fastq-dump SRRXXXXXXX --split-3
 ```
-where ```SRRXXXXXXX``` has to be replaced with the specific number of the run you want to download (**[SRR1658570](https://www.ncbi.nlm.nih.gov/sra?term=SRX764936) in this documentation**).
+where ``SRRXXXXXXX`` has to be replaced with the specific number of the run you want to download (**[SRR1658570](https://www.ncbi.nlm.nih.gov/sra?term=SRX764936) in this documentation**).
 
 To be more specific, this code will either download the SRA file under the output directory you have set with the interface above, but it will also convert the SRA file into fastq files and dump each read into separate files in the current working directory, to produce:
 
@@ -32,8 +36,7 @@ To be more specific, this code will either download the SRA file under the outpu
 
 where paired-end reads in SRRXXXXXXX.sra are split and stored into **SRRXXXXXXX_1.fastq** and **SRRXXXXXXX_2.fastq**, and SRRXXXXXXX.fastq (if present) contains reads with no mates.
 
-**Note!**
-To produce our final results, use this GEO accession number: **[GSM1551550](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550)**.
+**Note!** To produce our final results, use this GEO accession number: **[GSM1551550](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550)**.
 
 ## 2. Pre-trunction of the reads that contain potential ligation junction
 
@@ -43,7 +46,7 @@ execfile('pre_truncation.py')
 pre_truncation('SRR1658570_1.fastq', 'MboI')
 pre_truncation('SRR1658570_2.fastq', 'MboI')
 ```
-The output files will have the same filename with extension ```.trunc.fastq```. If a different restriction enzyme (RE) than HindIII, MboI, NcoI and DpnII has been used in the Hi-C experiment, then run:
+The output files will have the same filename with extension ```.trunc.fastq```. If a different restriction enzyme (RE) than HindIII, MboI, NcoI and DpnII has been used in the Hi-C experiment, then run the following for each fastq file:
 ```Python
 execfile('pre_truncation.py')
 pre_truncation('a_file.fastq', 'custom_RE', 'custom_ligation_junction')
@@ -51,7 +54,7 @@ pre_truncation('a_file.fastq', 'custom_RE', 'custom_ligation_junction')
 where ```custom_ligation_junction``` is the ligation junction sequence of nucleotides associated to the restriction enzyme you are using (see [Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7) for more details).
 
 A log file named **pre_truncation_log.txt** is generated with the information about the percentage of reads that have been truncated. This is also printed on the console:
-```Python
+```unix
 SRR1658570_1.fastq
 202095066 reads (length = 101 bp); of these:
 29851195 (14.78%) contained a potential ligation junction and have been truncated.
@@ -67,11 +70,11 @@ The length distribution of the truncated reads is also plotted and saved to file
 
 ## 3. Mapping read pairs to reference genome
 
-[Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is used for mapping the read pairs, and reads are mapped **independently** to avoid any proximity constraint. To align the reads, first build a **corresponding index** for the reference genome (execute this step only one time for reference genome):
+[Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is used for mapping the read pairs, and reads are **mapped independently** to avoid any proximity constraint. To align the reads, first build the index for the reference genome (execute this step only once per reference genome):
 ```unix
 bowtie2-build hg38.fa index
 ```
-```hg38.fa``` is the reference sequence in FASTA format, the output files in bt2 format are named with the prefix 'index'.
+```hg38.fa``` is the reference sequence in FASTA format, the output files in ``bt2`` format are named with the prefix ``index``.
 
 Now align the reads to the reference sequence:
 ```unix
@@ -80,9 +83,9 @@ Now align the reads to the reference sequence:
 ```
 where:
 
-- The ```-p``` argument refers to a specified number of parallel search threads (update it accordingly to your number of available cores). This can be useful to decrease the processing time in aligning the reads.
-- The ```-x``` argument specifies the basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final ‘/.1.bt2’, ‘/.2.bt2’, etc.
-- The ```-S``` argument specifies the output file in sam format.
+- ``-p`` refers to a specified number of parallel search threads (update it accordingly to your number of available cores). This can be useful to decrease the processing time in aligning the reads.
+- ``-x`` specifies the basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final ``/.1.bt2``, ``/.2.bt2``, etc.
+- ``-S`` specifies the output file in ``sam`` format.
 - ```HiCfile1_log.txt``` and ```HiCfile2_log.txt``` are log files containing the statistics of the alignment:
 
 ```unix
@@ -105,20 +108,22 @@ HiCfile2_log.txt
 
 ## 4. Filtering reads and selecting reads that are paired
 
-[SAMtools](http://samtools.sourceforge.net/) is used to extract the headers and perform filtering on the mapped reads ([Yaffe and Tanay, 2011](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html)):
+[SAMtools](http://samtools.sourceforge.net/) is used to perform filtering on the mapped reads ([Yaffe and Tanay, 2011](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html)):
 ```unix
+# extracting the headers
 samtools view -H HiCfile1.sam > header1.txt
 samtools view -H HiCfile2.sam > header2.txt
 
+# read filtering
 samtools view -F 4 -q 30 HiCfile1.sam > HiCfile1_hq.sam
 samtools view -F 4 -q 30 HiCfile2.sam > HiCfile2_hq.sam
 ```
-- ```-F 4``` is used to discard unmapped reads.
-- ```-q 30``` is used to select reads that were uniquely mapped with a MAPQ >= 30, i.e. the estimated probability of mapping error is <= 0.1%.
+- ``-F 4`` is used to discard unmapped reads.
+- ``-q 30`` is used to select reads that were uniquely mapped with a MAPQ >= 30, i.e. the estimated probability of mapping error is <= 0.1%.
 
-**Unused files are removed** using the command ```rm``` to reduce memory occupance since they may be quite big. If you want to keep your files, do not run those commands.
+**Unused files are removed** using the command ```rm``` to reduce memory occupance since they may be quite big. If you want to keep your files, do not run those command lines.
 
-To update the log files from mapping with information about reads mapped with MAPQ >= 30, use the following code:
+To **update the log files** from mapping with information about reads mapped with MAPQ >= 30, use the following code:
 ```unix
 n1=`wc -l HiCfile1_hq.sam | awk '{print $1}'`
 n2=`wc -l HiCfile2_hq.sam | awk '{print $1}'`
@@ -140,16 +145,18 @@ printf "\n----------\n"$ntot2" reads; of these:\n  "$n2" ("$perc2"%%) aligned wi
 rm HiCfile1.sam
 rm HiCfile2.sam
 ```
-After filtering, reads that are not paired from the two SAM files (HiCfile1_hq.sam and HiCfile2_hq.sam) are screened out and both files are converted to BAM format:
+After filtering, reads that are not paired from the two SAM files (``HiCfile1_hq.sam`` and ``HiCfile2_hq.sam``) are screened out and both files are converted to BAM format:
 ```unix
 awk '{print $1}' HiCfile1_hq.sam | sort > readnames1.txt
 awk '{print $1}' HiCfile2_hq.sam | sort > readnames2.txt
 comm -12 readnames1.txt readnames2.txt > paired_reads.txt
 
+# Select reads that are paires with the second sam file
 grep -Fwf paired_reads.txt HiCfile1_hq.sam | \
 cat header1.txt - | \
 samtools view -b -@ 32 - > HiCfile_pair1.bam
 
+# Select reads that are paired with the first sam file
 grep -Fwf paired_reads.txt HiCfile2_hq.sam | \
 cat header2.txt - | \
 samtools view -b -@ 32 - > HiCfile_pair2.bam
@@ -157,17 +164,16 @@ samtools view -b -@ 32 - > HiCfile_pair2.bam
 rm HiCfile1_hq.sam
 rm HiCfile2_hq.sam
 ```
-- ```readnames1.txt``` contains the names of the high quality mapped reads in HiCfile1_hq.sam.
-- ```readnames2.txt``` contains the names of the high quality mapped reads in HiCfile2_hq.sam.
-- ```paired_reads.txt``` contains the names of the reads that have both high quality sides.
-- ```HiCfile_pair1.bam``` is the bam file associated to the first mate.
-- ```HiCfile_pair2.bam``` is the bam file associated to the second mate.
-
-The -@ parameter is used to set the number of BAM compression threads to use in addition to the main thread (update it accordingly to your number of available cores). This can be useful to decrease the processing time.
+- ``readnames1.txt`` contains the names of the high quality mapped reads in ``HiCfile1_hq.sam``.
+- ``readnames2.txt`` contains the names of the high quality mapped reads in ``HiCfile2_hq.sam``.
+- ``paired_reads.txt`` contains the names of the reads that have both high quality sides.
+- ``HiCfile_pair1.bam`` is the BAM file associated to the first mate.
+- ``HiCfile_pair2.bam`` is the BAM file associated to the second mate.
+- ``-@`` is used to set the number of BAM compression threads to use in addition to the main thread (update it accordingly to your number of available cores). This can be useful to decrease the processing time.
 
 **Both the bam files will serve as inputs for the normalization pipeline.**
 
-To update the log files with pairing statistics, use the following code:
+To **update the log files** with pairing statistics, use the following code:
 ```unix
 n=`wc -l paired_reads.txt | awk '{print $1}'`
 
@@ -221,9 +227,11 @@ Since the following steps may be time consuming, we provide the most common FEND
 - [HindIII-mm10](http://data.genomegitar.org/HindIII_mm10_gc_map_valid.zip)
 - [MboI-mm10](http://data.genomegitar.org/MboI_mm10_gc_map_valid.zip)
 
-**ONLY if you need to generate a new fragment end bed file (because you are using another species or a different restriction enzyme) follow these instructions.**
+**Perform the following steps ONLY if you need to generate a new fragment end bed file (because you are using another species or a different restriction enzyme than those provided above). Otherwise, download the file of interest and go to the [normalization section](https://github.com/Zhong-Lab-UCSD/HiCtool/tree/master/tutorial#2-data-normalization-and-visualization).**
 
-In order to align all the restriction sites for a certain cutting enzyme, a fastq file related to the enzyme cutting site has to be provided. For the quality score of the restriction enzyme sequence, we can simply add a default average score “I”:
+***
+
+In order to align all the restriction sites for a certain cutting enzyme, a ``fastq`` file related to the enzyme cutting site has to be provided. For the quality score of the restriction enzyme sequence, we can simply add a default average score ``I``:
 ```unix
 echo -e "@HindIII\nAAGCTT\n+\nIIIIII" > HindIII.fastq
 echo -e "@MboI\nGATC\n+\nIIII" > MboI.fastq
@@ -233,13 +241,18 @@ After this, implement the multiple alignment command in Bowtie 2 to locate all t
 ```unix
 (bowtie2 -p 32 -k 8000000 -x your_genome_index -U MboI.fastq -S restrictionsites.sam) 2>restrictionsites_log.txt
 ```
-where the ```-k``` argument changes Bowtie 2 research behavior. By default, ```bowtie2``` searches for distinct, valid alignments for each read. When it finds a valid alignment, it continues looking for alignments that are nearly as good or better and the best alignment found is reported. When ```-k <int>``` is specified, ```bowtie2``` searches for at most <int> distinct, valid alignments for each read. The search terminates when it can not find more distinct valid alignments, or when it finds <int>, which happens first.
+where the ``-k`` argument changes Bowtie 2 research behavior. By default, ``bowtie2`` searches for distinct, valid alignments for each read. When it finds a valid alignment, it continues looking for alignments that are nearly as good or better and the best alignment found is reported. When ``-k <int>`` is specified, ``bowtie2`` searches for at most ``<int>`` distinct, valid alignments for each read. The search terminates when it can not find more distinct valid alignments, or when it finds ``<int>``, which happens first.
 
-In order to use the restriction sites file as an input for the following analysis, we have to convert the sam format file to **bed** format via [SAMtools](http://samtools.sourceforge.net/) and [bedtools](http://bedtools.readthedocs.org/en/latest/):
+In order to use the restriction sites file as an input for the following analysis, we have to convert the ``sam`` file to ``bed`` file via [SAMtools](http://samtools.sourceforge.net/) and [bedtools](http://bedtools.readthedocs.org/en/latest/):
 ```unix
 samtools view -b restrictionsites.sam | bedtools bamtobed -i > restrictionsites.bed
 ```
-Now ```restrictionsites.bed``` is split into separate files, one per each chromosome (update the chromosomes list according to your species):
+- **If you will use the [Hi-Corrector normalization approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-matrix-balancing.md), you do NOT need to perform the following steps, because additional information such as GC content or mappability score are not needed.**
+- **Proceed with the following steps if you will be using [Yaffe and Tanay's normalization approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-yaffe-tanay.md).**
+
+***
+
+First ``restrictionsites.bed`` is split into separate files, one per each chromosome (update the chromosomes list according to your species):
 ```unix
 chromosomes=("chr1" "chr2" "chr3" "chr4" "chr5" "chr6" "chr7" "chr8" "chr9" "chr10" "chr11" "chr12" "chr13" "chr14" "chr15" "chr16" "chr17" "chr18" "chr19" "chr20" "chr21" "chr22" "chrX" "chrY")
 
@@ -247,6 +260,7 @@ for i in "${chromosomes[@]}"; do
 awk -v var="$i" '(NR>1) && ($1==var)' restrictionsites.bed > $i.bed
 done
 ```
+
 The GC content and mappability score information must be in comma-separated format. First, each feature is computed for each separate chromosome, finally the files are merged together and parsed to generate a unique bed file. For this part, **Python multiprocessing** is used to consistently reduce the computation time. It is recommended to use the highest number of threads available in your processor (the highest up to the total number of chromosomes of your species).
 
 - Download the GC content information for the species of interest from the UCSC website at http://hgdownload.cse.ucsc.edu/gbdb/hg38/bbi/ (replace the species name in the link if needed) and use the file **gc5Base.bw**. This file is in BigWig format, before running step 2) we need to convert it to BedGraph format (tab separated file with 4 columns: chromosome, start, end, score; in this case “score” is the GC content). After this, the file has to be splitted into separate txt files, one per each chromosome, named as **chr1.txt, chr2.txt, … , chrX.txt, chrY.txt**. To do so, run the following Unix script (note that given the dimension of the files, this process may require sometime):
