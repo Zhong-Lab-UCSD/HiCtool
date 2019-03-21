@@ -32,9 +32,9 @@ More details about all the steps performed here are illustrated in the following
 
 ### 1.1. Creating the Fend object
 
-A Fragment-end (Fend) object (hdf5 format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (```restrictionsites_gc_map_valid.bed```) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)). In this case, the information of GC content and mappability score is not used.
+A Fragment-end (Fend) object (hdf5 format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (``restrictionsites_gc_map_valid.bed``) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)). In this case, the information of GC content and mappability score is not used.
 
-To create a Fend object use the function ```hifive.fend```:
+To create a Fend object use the function ``hifive.fend``:
 ```Python
 import hifive
 
@@ -46,7 +46,7 @@ fend.save()
 
 **HiC dataset** (hdf5 format) created from a Fend object and mapped data in bam format. The two bam files are passed to the function as elements of a list. The ‘maxinsert’ parameter (int.) is a cutoff for removing paired-reads whose total distance to their respective restriction sites exceeds this value. According to Yaffe and Tanay, we choose a value of 500 bp to remove spurious ligation products. In addition, when the HiCData object is created, **PCR duplicates** are removed and reads with ends mapping to the same fragment and reads with ends mapping to adjacent fragments on opposite strands are also excluded, to consider the possibility of incomplete restriction enzyme digestion and fragment circularization.
 
-To create a HiCData object use the function ```hifive.HiCData```:
+To create a HiCData object use the function ``hifive.HiCData``:
 ```Python
 import hifive
 
@@ -61,7 +61,7 @@ data.save()
 
 The **HiC project object** (hdf5 format) is a compressed format object which stores the information about the observed contact data that we will use for the downstream analysis.
 
-To create a HiC project object use the function ```hifive.HiC```:
+To create a HiC project object use the function ``hifive.HiC``:
 ```Python
 import hifive
 
@@ -69,25 +69,85 @@ hic = hifive.HiC('HiC_project_object.hdf5', 'w')
 hic.load_data('HiC_data_object.hdf5')
 hic.save()
 ```
-where ```HiC_project_object.hdf5``` specifies the location to save the HiC object to and ```HiC_data_object.hdf5``` is the data object.
+where ``HiC_project_object.hdf5`` specifies the location to save the HiC object to and ``HiC_data_object.hdf5`` is the data object.
 
 ## 2. Generating the global observed contact matrix
 
 This section will allow you to generate a **global square contact matrix** (24-by-24 chromosomes for hg38). The total number of bins of this big matrix will depend on the resolution of the data, and it can be estimated as the entire genome length ratio the resolution (for hg38 at 1Mb resolution is 3078x3078). The observed data contain the observed read count per each bin.
 
-To generate the global observed contact matrix, open the Python or iPython console and use the function ```compute_matrix_data_full_observed``` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py):
+To generate the global observed contact matrix, open the Python or iPython console and use the function ``compute_matrix_data_full_observed`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py):
 ```Python
 execfile('HiCtool_full_map.py')
 my_global_matrix = compute_matrix_data_full_observed(input_file='HiC_project_object.hdf5',
-                                                                bin_size=40000, 
+                                                                bin_size=1000000, 
                                                                 species='hg38', 
                                                                 save_each_matrix=False, 
                                                                 save_tab=True)
 ```
-The function contains easy parameters to be set. It is possible also to use a custom species (see API documentation). Note that the global matrix will be saved as default using a compressed format but to normalize the data using Hi-Corrector a tab separated format is required. The parameter ```save_tab```, if set as ```True```, will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
+The function contains easy parameters to be set. It is possible also to use a custom species (see API documentation). Note that the global matrix will be saved as default using a compressed format but to normalize the data using Hi-Corrector a tab separated format is required. The parameter ``save_tab``, if set as ``True``, will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
-After having generated the global contact matrix, it is possible to extract a single contact matrix (either intra or interchromosomal) using the function ``extract_single_map`` as following::
+After having generated the global contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` as following::
+```Python
+chr1_intra = extract_single_map(input_global_matrix=my_global_matrix, 
+                                tab_sep=False, 
+                                chr_row='1', chr_col='1', 
+                                bin_size=1000000,
+                                data_type='observed',
+                                save_output=True,
+                                save_tab=True)
 
->>> chr1_intra = extract_single_map(input_global_matrix=my_global_matrix, tab_sep=False, chr_row='1', chr_col='1', bins_size=40000)
+chr1_2_inter = extract_single_map(input_global_matrix=my_global_matrix, 
+                                  tab_sep=False, 
+                                  chr_row='1', chr_col='2', 
+                                  bin_size=1000000,
+                                  data_type='observed',
+                                  save_output=True,
+                                  save_tab=True)
+```
 
->>> chr1_2_inter = extract_single_map(input_global_matrix=my_global_matrix, tab_sep=False, chr_row='1', chr_col='2', bins_size=40000)
+## 3. Normalizing the global contact matrix
+
+First, download the bash script [run_ic_mes.sh](/scripts/run_ic_mes.sh), copy it inside your working directory, go into your working directory and run the following unix commands::
+```unix
+chmod u+x run_ic_mes.sh
+./run_ic_mes.sh -q 100 \
+                -m "100" \
+                -r your_rows \
+                -s your_row_sum \
+                -h "/path_to_Hi-Corrector/Hi-Corrector1.2" \
+                -i "/your_path/matrix_global_observed_tab.txt"
+```
+Where the options are:
+
+- ``-q`` int: Maximum number of iterations performed in the algorithm.
+- ``-m`` str: The memory size. Its unit is Megabytes (MB).
+- ``-r`` int: The number of rows or columns of the input chromatin contact frequency matrix to be normalized (provided in the **info.txt** file generated in [section 2](#2-generating-the-global-observed-contact-matrix).
+- ``-s`` int: The iterative correction algorithm can allow users to specify the row sum after the normalization, because this method is actually a matrix scaling approach that normalizes the matrix to be a doubly stochastic matrix (rows/columns sums equal to 1). Then we can multiple each element of this normalized matrix by the given value of this parameter, say 10.0 or 100.0 or whatever you choose. In such a way, the rows sums of normalized matrix becomes this number (10.0 or 100.0 or whatever you choose). In **info.txt** we provide a row sum value that you could use calculated as "the average number of contacts of the observed matrix multiplied by the number of rows". The choice is arbitrary.
+- ``-h`` str: the path to the Hi-Corrector software.
+- ``-i`` str: the observed global contact matrix in tab delimited format.
+
+This command creates a folder named "output_ic_mes" with 3 files inside:
+
+- A log file (output.log)
+- A biased file used by the software to normalize the data (output.bias)
+- The **global normalized contact matrix** in tab separated format (output_normalized.txt).
+
+After having normalized the data, it is possible to extract a single normalized contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) as following:
+```Python
+execfile('HiCtool_full_map.py')
+chr1_intra_norm = extract_single_map(input_global_matrix="output_normalized.txt", 
+                                     tab_sep=True, 
+                                     chr_row='1', chr_col='1', 
+                                     bin_size=1000000,
+                                     data_type='normalized',
+                                     save_output=True,
+                                     save_tab=True)  
+
+chr1_2_inter_norm = extract_single_map(input_global_matrix="output_normalized.txt", 
+                                       tab_sep=True, 
+                                       chr_row='1', chr_col='2', 
+                                       bin_size=1000000,
+                                       data_type='normalized',
+                                       save_output=True,
+                                       save_tab=True)
+```
