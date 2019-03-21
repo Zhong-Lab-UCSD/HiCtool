@@ -23,7 +23,7 @@ HiCtool leads the user step-by-step through a pipeline, which goes from the raw 
 HiCtool can implement contact data normalization following two approaches: 
 
 - The explicit-factor correction method reported by [Yaffe and Tanay](https://www.nature.com/articles/ng.947) and performed by the library [HiFive](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0806-y). In this case, only intra-chromosomal analysis is performed, per each chromosome singularly.
-- The matrix balancing approach performed by [HiCorrector](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4380031/). In this case, a global analysis is performed including all the chromosomes and both intra- and inter-chromosomal maps.
+- The matrix balancing approach performed by [Hi-Corrector](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4380031/). In this case, a global analysis is performed including all the chromosomes and both intra- and inter-chromosomal maps.
 
 ## Installation
 
@@ -53,7 +53,7 @@ HiCtool is in a pipeline format to allow extreme flexibility and easy usage. You
 - [Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
 - [SAMTools](http://samtools.sourceforge.net/)
 - [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump)
-- [HiCorrector](http://zhoulab.usc.edu/Hi-Corrector/)
+- [Hi-Corrector](http://zhoulab.usc.edu/Hi-Corrector/)
 
 ## Tutorial
 

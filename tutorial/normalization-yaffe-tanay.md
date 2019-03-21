@@ -30,7 +30,7 @@ run_hifive('restrictionsites_gc_map_valid.bed',
            'MboI',
            'Yaffe-Tanay')
 ```
-More details about all the steps performed here are illustrated in the following steps 1.1.-1.6. If not interested, go to section 2.
+More details about all the steps performed here are illustrated in the following steps 1.1.-1.6. If not interested, go to [section 2](#2-normalizing-the-data).
 
 ### 1.1. Creating the Fend object
 
