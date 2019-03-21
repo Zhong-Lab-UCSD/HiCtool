@@ -281,6 +281,6 @@ plot_chromosome_enrich_data(enrich_normalized_chr6,
                             bin_size=1000000, 
                             full_matrix=True, 
                             species='hg38',
-                            plot_histogram=False)
+                            plot_histogram=True)
 ```
 ![](/figures/HiCtool_chr6_1mb_normalized_enrich.png)

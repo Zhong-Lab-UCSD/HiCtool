@@ -245,7 +245,7 @@ Observed (chr 6)           |  Normalized (chr 6)
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_chr6_1mb_170x170_observed.png)  |  ![](/figures/HiCtool_chr6_chr6_1mb_170x170_normalized.png)
 
-An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col``:
+An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col`` (we plot also the histogram of the contact distribution):
 ```Python
 # Observed contact heatmap
 plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
