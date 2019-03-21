@@ -9,7 +9,7 @@ This pipeline illustrates the procedure to normalize a **global Hi-C contact map
    - [1.2. Creating the HiCData object](#12-creating-the-hicdata-object)
    - [1.3. Creating the HiC project object](#13-creating-the-hic-project-object)
 2. [Generating the global observed contact matrix](#2-generating-the-global-observed-contact-matrix)
-   - [2.1. Multi-processing matrix generation](#21-multi-processing-matrix-generation)
+   - [2.1. Single-processor matrix generation](#21-single-processor-matrix-generation)
 3. [Normalizing the global contact matrix](#3-normalizing-the-global-contact-matrix)
 4. [Visualizing the data](#4-visualizing-the-data)
    - [4.1. Visualizing the global contact data](#41-visualizing-the-global-contact-data)
@@ -75,16 +75,15 @@ where ``HiC_project_object.hdf5`` specifies the location to save the HiC object 
 
 This section will allow you to generate a **global square contact matrix** (24-by-24 chromosomes for hg38). The total number of bins of this big matrix will depend on the resolution of the data, and it can be estimated as the entire genome length ratio the resolution (for hg38 at 1Mb resolution is 3078x3078). The observed data contain the observed read count per each bin.
 
-To generate the global observed contact matrix, open the Python or iPython console and use the function ``compute_matrix_data_full_observed`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py):
+Especially at higher resolution, the generation of the global observed contact matrix may be computationally expensive and require longer time. Therefore, we implemented a code to allow a job parallelization. Each row of the contact matrix is computed in parallel, meaning all the contact matrices per each chromosome, and finally they are merged together to generate the global matrix. Each row of the matrix is saved as temporary file, which is automatically deleted after merging.
+
+If you do not possess a multi-processor machine, go to [section 2.1.](#21-single-processor-matrix-generation) to run the code using a single processor.
+
+To calculate and save the global observed contact matrix in parallel use the script [HiCtool_full_map_parallel.py](/scripts/HiCtool_full_map_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
 ```Python
-execfile('HiCtool_full_map.py')
-my_global_matrix = compute_matrix_data_full_observed(input_file='HiC_project_object.hdf5',
-                                                                bin_size=1000000, 
-                                                                species='hg38', 
-                                                                save_each_matrix=False, 
-                                                                save_tab=True)
+execfile('HiCtool_full_map_parallel.py')
 ```
-The function contains easy parameters to be set. It is possible also to use a custom species (see API documentation). Note that the global matrix will be saved as default using a compressed format but to normalize the data using Hi-Corrector a tab separated format is required. The parameter ``save_tab``, if set as ``True``, will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
+The global matrix will be saved as default using a compressed format but to normalize the data using Hi-Corrector a tab separated format is required. Therefore, also the global contact matrix in tab separated format will be saved, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
 After having generated the global contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` as following:
 ```Python
@@ -105,14 +104,18 @@ chr1_2_inter = extract_single_map(input_global_matrix=my_global_matrix,
                                   save_tab=True)
 ```
 
-### 2.1. Multi-processing matrix generation
+### 2.1. Single-processor matrix generation
 
-At higher resolution, the generation of the global observed contact matrix may be computationally expensive and require longer time. Therefore, we implemented a code to allow a job parallelization. Each row of the contact matrix is computed in parallel, meaning all the contact matrices per each chromosome, and finally they are merged together to generate the global matrix. Each row of the matrix is saved as temporary file, which is automatically deleted after merging.
-
-To calculate and save the global observed contact matrix in parallel use the script [HiCtool_full_map_parallel.py](/scripts/HiCtool_full_map_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
+To generate the global observed contact matrix with a single processor, open the Python or iPython console and use the function ``compute_matrix_data_full_observed`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py):
 ```Python
-execfile('HiCtool_full_map_parallel.py')
+execfile('HiCtool_full_map.py')
+my_global_matrix = compute_matrix_data_full_observed(input_file='HiC_project_object.hdf5',
+                                                     bin_size=1000000, 
+                                                     species='hg38', 
+                                                     save_each_matrix=False, 
+                                                     save_tab=True)
 ```
+The function contains easy parameters to be set. It is possible also to use a custom species (see API documentation). Note that the global matrix will be saved as default using a compressed format but to normalize the data using Hi-Corrector a tab separated format is required. The parameter ``save_tab``, if set as ``True``, will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
 ## 3. Normalizing the global contact matrix
 
@@ -124,7 +127,7 @@ chmod u+x run_ic_mes.sh
 ./run_ic_mes.sh -q 100 \
                 -m "100" \
                 -r 3078 \
-                -s 33632 \
+                -s 17237 \
                 -h "/path_to_Hi-Corrector/Hi-Corrector1.2" \
                 -i "HiCtool_1mb_matrix_global_observed_tab.txt"
 ```
@@ -202,3 +205,65 @@ plot_map(input_global_matrix='output_normalized.txt',
 ![](/figures/HiCtool_1mb_normalized.png)
 
 ### 4.2. Visualizing a single heatmap
+
+A single contact matrix can be plotted by passing as argument the chromosome in the rows (``chr_row``) and in the columns (``chr_col``). 
+
+To plot the intra-chromosomal heatmap of chromosome 6, run the following:
+```Python
+# Observed contact heatmap
+plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
+         tab_sep=False,
+         chr_row='6', chr_col='6', 
+         bin_size=1000000, 
+         data_type="observed",
+         species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc',
+         cutoff=99,
+         max_color='#460000')
+
+# Normalized contact heatmap
+plot_map(input_global_matrix='output_normalized.txt',
+         tab_sep=True,
+         chr_row='6', chr_col='6', 
+         bin_size=1000000, 
+         data_type="normalized",
+         species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc',
+         cutoff=99,
+         max_color='#460000')
+```
+Observed            |  Normalized
+:-------------------------:|:-------------------------:
+![](/figures/HiCtool_chr6_chr6_1mb_170x170_observed.png)  |  ![](/figures/HiCtool_chr6_chr6_1mb_170x170_normalized.png)
+
+An inter-chromosomal heatmap can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col``:
+```Python
+# Observed contact heatmap
+plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
+         tab_sep=False,
+         chr_row='6', chr_col='3', 
+         bin_size=1000000, 
+         data_type="observed",
+         species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc',
+         cutoff=99,
+         max_color='#460000')
+
+# Normalized contact heatmap
+plot_map(input_global_matrix='output_normalized.txt',
+         tab_sep=True,
+         chr_row='6', chr_col='3', 
+         bin_size=1000000, 
+         data_type="normalized",
+         species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc',
+         cutoff=99,
+         max_color='#460000')
+```
+Observed            |  Normalized
+:-------------------------:|:-------------------------:
+![](/figures/HiCtool_chr6_chr3_1mb_170x198_observed.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_170x198_normalized.png)
