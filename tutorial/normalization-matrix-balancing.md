@@ -107,7 +107,9 @@ chr1_2_inter = extract_single_map(input_global_matrix=my_global_matrix,
 
 ## 3. Normalizing the global contact matrix
 
-First, download the bash script [run_ic_mes.sh](/scripts/run_ic_mes.sh), copy it inside your working directory, go into your working directory and run the following unix commands::
+Here we normalize the data using the sequential implementation from Hi-Corrector which is "memory efficient and can run on any single computer with limited memory, even for Hi-C datasets of large size. It is designed to overcome the memory limit by loading a portion of data into the memory at each time." (From [Li, Wenyuan, et al. "Hi-Corrector: a fast, scalable and memory-efficient package for normalizing large-scale Hi-C data." Bioinformatics 31.6 (2014): 960-962](https://academic.oup.com/bioinformatics/article/31/6/960/215261)).
+
+First, you should have downloaded Hi-Corrector source code (see [here](/HiCtool#installation)). Then to normalize the data, download the bash script [run_ic_mes.sh](/scripts/run_ic_mes.sh), copy it inside your working directory, go into your working directory and run the following unix commands::
 ```unix
 chmod u+x run_ic_mes.sh
 ./run_ic_mes.sh -q 100 \
