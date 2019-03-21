@@ -234,7 +234,7 @@ plot_map(input_global_matrix='output_normalized.txt',
          cutoff=99,
          max_color='#460000')
 ```
-Observed            |  Normalized
+Observed (chr 6)           |  Normalized (chr 6)
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_chr6_1mb_170x170_observed.png)  |  ![](/figures/HiCtool_chr6_chr6_1mb_170x170_normalized.png)
 
@@ -264,6 +264,6 @@ plot_map(input_global_matrix='output_normalized.txt',
          cutoff=99,
          max_color='#460000')
 ```
-Observed            |  Normalized
+Observed (chr6-chr3)            |  Normalized (chr6-chr3)
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_chr3_1mb_170x198_observed.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_170x198_normalized.png)
