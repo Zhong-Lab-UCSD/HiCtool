@@ -213,6 +213,7 @@ Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_40kb_normalized_fend.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_fend_histogram.png)
 
+
 **Additional example of the contact matrix for chromosome 6 at 1 Mb resolution**
 
 In order to change the heatmap resolution, first data have to be normalized at the desired resolution set with the parameter ```bin_size``` of ```normalize_chromosome_fend_data``` ([see 2.1.](#21-normalized-fend-data)):
