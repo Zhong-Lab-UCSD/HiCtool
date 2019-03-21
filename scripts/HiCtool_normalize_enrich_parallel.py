@@ -13,7 +13,7 @@ input_file = 'HiC_norm_binning.hdf5'
 chr_list = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y']
 
 # 3) Bin size in bp of the contact matrix generated
-bin_size = 40000
+bin_size = 1000000
 
 # 4) 'hg38' or 'mm10' or any other species label in string format
 species = 'hg38'

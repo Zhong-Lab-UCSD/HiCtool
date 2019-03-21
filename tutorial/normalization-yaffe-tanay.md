@@ -21,22 +21,22 @@ This pipeline illustrates the procedure to normalize Hi-C **intra-chromosomal co
 
 ## 1. Running HiFive functions
 
-The script [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run all the six steps needed in order to normalize the data, whose outputs are .hdf5 files. For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following code on the Python or iPython console:
+The script [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run all the six steps needed in order to normalize the data, whose outputs are ``hdf5`` files. For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following code on the Python or iPython console:
 ```Python
 execfile('HiCtool_hifive.py')
-run_hifive('restrictionsites_gc_map_valid.bed',
-           'HiCfile_pair1.bam', 
-           'HiCfile_pair2.bam',
-           'MboI',
-           'Yaffe-Tanay')
+run_hifive(fend_file='restrictionsites_gc_map_valid.bed',
+           bam_file1='HiCfile_pair1.bam', 
+           bam_file2='HiCfile_pair2.bam',
+           restriction_enzyme='MboI',
+           model='Yaffe-Tanay')
 ```
 More details about all the steps performed here are illustrated in the following steps 1.1.-1.6. If not interested, go to [section 2](#2-normalizing-the-data).
 
 ### 1.1. Creating the Fend object
 
-A Fragment-end (Fend) object (hdf5 format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (```restrictionsites_gc_map_valid.bed```) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)).
+A Fragment-end (Fend) object in HiFive (``hdf5`` format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (``restrictionsites_gc_map_valid.bed``) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)).
 
-To create a Fend object use the function ```hifive.fend```:
+To create a Fend object use the function ``hifive.fend``:
 ```Python
 import hifive
 
@@ -46,9 +46,9 @@ fend.save()
 ```
 ### 1.2. Creating the HiCData object
 
-**HiC dataset** (hdf5 format) created from a Fend object and mapped data in bam format. The two bam files are passed to the function as elements of a list. The ‘maxinsert’ parameter (int.) is a cutoff for removing paired-reads whose total distance to their respective restriction sites exceeds this value. According to Yaffe and Tanay, we choose a value of 500 bp to remove spurious ligation products. In addition, when the HiCData object is created, **PCR duplicates** are removed and reads with ends mapping to the same fragment and reads with ends mapping to adjacent fragments on opposite strands are also excluded, to consider the possibility of incomplete restriction enzyme digestion and fragment circularization.
+**HiC dataset** (``hdf5`` format) created from a Fend object and mapped data in bam format. The two BAM files are passed to the function as elements of a list. The ``maxinsert`` parameter (``<int>``) is a cutoff for removing paired-reads whose total distance to their respective restriction sites exceeds this value. According to Yaffe and Tanay, we choose a value of 500 bp to remove spurious ligation products. In addition, when the HiCData object is created, **PCR duplicates** are removed and reads with ends mapping to the same fragment and reads with ends mapping to adjacent fragments on opposite strands are also excluded, to consider the possibility of incomplete restriction enzyme digestion and fragment circularization.
 
-To create a HiCData object use the function ```hifive.HiCData```:
+To create a HiCData object use the function ``hifive.HiCData``:
 ```Python
 import hifive
 
@@ -61,9 +61,9 @@ data.save()
 ```
 ### 1.3. Creating the HiC project object
 
-The **HiC project object** (hdf5 format) links the HiCData object with information about which fends to include in the analysis, model parameters and learned model values. This is the standard way of working with Hi-C data in HiFive and this object will be used for learning the correction model and downstream analysis.
+The **HiC project object** (``hdf5`` format) links the HiCData object with information about which fends to include in the analysis, model parameters and learned model values. This is the standard way of working with Hi-C data in HiFive and this object will be used for learning the correction model and downstream analysis.
 
-To create a HiC project object use the function ```hifive.HiC```:
+To create a HiC project object use the function ``hifive.HiC``:
 ```Python
 import hifive
 
@@ -71,13 +71,13 @@ hic = hifive.HiC('HiC_project_object.hdf5', 'w')
 hic.load_data('HiC_data_object.hdf5')
 hic.save()
 ```
-where ```HiC_project_object.hdf5``` specifies the location to save the HiC object to and ```HiC_data_object.hdf5``` is the data object.
+where ``HiC_project_object.hdf5`` specifies the location to save the HiC object to and ``HiC_data_object.hdf5`` is the data object.
 
 ### 1.4. Filtering HiC fends
 
-At this step we filter out fragments that do not have at least one interaction before learning correction parameters. Fragment ends within a distance of 500 kb are filtered out in step 6. This will allow to normalize data without confounding technical biases with features associated to biological-relevant structures (Yaffe and Tanay).
+At this step we filter out fragments that do not have at least one interaction before learning correction parameters. Fragment ends within a distance of 500 kb are filtered out in step 1.6. This will allow to normalize data without confounding technical biases with features associated to biological-relevant structures (Yaffe and Tanay).
 
-To filter out fends use the function ```hifive.filter_fends```:
+To filter out fends use the function ``hifive.filter_fends``:
 ```Python
 import hifive
 
@@ -92,7 +92,7 @@ Estimation of the **distance-dependence relationship** from the data prior to no
 
 Restriction sites over the genome are unevenly distributed and this results in a large set of distances between fragments and their neighbors. Since the interaction frequency is strongly inversely-related to inter-fragment distance, this means that fragments surrounded by shorter ones will show higher nearby interactions than those with longer adjacent fragments, due to the uneven distribution of the restriction sites position.
 
-To estimate the HiC distance function use ```hifive.find_distance_parameters```:
+To estimate the HiC distance function use ``hifive.find_distance_parameters``:
 ```Python
 import hifive
 
@@ -104,7 +104,7 @@ hic.save()
 
 Algorithm to learn the correction model for Hi-C data. For the normalization, we take into account of fragments length, inter-fragment distance, GC content and mappability score biases, according to the information included in the Fend object. We also consider a minimum distance of 500 kb between fragments to take into account of the effect of biological biases (TSSs and CTCF bound sites) while learning the correction parameters.
 
-To normalize the data using the binning algorithm ([Yaffe E. and Tanay A., 2011](http://www.ncbi.nlm.nih.gov/pubmed/22001755)) use ```hic.find_binning_fend_corrections```:
+To normalize the data using the binning algorithm ([Yaffe E. and Tanay A., 2011](http://www.ncbi.nlm.nih.gov/pubmed/22001755)) use ``hic.find_binning_fend_corrections``:
 ```Python
 import hifive
 
@@ -122,14 +122,14 @@ hic.save('HiC_norm_binning.hdf5')
 
 ## 2. Normalizing the data
 
-For the normalization, observed data and correction parameters to remove the biases to obtain the corrected read counts are required. Therefore, the observed contact matrix and the fend expected contact matrix are calculated. In addition, the enrichment expected contact matrix is calculated to compute the observed over expected enrichment values, considering also the distance between fends.
+For the normalization, observed data and correction parameters to remove biases to obtain the corrected read counts are required. Therefore, the observed contact matrix and the fend expected contact matrix are calculated. In addition, the enrichment expected contact matrix is calculated to compute the observed over expected enrichment values, considering also the distance between fends.
 
-For each chromosome, the following five matrices are computed at a bin size of 40 kb (the bin size can be changed with a function parameter). Every contact matrix is AUTOMATICALLY saved in txt format using the function ```save_matrix```.
+For each chromosome, the following five matrices are computed at a bin size of 40 kb (the bin size can be changed with a function parameter). Every contact matrix is AUTOMATICALLY saved in txt format using the function ``save_matrix``.
 
 - The **observed data** contain the observed reads count for each bin.
 - The **fend expected data** contain the learned correction value to remove biases related to fends for each bin.
 - The **enrichment expected data** contain the expected reads count for each bin, considering the linear distance between read pairs and the learned correction parameters.
-- The **normalized fend data** contain the corrected reads count for each bin.
+- The **normalized fend data** contain the corrected read count for each bin.
 - The **normalized enrichment data** ("observed over expected" matrix) contain the enrichment value (O/E) for each bin.
 
 First execute the script [HiCtool_normalization_visualization.py](/scripts/HiCtool_normalization_visualization.py) in the Python or iPython console:
@@ -138,7 +138,7 @@ execfile('HiCtool_normalization_visualization.py')
 ```
 ### 2.1. Normalized fend data
 
-To calculate and save the **normalized intra-chromosomal contact matrix** for a chromosome ```a_chr```, use the function ```normalize_chromosome_fend_data``` (see API Documentation):
+To calculate and save the **normalized intra-chromosomal contact matrix** for a chromosome ``a_chr``, use the function ``normalize_chromosome_fend_data`` (see API Documentation):
 ```Python
 fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', 
                                                       bin_size=40000, 
@@ -151,11 +151,11 @@ Data are compressed in a format to reduce storage occupation and improving savin
 ```Python
 my_contact_matrix = load_matrix('my_contact_matrix.txt')
 ```
-where ```my_contact_matrix.txt``` is a contact matrix file saved using ```normalize_chromosome_fend_data``` .
+where ``'my_contact_matrix.txt'`` is a contact matrix file saved using ``normalize_chromosome_fend_data`` .
 
 ### 2.2. Normalized enrichment data
 
-To calculate and save the **"observed/expected" intra-chromosomal contact matrix** for a chromosome ```a_chr``` use the function ```normalize_chromosome_enrich_data``` (see API Documentation):
+To calculate and save the **"observed/expected" intra-chromosomal contact matrix** for a chromosome ``a_chr`` use the function ``normalize_chromosome_enrich_data`` (see API Documentation):
 ```Python
 enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', 
                                                           bin_size=40000, 
@@ -171,11 +171,11 @@ Data are compressed in a format to reduce storage occupation and improving savin
 ```Python
 my_contact_matrix = load_matrix('my_contact_matrix.txt')
 ```
-where ```'my_contact_matrix.txt'``` is a contact matrix file saved using ```normalize_chromosome_enrich_data```.
+where ``'my_contact_matrix.txt'`` is a contact matrix file saved using ``normalize_chromosome_enrich_data``.
 
 ### 2.3. Multi-processing normalization
 
-To calculate and save the normalized contact matrices in parallel use the script [HiCtool_normalize_fend_parallel.py](/scripts/HiCtool_normalize_fend_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
+To calculate and save the normalized contact matrices in parallel for multiple chromosomes, use the script [HiCtool_normalize_fend_parallel.py](/scripts/HiCtool_normalize_fend_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
 ```Python
 execfile('HiCtool_normalize_fend_parallel.py')
 ```
@@ -185,13 +185,13 @@ execfile('HiCtool_normalize_enrich_parallel.py')
 ```
 ## 3. Visualizing the data
 
-First execute the script [HiCtool_normalization_visualization.py](/tutorial/HiCtool_normalization_visualization.py) in the Python or iPython console:
+To plot the contact maps, first execute the script [HiCtool_normalization_visualization.py](/tutorial/HiCtool_normalization_visualization.py) in the Python or iPython console:
 ```Python
 execfile('HiCtool_normalization_visualization.py')
 ```
 ### 3.1. Visualizing the contact data
 
-This part is to plot heatmaps and histograms with the distribution of the contact data.
+This part is to plot heatmaps and histograms of the contact data. 
 
 To plot and save the heatmap and histogram use the function ```plot_chromosome_data```:
 ```Python
@@ -207,7 +207,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      plot_histogram=True)
 ```
-Instead of the contact matrix txt file, the fend contact matrix can be passed as a workspace object as well (```fend_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_fend.txt'```).
+Instead of the contact matrix txt file, the fend contact matrix can be passed as a workspace object as well (``fend_normalized_chr6`` as first parameter instead of ``'HiCtool_chr6_40kb_normalized_fend.txt'``). This function can be used also to plot observed data, expected fend and enrichment data by simply passing a different input matrix as first parameter.
 
 Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
@@ -216,7 +216,7 @@ Heatmap             |  Histogram
 
 **Additional example of the contact matrix for chromosome 6 at 1 Mb resolution**
 
-In order to change the heatmap resolution, first data have to be normalized at the desired resolution set with the parameter ```bin_size``` of ```normalize_chromosome_fend_data``` ([see 2.1.](#21-normalized-fend-data)):
+In order to change the heatmap resolution, first data have to be normalized at the desired resolution set with the parameter ``bin_size`` of ``normalize_chromosome_fend_data`` ([see section 2.1.](#21-normalized-fend-data)):
 ```Python
 fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', 
                                                       bin_size=1000000, 
@@ -225,7 +225,7 @@ fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6',
                                                       save_obs=True, 
                                                       save_expect=False)
 ```
-Then, we plot the entire heatmap (we also change the color map):
+Then, we plot the entire heatmap (we also change here the color map to white and blue):
 ```Python
 plot_chromosome_data(fend_normalized_chr6, 
                      a_chr='6', 
@@ -240,8 +240,6 @@ plot_chromosome_data(fend_normalized_chr6,
 ```
 ![](/figures/HiCtool_chr6_1mb_normalized_fend.png)
 
-
-
 ### 3.2. Visualizing the enrichment data
 
 This part is to plot the heatmap and histogram for the enrichment normalized data ("observed over expected"). The **log2 of the data** is plotted to quantify the positive enrichment (red) and the negative enrichment (blue). Loci (pixels) equal to zero before performing the log2 (deriving from zero observed contacts) are shown in gray. Loci (pixels) where enrichment expected contact was zero before performing the ratio (observed / expected) are shown in black.
@@ -254,7 +252,8 @@ plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt',
                             full_matrix=False, 
                             start_coord=50000000, end_coord=54000000, 
                             species='hg38', 
-                            my_dpi=1000, plot_histogram=True)
+                            my_dpi=1000, 
+                            plot_histogram=True)
 ```
 Instead of the contact matrix txt file, the enrichment contact matrix can be passed as a workspace object as well (```enrich_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_enrich.txt'```).
 
@@ -262,3 +261,24 @@ Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_40kb_normalized_enrich.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_enrich_histogram.png)
 
+**Additional example of the contact matrix for chromosome 6 at 1 Mb resolution**
+
+In order to change the heatmap resolution, first data have to be calculated at the desired resolution set with the parameter ``bin_size`` of ``normalize_chromosome_enrich_data`` ([see section 2.2.](#22-normalized-enrichment-data)):
+```Python
+enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', 
+                                                        bin_size=1000000, 
+                                                        input_file='HiC_norm_binning.hdf5', 
+                                                        species='hg38',
+                                                        save_obs=False, 
+                                                        save_expect=False)
+```
+Then, we plot the entire heatmap:
+```Python
+plot_chromosome_enrich_data(enrich_normalized_chr6, 
+                            a_chr='6', 
+                            bin_size=1000000, 
+                            full_matrix=True, 
+                            species='hg38',
+                            plot_histogram=False)
+```
+![](/figures/HiCtool_chr6_1mb_normalized_enrich.png)

@@ -136,6 +136,26 @@ def load_matrix(input_file):
     output_matrix = output_matrix_1 + output_matrix_2 - diag_matrix
     print "Done!"
     return output_matrix
+
+
+def load_topological_domains(input_file):
+    """
+    Function to load the topological domains coordinates from txt file.
+    Parameters:
+        input_file: input file name generated with "calculate_topological_domains" in txt format.
+    Returns:
+        List of lists with topological domain coordinates.
+    """
+    import csv
+    print "Loading topological domain coordinates..."
+    with open(input_file, 'r') as f:
+        reader = csv.reader(f, dialect='excel', delimiter='\t')
+        topological_domains = []
+        for row in reader:
+            row_int = [int(x) for x in row]
+            topological_domains.append(row_int)
+        print "Done!"
+        return topological_domains
     
 
 def normalize_chromosome_fend_data(a_chr, 
@@ -250,7 +270,9 @@ def plot_chromosome_data(contact_matrix,
                         cutoff=95,
                         max_color='#460000',
                         my_dpi=1000,
-                        plot_histogram=False):
+                        plot_histogram=False,
+                        topological_domains='',
+                        domain_color='#0000ff'):
     """
     Plot a contact map and histogram of the contact distribution for observed data, normalized fend data, expected fend and enrichment data.
     Parameters:
@@ -273,7 +295,9 @@ def plot_chromosome_data(contact_matrix,
         max_color (str): to set the color of the bins with contact counts over "cutoff".
         my_dpi (int): resolution of the contact map in dpi.
         plot_histogram (bool): if true, plot and save to file the histogram of the contact distribution.
-    """                                           
+        topological_domains (str): topological domains txt file to visualize domains on the heatmap. If empty string, no topological domains.
+        domain_color (str): to set the color for topological domains on the heatmap.
+    """        
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -301,25 +325,39 @@ def plot_chromosome_data(contact_matrix,
         print "Plotting contact matrix..."
         matrix_data_full = contact_matrix
     
+    # Update matrix values to plot topological domains
+    if topological_domains != '':
+        if bin_size != 40000:
+            print "ERROR! To plot topological domains the bin size should be 40000"
+            return
+        domains = load_topological_domains(topological_domains)
+        diag_index = np.diag_indices(len(matrix_data_full))
+        for domain in domains:
+            temp_start = domain[0]/40000
+            temp_end = domain[1]/40000
+            matrix_data_full[temp_start,temp_start:temp_end] = -1
+            matrix_data_full[temp_start:temp_end,temp_end-1] = -1
+            matrix_data_full[(diag_index[0][temp_start:temp_end],diag_index[1][temp_start:temp_end])] = -1
+    
     # Selecting a part
     if full_matrix == False:
         start_bin = start_coord/bin_size
         end_bin = end_coord/bin_size
     
         if start_coord >= end_coord:
-            print "WARNING! Start coordinate should be lower than end coordinate"
+            print "ERROR! Start coordinate should be lower than end coordinate"
             return
         
         if start_bin >= end_bin:
-            print "WARNING! Start coordinate should be much lower than the end coordinate given the bin size"
+            print "ERROR! Start coordinate should be much lower than the end coordinate given the bin size"
             return
     
         if end_coord > end_pos:
             if species == 'hg38' or species == 'mm10':
-                print "WARNING! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
+                print "ERROR! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
                 return
             else:
-                print "WARNING! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+                print "ERROR! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
                 return
     else:
         start_bin = 0
@@ -331,7 +369,7 @@ def plot_chromosome_data(contact_matrix,
     output_vect = np.reshape(matrix_data_full,n*n,1)
     non_zero = np.nonzero(output_vect)
     if non_zero[0].size == 0:
-        print "WARNING! The portion of chromosome you selected contains no data."
+        print "ERROR! The portion of chromosome you selected contains no data."
         return
     
     # Heatmap plotting
@@ -352,47 +390,48 @@ def plot_chromosome_data(contact_matrix,
     elif isinstance(my_colormap, str):
         my_cmap = my_colormap
     
-    if cutoff_type == 'None':
-        plt.close("all")
-        plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
-        plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=14)
-        plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
-        plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
-        cbar = plt.colorbar()
-        cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
-        ticks = (np.arange(0, n, n/4) * bin_size) + start_coord
-        format_ticks = [format_e(i) for i in ticks.tolist()]
-        plt.xticks(np.arange(0, n, n/4), format_ticks)
-        plt.yticks(np.arange(0, n, n/4), format_ticks)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.savefig(output_filename + '.pdf', format = 'pdf', dpi=my_dpi)
-        
-    else:
-        if cutoff_type == 'percentile':
-            perc = np.percentile(output_vect[non_zero[0]],cutoff)
-        elif cutoff_type == 'contact_number':
-            perc = cutoff
-            if cutoff >= np.max(matrix_data_full):
-                print "Cut-off value greater than the maximum number of contacts! Set a lower one."
-                return
-        
-        plt.close("all")
-        plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
-        plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=14)
-        plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
-        plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
-        cbar = plt.colorbar(extend='max')
-        cbar.cmap.set_over(max_color)
-        cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
-        ticks = (np.arange(0, n, n/4) * bin_size) + start_coord
-        format_ticks = [format_e(i) for i in ticks.tolist()]
-        plt.xticks(np.arange(0, n, n/4), format_ticks)
-        plt.yticks(np.arange(0, n, n/4), format_ticks)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.savefig(output_filename + '.pdf', format = 'pdf', dpi=my_dpi)
+    if cutoff_type == 'percentile':
+        perc = np.percentile(output_vect[non_zero[0]],cutoff)
+    elif cutoff_type == 'contact_number':
+        perc = cutoff
+        if cutoff >= np.max(matrix_data_full):
+            print "Cut-off value greater than the maximum number of contacts! Set a lower one."
+            return
     
+    plt.close("all")
+    if cutoff_type == 'None':
+        if topological_domains == '':
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
+            cbar = plt.colorbar()
+        else:
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmin=0)
+            cbar = plt.colorbar()
+            cbar.cmap.set_under(domain_color)
+        
+    elif cutoff_type == 'percentile' or cutoff_type == 'contact_number':
+        if topological_domains == '':
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
+            cbar = plt.colorbar(extend='max')
+            cbar.cmap.set_over(max_color)
+        else:
+            plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc, vmin=0)
+            cbar = plt.colorbar(extend='max')
+            cbar.cmap.set_over(max_color)
+            cbar.cmap.set_under(domain_color)
+    
+    plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=14)
+    plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
+    plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
+    cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
+    ticks = (np.arange(0, n, n/4) * bin_size) + start_coord
+    format_ticks = [format_e(i) for i in ticks.tolist()]
+    plt.xticks(np.arange(0, n, n/4), format_ticks)
+    plt.yticks(np.arange(0, n, n/4), format_ticks)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.tight_layout()
+    plt.savefig(output_filename + '.pdf', format = 'pdf', dpi=my_dpi)
+        
     # Plot of the histogram
     if plot_histogram:
         histogram = []
@@ -411,8 +450,10 @@ def plot_chromosome_data(contact_matrix,
         plt.ylabel('Number of bins', fontsize=16)
         plt.xticks(fontsize=16)
         plt.yticks(fontsize=16)
+        plt.tight_layout()
         plt.savefig(output_filename + '_histogram.pdf', format = 'pdf')
     print "Done!"
+
 
 def normalize_chromosome_enrich_data(a_chr, 
                                      bin_size,
@@ -553,19 +594,19 @@ def plot_chromosome_enrich_data(contact_matrix,
         end_bin = end_coord/bin_size
     
         if start_coord >= end_coord:
-            print "WARNING! Start coordinate should be lower than end coordinate"
+            print "ERROR! Start coordinate should be lower than end coordinate"
             return
         
         if start_bin >= end_bin:
-            print "WARNING! Start coordinate should be much lower than the end coordinate given the bin size"
+            print "ERROR! Start coordinate should be much lower than the end coordinate given the bin size"
             return
     
         if end_coord > end_pos:
             if species == 'hg38' or species == 'mm10':
-                print "WARNING! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
+                print "ERROR! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
                 return
             else:
-                print "WARNING! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+                print "ERROR! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
                 return
     else:
         start_bin = 0
@@ -667,7 +708,7 @@ def plot_chromosome_enrich_data(contact_matrix,
     plt.close("all")
     norm = MidPointNorm(midpoint=0)
     plt.imshow(matrix_data_full, cmap='seismic', interpolation='nearest', vmax=threshold_max, vmin=threshold_min, norm=norm)
-    plt.title('"Observed/expected" contact map (' + my_bin_size + ')', fontsize=14)
+    plt.title('O/E contact map (' + my_bin_size + ')', fontsize=14)
     plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
     plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
     cbar = plt.colorbar()
@@ -680,6 +721,7 @@ def plot_chromosome_enrich_data(contact_matrix,
     plt.yticks(np.arange(0, n, n/4), format_ticks)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
+    plt.tight_layout()
     plt.savefig(output_filename + '.pdf', format = 'pdf', dpi = my_dpi)
     
     # Plot the histogram
@@ -696,10 +738,11 @@ def plot_chromosome_enrich_data(contact_matrix,
         plt.close("all")
         histogram_bins = int(pow(len(histogram),0.3))
         plt.hist(histogram, bins=histogram_bins)
-        plt.title('"Observed/expected" contact counts distribution', fontsize=18)
+        plt.title('O/E contact counts distribution', fontsize=18)
         plt.xlabel('log2(O/E) contact counts', fontsize=16)
         plt.ylabel('Number of bins', fontsize=16)
         plt.xticks(fontsize=16)
         plt.yticks(fontsize=16)
+        plt.tight_layout()
         plt.savefig(output_filename + '_histogram.pdf', format = 'pdf')
     print "Done!"
