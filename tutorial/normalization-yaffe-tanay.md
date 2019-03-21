@@ -175,11 +175,11 @@ where ```'my_contact_matrix.txt'``` is a contact matrix file saved using ```norm
 
 ### 2.3. Multi-processing normalization
 
-To calculate and save the **normalized contact matrices in parallel** use the script [HiCtool_normalize_fend_parallel.py](/scripts/HiCtool_normalize_fend_parallel.py). Open the script, update the parameters on the top and save. Then, just execute the script:
+To calculate and save the normalized contact matrices in parallel use the script [HiCtool_normalize_fend_parallel.py](/scripts/HiCtool_normalize_fend_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
 ```Python
 execfile('HiCtool_normalize_fend_parallel.py')
 ```
-To calculate and save the **"observed/expected"** contact matrices in parallel use the script [HiCtool_normalize_enrich_parallel.py](/scripts/HiCtool_normalize_enrich_parallel.py). Open the script, update the parameters on the top and save. Then, just execute the script:
+To calculate and save the "observed/expected" contact matrices in parallel use the script [HiCtool_normalize_enrich_parallel.py](/scripts/HiCtool_normalize_enrich_parallel.py). **Open the script, update the parameters on the top and save.** Then, just execute the script:
 ```Python
 execfile('HiCtool_normalize_enrich_parallel.py')
 ```
@@ -191,7 +191,7 @@ execfile('HiCtool_normalization_visualization.py')
 ```
 ### 3.1. Visualizing the contact data
 
-This part is to plot heatmaps and histograms with the contact distribution for the contact data.
+This part is to plot heatmaps and histograms with the distribution of the contact data.
 
 To plot and save the heatmap and histogram use the function ```plot_chromosome_data```:
 ```Python
@@ -207,15 +207,43 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      plot_histogram=True)
 ```
-Instead of the filename, the fend contact matrix generated above can be passed as well (```fend_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_fend.txt'```).
+Instead of the contact matrix txt file, the fend contact matrix can be passed as a workspace object as well (```fend_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_fend.txt'```).
 
 Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_40kb_normalized_fend.png)  |  ![](/figures/HiCtool_chr6_40kb_normalized_fend_histogram.png)
 
+**Additional example of the contact matrix for chromosome 6 at 1 Mb resolution**
+
+In order to change the heatmap resolution, first data have to be normalized at the desired resolution set with the parameter ```bin_size``` of ```normalize_chromosome_fend_data``` ([see 2.1.](#21-normalized-fend-data)):
+```Python
+fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', 
+                                                      bin_size=1000000, 
+                                                      input_file='HiC_norm_binning.hdf5', 
+                                                      species='hg38',
+                                                      save_obs=True, 
+                                                      save_expect=False)
+```
+Then, we plot the entire heatmap (we also change the color map):
+```Python
+plot_chromosome_data(fend_normalized_chr6, 
+                     a_chr='6', 
+                     bin_size=1000000, 
+                     full_matrix=True, 
+                     species='hg38', 
+                     data_type="normalized_fend", 
+                     my_colormap=['white', 'blue'], 
+                     cutoff_type='percentile', cutoff=95, max_color='#460000', 
+                     my_dpi=1000, 
+                     plot_histogram=False)
+```
+![](/figures/HiCtool_chr6_1mb_normalized_fend.png)
+
+
+
 ### 3.2. Visualizing the enrichment data
 
-This part is to plot the heatmap and histogram for the enrichment normalized data (“observed over expected”). The **log2 of the data** is plotted to quantify the positive enrichment (red) and the negative enrichment (blue). Loci (pixels) equal to zero before performing the log2 (deriving from zero observed contacts) are shown in gray. Loci (pixels) where enrichment expected contact was zero before performing the ratio (observed / expected) are shown in black.
+This part is to plot the heatmap and histogram for the enrichment normalized data ("observed over expected"). The **log2 of the data** is plotted to quantify the positive enrichment (red) and the negative enrichment (blue). Loci (pixels) equal to zero before performing the log2 (deriving from zero observed contacts) are shown in gray. Loci (pixels) where enrichment expected contact was zero before performing the ratio (observed / expected) are shown in black.
 
 To plot and save the heatmap and histogram use the function ```plot_chromosome_enrich_data```:
 ```Python
@@ -227,7 +255,7 @@ plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt',
                             species='hg38', 
                             my_dpi=1000, plot_histogram=True)
 ```
-Instead of the filename, the enrichment contact matrix generated above can be passed as well (```enrich_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_enrich.txt'```).
+Instead of the contact matrix txt file, the enrichment contact matrix can be passed as a workspace object as well (```enrich_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_enrich.txt'```).
 
 Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
