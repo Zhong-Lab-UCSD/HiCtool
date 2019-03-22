@@ -1,8 +1,8 @@
 """
 Program to:
-1) Generate the global matrix containing all the contact matrices (intra and inter) for all the chromosomes to be normalized using run_ic_mes.sh (single processor).
-2) Extract a single contact matrix from a global matrix (observed or normalized).
-3) Plot the global contact matrix or a single contact matrix.
+1) Generate the global matrix containing all the contact matrices (intra and inter)
+for all the chromosomes to be normalized using "normalize_global_data.sh".
+2) Plot the global contact matrix or the a single contact matrix.
 
 To use this code, an HiC_project_object.hdf5 must be provided (see HiCtool_hifive.py)
 """
@@ -516,7 +516,8 @@ def extract_single_map(input_global_matrix,
     """
     Extract a single contact matrix for a pair of chromosomes from the full matrix.
     Parameters:
-        input_global_matrix (str): full contact matrix passed as a string of the filename saved to file.
+        input_global_matrix (object | str): full contact matrix. This can be passed either as
+        an object of the workspace or a string of the filename saved to file.
         tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
         tells if the global matrix was saved in tab separated format (True) or not (False).
         chr_row (str): chromosome in the rows of the output contact matrix.
@@ -562,11 +563,13 @@ def extract_single_map(input_global_matrix,
         d_chr_dim_inc[i] = sum(chr_dim[:k])
         k+=1
     
-    # Loading global matrix
-    if tab_sep == False:
-        full_matrix = load_matrix(input_global_matrix)
+    if isinstance(input_global_matrix,str):
+        if tab_sep == False:
+            full_matrix = load_matrix(input_global_matrix)
+        else:
+            full_matrix = load_matrix_tab(input_global_matrix)
     else:
-        full_matrix = load_matrix_tab(input_global_matrix)
+        full_matrix = input_global_matrix
     
     if chr_row == '1':
         row_start = 0
@@ -630,7 +633,8 @@ def plot_map(input_global_matrix,
     Plot a contact map, either global or single map. To plot the global matrix leave "chr_row" and
     "chr_col" as empty strings.
     Parameters:
-        input_global_matrix (str): full contact matrix passed as a string of the filename saved to file.
+        input_global_matrix (object | str): full contact matrix. This can be passed either as
+        an object of the workspace or a string of the filename saved to file.
         tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
         tells if the global matrix was saved in tab separated format (True) or not (False).
         chr_row (str): chromosome in the rows of the output contact matrix.
@@ -660,7 +664,8 @@ def plot_map(input_global_matrix,
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.colors import LinearSegmentedColormap
-    import numpy as np   
+    import numpy as np
+    import copy
     
     if species in chromosomes.keys():
         chromosomes_list = [str(i) for i in range(len(chromosomes[species]) - 1)[1:]] + ['X', 'Y']
@@ -712,10 +717,13 @@ def plot_map(input_global_matrix,
             bin_size_str = str(bin_size/1000) + 'kb'
             my_filename = 'HiCtool_' + bin_size_str + '_' + data_type     
         
-        if tab_sep == False:
-            matrix_data_full = load_matrix(input_global_matrix)
+        if isinstance(input_global_matrix,str):
+            if tab_sep == False:
+                matrix_data_full = load_matrix(input_global_matrix)
+            else:
+                matrix_data_full = load_matrix_tab(input_global_matrix)
         else:
-            matrix_data_full = load_matrix_tab(input_global_matrix)
+            matrix_data_full = copy.deepcopy(input_global_matrix)
         
         print "Plotting..."
         # Adding grid to separate chromosomes

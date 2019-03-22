@@ -92,8 +92,9 @@ The global matrix will be saved as default using a compressed format but **to no
 After having generated the global observed contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) as following:
 ```Python
 execfile('HiCtool_full_map.py')
+global_observed = load_matrix('HiCtool_1mb_matrix_global_observed.txt')
 
-chr1_intra = extract_single_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt', 
+chr1_intra = extract_single_map(input_global_matrix=global_observed, 
                                 tab_sep=False, 
                                 chr_row='1', chr_col='1', 
                                 bin_size=1000000,
@@ -101,7 +102,7 @@ chr1_intra = extract_single_map(input_global_matrix='HiCtool_1mb_matrix_global_o
                                 save_output=True,
                                 save_tab=True)
 
-chr1_2_inter = extract_single_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt', 
+chr1_2_inter = extract_single_map(input_global_matrix=global_observed, 
                                   tab_sep=False, 
                                   chr_row='1', chr_col='2', 
                                   bin_size=1000000,
@@ -109,6 +110,7 @@ chr1_2_inter = extract_single_map(input_global_matrix='HiCtool_1mb_matrix_global
                                   save_output=True,
                                   save_tab=True)
 ```
+**Tip!** ``extract_single_map`` can accept also directly the path to the global matrix file (``input_global_matrix='HiCtool_1mb_matrix_global_observed.txt'``) however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix in the workspace using ``load_matrix`` and then work with it.
 
 ### 2.1. Single-processor matrix generation
 
@@ -155,8 +157,9 @@ This command creates a **folder named ``output_ic_mes``** with 3 files inside:
 After having normalized the data, it is possible to extract a single normalized contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) as following:
 ```Python
 execfile('HiCtool_full_map.py')
+global_normalized = load_matrix_tab("output_ic_mes/output_normalized.txt")
 
-chr1_intra_norm = extract_single_map(input_global_matrix="output_ic_mes/output_normalized.txt", 
+chr1_intra_norm = extract_single_map(input_global_matrix=global_normalized, 
                                      tab_sep=True, 
                                      chr_row='1', chr_col='1', 
                                      bin_size=1000000,
@@ -164,7 +167,7 @@ chr1_intra_norm = extract_single_map(input_global_matrix="output_ic_mes/output_n
                                      save_output=True,
                                      save_tab=True)  
 
-chr1_2_inter_norm = extract_single_map(input_global_matrix="output_ic_mes/output_normalized.txt", 
+chr1_2_inter_norm = extract_single_map(input_global_matrix=global_normalized, 
                                        tab_sep=True, 
                                        chr_row='1', chr_col='2', 
                                        bin_size=1000000,
@@ -172,20 +175,24 @@ chr1_2_inter_norm = extract_single_map(input_global_matrix="output_ic_mes/output
                                        save_output=True,
                                        save_tab=True)
 ```
+**Tip!** ``extract_single_map`` can accept also directly the path to the global matrix file (``input_global_matrix='output_ic_mes/output_normalized.txt'``) however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix in the workspace using ``load_matrix_tab`` and then work with it.
 
 ## 4. Visualizing the data
 
 To plot the contact maps use the function ``plot_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py).
 ```Python
 execfile('HiCtool_full_map.py')
+global_observed = load_matrix('HiCtool_1mb_matrix_global_observed.txt')
+global_normalized = load_matrix_tab('output_ic_mes/output_normalized.txt')
 ```
+**Tip!** ``plot_map`` used below can accept also directly the path to the global matrix files loaded above however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix of interest in the workspace using ``load_matrix`` or ``load_matrix_tab`` as appropriate, and then plot.
 
 ### 4.1. Visualizing the global contact data
 
 You can visualize either the observed or the normalized data. Here we plot both the global maps at 1 Mb resolution as calculated above.
 ```Python
 # Observed data
-plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
+plot_map(input_global_matrix=global_observed,
          tab_sep=False,
          bin_size=1000000,
          data_type='observed',
@@ -199,7 +206,7 @@ plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
 
 ```Python
 # Normalized data
-plot_map(input_global_matrix='output_ic_mes/output_normalized.txt',
+plot_map(input_global_matrix=global_normalized,
          tab_sep=True,
          bin_size=1000000,
          data_type='normalized',
@@ -218,7 +225,7 @@ A single contact matrix can be plotted by passing as argument the chromosome in 
 To plot the **intra-chromosomal heatmap** of chromosome 6, run the following:
 ```Python
 # Observed contact heatmap
-plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
+plot_map(input_global_matrix=global_observed,
          tab_sep=False,
          chr_row='6', chr_col='6', 
          bin_size=1000000, 
@@ -230,7 +237,7 @@ plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
          max_color='#460000')
 
 # Normalized contact heatmap
-plot_map(input_global_matrix='output_ic_mes/output_normalized.txt',
+plot_map(input_global_matrix=global_normalized,
          tab_sep=True,
          chr_row='6', chr_col='6', 
          bin_size=1000000, 
@@ -248,7 +255,7 @@ Observed (chr 6)           |  Normalized (chr 6)
 An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col`` (we plot also the histogram of the contact distribution):
 ```Python
 # Observed contact heatmap
-plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
+plot_map(input_global_matrix=global_observed,
          tab_sep=False,
          chr_row='6', chr_col='3', 
          bin_size=1000000, 
@@ -261,7 +268,7 @@ plot_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt',
          plot_histogram=True)
 
 # Normalized contact heatmap
-plot_map(input_global_matrix='output_ic_mes/output_normalized.txt',
+plot_map(input_global_matrix=global_normalized,
          tab_sep=True,
          chr_row='6', chr_col='3', 
          bin_size=1000000, 

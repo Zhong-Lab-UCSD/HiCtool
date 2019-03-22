@@ -256,6 +256,7 @@ def normalize_chromosome_fend_data(a_chr,
     print "Done!"
     return normalized_fend
 
+
 def plot_chromosome_data(contact_matrix,
                         a_chr,
                         bin_size,
@@ -276,7 +277,8 @@ def plot_chromosome_data(contact_matrix,
     """
     Plot a contact map and histogram of the contact distribution for observed data, normalized fend data, expected fend and enrichment data.
     Parameters:
-        contact_matrix (str): txt file of the contact matrix generated with the function "normalize_chromosome_fend_data".
+        contact_matrix (str | obj): txt file of the contact matrix generated with the function "normalize_chromosome_fend_data" 
+        or contact matrix returned by "normalize_chromosome_fend_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
         bin_size (int): bin size in bp of the contact matrix.
         full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
@@ -301,6 +303,7 @@ def plot_chromosome_data(contact_matrix,
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import numpy as np
+    import copy
 
     chromosome = 'chr' + a_chr
     
@@ -316,9 +319,13 @@ def plot_chromosome_data(contact_matrix,
     else:
         end_pos = (chr_size/bin_size)*bin_size
     
-    # Plotting of the fend normalized data
-    matrix_data_full = load_matrix(contact_matrix)
-    print "Plotting " + contact_matrix + "..."
+    # Plotting of the data
+    if isinstance(contact_matrix, str):
+        matrix_data_full = load_matrix(contact_matrix)
+        print "Plotting " + contact_matrix + "..."
+    else:
+        print "Plotting contact matrix..."
+        matrix_data_full = copy.deepcopy(contact_matrix)
     
     # Update matrix values to plot topological domains
     if topological_domains != '':
@@ -526,6 +533,7 @@ def normalize_chromosome_enrich_data(a_chr,
     print "Done!"
     return normalized_enrich
 
+
 def plot_chromosome_enrich_data(contact_matrix,
                                 a_chr,
                                 bin_size,
@@ -542,8 +550,8 @@ def plot_chromosome_enrich_data(contact_matrix,
     Plot the log2 of the "observed / expected" contact map and histogram of the enrichment values distribution 
     generated with the function "normalize_chromosome_enrich_data".
     Parameters:
-        contact_matrix (str): txt file of the "observed / expected" contact matrix generated with the function 
-        "normalize_chromosome_enrich_data".
+        contact_matrix (str | obj): txt file of the "observed / expected" contact matrix generated with the function 
+        "normalize_chromosome_enrich_data" or contact matrix returned by the function "normalize_chromosome_enrich_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
         bin_size (int): bin size in bp of the contact matrix.
         full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
@@ -562,6 +570,7 @@ def plot_chromosome_enrich_data(contact_matrix,
     from numpy import ma
     from matplotlib import cbook
     from matplotlib.colors import Normalize
+    import copy
 
     chromosome = 'chr' + a_chr
     
@@ -578,8 +587,12 @@ def plot_chromosome_enrich_data(contact_matrix,
         end_pos = (chr_size/bin_size)*bin_size
     
     # Plotting the enrichment contact data
-    matrix_data_full = load_matrix(contact_matrix)
-    print "Plotting " + contact_matrix + "..."
+    if isinstance(contact_matrix, str):
+        matrix_data_full = load_matrix(contact_matrix)
+        print "Plotting " + contact_matrix + "..."
+    else:
+        print "Plotting contact matrix..."
+        matrix_data_full = copy.deepcopy(contact_matrix)
 
     # Selecting a part
     if full_matrix==False:

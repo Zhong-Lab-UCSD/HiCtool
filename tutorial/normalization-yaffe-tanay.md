@@ -209,6 +209,8 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      plot_histogram=True)
 ```
+Instead of ``'HiCtool_chr6_40kb_normalized_fend.txt'``, the object containing the contact matrix calculated above ``fend_normalized_chr6`` can be passed as well.
+
 This function can be used also to plot observed data, expected fend and enrichment data by simply passing a different input matrix as first parameter.
 
 Heatmap             |  Histogram
@@ -229,7 +231,7 @@ fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6',
 ```
 Then, we plot the entire heatmap (we also change here the color map to white and blue):
 ```Python
-plot_chromosome_data('HiCtool_chr6_1mb_normalized_fend.txt', 
+plot_chromosome_data(fend_normalized_chr6, 
                      a_chr='6', 
                      bin_size=1000000, 
                      full_matrix=True, 
@@ -257,6 +259,7 @@ plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt',
                             my_dpi=1000, 
                             plot_histogram=True)
 ```
+Instead of ``'HiCtool_chr6_40kb_normalized_enrich.txt'``, the object containing the contact matrix calculated above ``enrich_normalized_chr6`` can be passed as well.
 
 Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
@@ -275,7 +278,7 @@ enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6',
 ```
 Then, we plot the entire heatmap with a maximum and minimum cutoff for the log2 at 4 and -4 respectively:
 ```Python
-plot_chromosome_enrich_data('HiCtool_chr6_1mb_normalized_enrich.txt', 
+plot_chromosome_enrich_data(enrich_normalized_chr6, 
                             a_chr='6', 
                             bin_size=1000000, 
                             full_matrix=True, 
