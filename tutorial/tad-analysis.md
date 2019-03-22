@@ -17,7 +17,7 @@ TAD coordinates are calculated using the shifts of the true Directionality Index
 
 To calculate TAD coordinates for a chromosome (here chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_tad.py](/scripts/HiCtool_tad.py).
 
-- If your data are normalized using the [Hi-Corrector approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-matrix-balancing.md), it is suggested to load to your workspace the global normalized matrix ahead of the analysis. The global matrix at 40 kb resolution is very big, this will avoid several reloadings of the contact matrix and save time.
+- **If your data are normalized using the [Hi-Corrector approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-matrix-balancing.md)**, it is suggested to load to your workspace the global normalized matrix ahead of the analysis. The global matrix at 40 kb resolution is very big, this will avoid several reloadings of the contact matrix and save time.
     ```Python
    execfile('HiCtool_tad.py')
    global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
@@ -26,62 +26,21 @@ To calculate TAD coordinates for a chromosome (here chr 6) use the function ``co
                                          species='hg38', save_di=True, save_hmm=True)
    ```
    ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save the DI values and HMM biased states also.
+   
+   To calculate the topological domain coordinates for several chromosomes you may use an approach as the following (in the example for chromosomes 1, 2, 6):
+   ```Python
+   my_chromosomes = ['1','2','6']
+   my_tad_coord = {} # dictionary to save the tad coordinates of different chromosomes
+   for i in my_chromosomes:
+   my_tad_coord[i] = compute_full_tad_analysis(global_normalized_40kb, a_chr=i, isGlobal=True,
+                                                species='hg38', save_di=True, save_hmm=True)
+   ```
 
-- If your data are normalized using the [Yaffe and Tanay approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-yaffe-tanay.md), you have normalized contact matrix per each single chromosome, therefore there is no need of loading them initially.
+- **If your data are normalized using the [Yaffe and Tanay approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-yaffe-tanay.md)**, you have normalized contact matrix per each single chromosome, therefore there is no need of loading them initially.
    ```Python
    execfile('HiCtool_tad.py')
    
-   tad_coord = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6',isGlobal=False, tab_sep=False, species='hg38', save_di=True, save_hmm=True)
+   tad_coord = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6',
+                                         isGlobal=False, tab_sep=False, species='hg38', save_di=True, save_hmm=True)
    ```
    ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save the DI values and HMM biased states also.
-
-
-
-
-
-
-
-
-
-
-chr1_intra = extract_single_map(input_global_matrix=global_obs, 
-tab_sep=False, 
-chr_row='1', chr_col='1', 
-bin_size=1000000,
-data_type='observed',
-save_output=True,
-save_tab=True)
-
-sum(sum(global_observed==global_observed1))
-
-plot_map(input_global_matrix=global_obs,
-tab_sep=False,
-bin_size=1000000,
-data_type='observed',
-species='hg38',
-my_colormap=['white', 'red'],
-cutoff_type='perc',
-cutoff=99,
-max_color='#460000')
-
-
-plot_chromosome_enrich_data(contact_matrix=enrich, 
-a_chr='6', 
-bin_size=1000000, 
-full_matrix=True, 
-species='hg38',
-cutoff_max=4,
-cutoff_min=-4,
-plot_histogram=True)
-
-plot_chromosome_data(temp, 
-a_chr='6', 
-bin_size=40000, 
-full_matrix=False, 
-start_coord=50000000, end_coord=54000000, 
-species='hg38', 
-data_type="normalized_fend", 
-my_colormap=['white', 'red'], 
-cutoff_type='percentile', cutoff=95, max_color='#460000', 
-my_dpi=1000, 
-plot_histogram=True)
