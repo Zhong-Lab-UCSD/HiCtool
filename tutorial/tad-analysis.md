@@ -33,7 +33,8 @@ To calculate TAD coordinates for a chromosome (here chr 6) use the function ``co
    my_tad_coord = {} # dictionary to save the tad coordinates of different chromosomes
    for i in my_chromosomes:
        my_tad_coord[i] = compute_full_tad_analysis(global_normalized_40kb, a_chr=i, isGlobal=True,
-                                                species='hg38', save_di=True, save_hmm=True)
+                                                species='hg38', 
+                                                save_di=True, save_hmm=True)
    ```
 
 - **If your data are normalized using the [Yaffe and Tanay approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-yaffe-tanay.md)**, you have normalized contact matrix per each single chromosome, therefore there is no need of loading them initially.
