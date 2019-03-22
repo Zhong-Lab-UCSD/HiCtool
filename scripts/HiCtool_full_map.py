@@ -787,10 +787,10 @@ def plot_map(input_global_matrix,
             # Update matrix values to plot topological domains
         if topological_domains != '':
             if bin_size != 40000:
-                print "WARNING! To plot topological domains the bin size should be 40000"
+                print "ERROR! To plot topological domains the bin size should be 40000"
                 return
             if chr_row != chr_col:
-                print "WARNING! To plot topological domains the matrix should be intrachromosomal"
+                print "ERROR! To plot topological domains the matrix should be intrachromosomal"
                 return
             domains = load_topological_domains(topological_domains)
             diag_index = np.diag_indices(len(matrix_data_full))

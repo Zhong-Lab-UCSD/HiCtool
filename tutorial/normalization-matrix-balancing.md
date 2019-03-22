@@ -93,7 +93,7 @@ After having generated the global observed contact matrix, it is possible to ext
 ```Python
 execfile('HiCtool_full_map.py')
 
-chr1_intra = extract_single_map(input_global_matrix=my_global_matrix, 
+chr1_intra = extract_single_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt', 
                                 tab_sep=False, 
                                 chr_row='1', chr_col='1', 
                                 bin_size=1000000,
@@ -101,7 +101,7 @@ chr1_intra = extract_single_map(input_global_matrix=my_global_matrix,
                                 save_output=True,
                                 save_tab=True)
 
-chr1_2_inter = extract_single_map(input_global_matrix=my_global_matrix, 
+chr1_2_inter = extract_single_map(input_global_matrix='HiCtool_1mb_matrix_global_observed.txt', 
                                   tab_sep=False, 
                                   chr_row='1', chr_col='2', 
                                   bin_size=1000000,
