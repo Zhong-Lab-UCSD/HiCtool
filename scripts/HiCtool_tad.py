@@ -260,25 +260,167 @@ def load_DI_values(input_file):
     return di_values
 
 
+def extract_single_map(input_global_matrix,
+                       tab_sep,
+                       chr_row,
+                       chr_col,
+                       species='hg38',
+                       bin_size=1000000,
+                       data_type='observed',
+                       custom_species_sizes={},
+                       sexual_chromosomes=[],
+                       save_output=True,
+                       save_tab=False):
+    """
+    Extract a single contact matrix for a pair of chromosomes from the full matrix.
+    Parameters:
+        input_global_matrix (object | str): full contact matrix. This can be passed either as
+        an object of the workspace or a string of the filename saved to file.
+        tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
+        tells if the global matrix was saved in tab separated format (True) or not (False).
+        chr_row (str): chromosome in the rows of the output contact matrix.
+        chr_col (str): chromosome in the columns of the output contact matrix. If chr_col is 
+        equal to chr_row then the intrachromosomal map is extracted.
+        species (str): 'hg38' or 'mm10' or any other species label in string format.
+        bin_size (int): bin size in bp of the contact matrix.
+        data_type (str): which kind of data type you are extracting. "observed" or "normalized".
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
+        of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
+        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your
+        custom species (example for chromosome X: 'X').
+        save_output (bool): if true, save the contact matrix in formatted txt file.
+        save_tab (bool): if true, save the contact matrix in tab separated format.
+    Return:
+        Contact matrix in numpy array format.
+    """            
+    if species in chromosomes.keys():
+        chromosomes_list = [str(i) for i in range(len(chromosomes[species]) - 1)[1:]] + ['X', 'Y']
+        chr_dim = []
+        for i in chromosomes_list:
+            chr_dim.append(chromosomes[species][i]/bin_size) 
+        d_chr_dim = {}
+        for i in chromosomes_list:
+            d_chr_dim[i] = chromosomes[species][i]/bin_size
+    else:
+        if len(sexual_chromosomes) > 0:
+            chromosomes_list = [str(i) for i in range(len(custom_species_sizes) - len(sexual_chromosomes) + 1)[1:]]
+            chromosomes_list += sexual_chromosomes
+        else:
+            chromosomes_list = [str(i) for i in range(len(custom_species_sizes) + 1)[1:]]
+        chr_dim = []
+        for i in chromosomes_list:
+            chr_dim.append(custom_species_sizes[i]/bin_size)                
+        d_chr_dim = {}
+        for i in chromosomes_list:
+            d_chr_dim[i] = custom_species_sizes[i]/bin_size
+    
+    d_chr_dim_inc = {}
+    k=1
+    for i in chromosomes_list:
+        d_chr_dim_inc[i] = sum(chr_dim[:k])
+        k+=1
+    
+    if isinstance(input_global_matrix,str):
+        if tab_sep == False:
+            full_matrix = load_matrix(input_global_matrix)
+        else:
+            full_matrix = load_matrix_tab(input_global_matrix)
+    else:
+        full_matrix = input_global_matrix
+    
+    if chr_row == '1':
+        row_start = 0
+    else:
+        row_start = d_chr_dim_inc[chromosomes_list[chromosomes_list.index(chr_row)-1]]
+    row_end = row_start + d_chr_dim[chr_row]
+    
+    if chr_col == '1':
+        col_start = 0
+    else:
+        col_start = d_chr_dim_inc[chromosomes_list[chromosomes_list.index(chr_col)-1]]
+    col_end = col_start + d_chr_dim[chr_col]
+    
+    output_matrix = full_matrix[row_start:row_end,col_start:col_end]
+    
+    if chr_row == chr_col:
+        if bin_size >= 1000000:
+            bin_size_str = str(bin_size/1000000)
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_' + bin_size_str + 'mb_' + data_type + '.txt'
+        elif bin_size < 1000000:
+            bin_size_str = str(bin_size/1000)
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_' + bin_size_str + 'kb_' + data_type + '.txt'
+        if save_output == True:
+            save_matrix(output_matrix, my_filename)
+    else:
+        dim_row = str(d_chr_dim[chr_row])
+        dim_col = str(d_chr_dim[chr_col])
+        if bin_size >= 1000000:
+            bin_size_str = str(bin_size/1000000)
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
+        elif bin_size < 1000000:
+            bin_size_str = str(bin_size/1000)
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
+        if save_output == True:
+            save_matrix_rectangular(output_matrix, my_filename)
+    
+    if save_tab == True:
+        save_matrix_tab(output_matrix, my_filename.split('.')[0] + '_tab.txt')
+    
+    return output_matrix
+
+
 def calculate_chromosome_DI(input_contact_matrix, 
                             a_chr,
+                            isGlobal,
+                            tab_sep=False,
+                            species='hg38',
+                            custom_species_sizes={},
+                            sexual_chromosomes=[],
                             save_file=True):
     """
     Function to calculate the DI values for a chromosome of and save them 
     in a txt file.
     Parameters:
-        input_contact_matrix (str | obj): normalized fend contact matrix at a bin size of 40kb passed as a filename (str)
-        or an object returned by "normalize_chromosome_fend_data".
+        input_contact_matrix (str | obj): normalized intra-chromosomal contact matrix at a bin size of 40kb passed as a filename (str)
+        or an object. Either a single contact matrix or a global contact matrix can be passed (see following parameters).
         a_chr (str): chromosome number (example for chromosome 1: '1').
+        isGlobal (bool): set True if your input matrix is a global matrix.
+        tab_sep (bool): set True if your input matrix is in a tab separated format. If the matrix is passed as an
+        object, this parameter is not taken into consideration.
+        species (str): 'hg38' or 'mm10' or any other species label in string format.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
+        of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
+        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your
+        custom species (example for chromosome X: 'X').
         save_file (bool): if True, saves DI values to txt file.
     Returns:
         List with the DI values.
     """
     
-    if isinstance(input_contact_matrix, str):
-        contact_matrix = load_matrix(input_contact_matrix)
+    import copy
+    
+    if isGlobal == False:
+        if isinstance(input_contact_matrix, str):
+            if tab_sep == False:
+                contact_matrix = load_matrix(input_contact_matrix)
+            else:
+                contact_matrix = load_matrix_tab(input_contact_matrix)
+        else:
+            contact_matrix = copy.deepcopy(input_contact_matrix)
     else:
-        contact_matrix = input_contact_matrix
+        contact_matrix = extract_single_map(input_global_matrix=input_contact_matrix,
+                                            tab_sep=tab_sep,
+                                            chr_row=a_chr,
+                                            chr_col=a_chr,
+                                            species=species,
+                                            bin_size=40000,
+                                            data_type='',
+                                            custom_species_sizes=custom_species_sizes,
+                                            sexual_chromosomes=sexual_chromosomes,
+                                            save_output=False,
+                                            save_tab=False)
         
     print "Calculating DI values..."
     n = contact_matrix.shape[0]
@@ -627,116 +769,6 @@ def calculate_chromosome_topological_domains(input_file_hmm,
     return topological_domains
 
 
-def extract_single_map(input_global_matrix,
-                       tab_sep,
-                       chr_row,
-                       chr_col,
-                       species='hg38',
-                       bin_size=1000000,
-                       data_type='observed',
-                       custom_species_sizes={},
-                       sexual_chromosomes=[],
-                       save_output=True,
-                       save_tab=False):
-    """
-    Extract a single contact matrix for a pair of chromosomes from the full matrix.
-    Parameters:
-        input_global_matrix (object | str): full contact matrix. This can be passed either as
-        an object of the workspace or a string of the filename saved to file.
-        tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
-        tells if the global matrix was saved in tab separated format (True) or not (False).
-        chr_row (str): chromosome in the rows of the output contact matrix.
-        chr_col (str): chromosome in the columns of the output contact matrix. If chr_col is 
-        equal to chr_row then the intrachromosomal map is extracted.
-        species (str): 'hg38' or 'mm10' or any other species label in string format.
-        bin_size (int): bin size in bp of the contact matrix.
-        data_type (str): which kind of data type you are extracting. "observed" or "normalized".
-        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
-        of your custom species. The keys of the dictionary are chromosomes in string
-        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
-        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your
-        custom species (example for chromosome X: 'X').
-        save_output (bool): if true, save the contact matrix in formatted txt file.
-        save_tab (bool): if true, save the contact matrix in tab separated format.
-    Return:
-        Contact matrix in numpy array format.
-    """            
-    if species in chromosomes.keys():
-        chromosomes_list = [str(i) for i in range(len(chromosomes[species]) - 1)[1:]] + ['X', 'Y']
-        chr_dim = []
-        for i in chromosomes_list:
-            chr_dim.append(chromosomes[species][i]/bin_size) 
-        d_chr_dim = {}
-        for i in chromosomes_list:
-            d_chr_dim[i] = chromosomes[species][i]/bin_size
-    else:
-        if len(sexual_chromosomes) > 0:
-            chromosomes_list = [str(i) for i in range(len(custom_species_sizes) - len(sexual_chromosomes) + 1)[1:]]
-            chromosomes_list += sexual_chromosomes
-        else:
-            chromosomes_list = [str(i) for i in range(len(custom_species_sizes) + 1)[1:]]
-        chr_dim = []
-        for i in chromosomes_list:
-            chr_dim.append(custom_species_sizes[i]/bin_size)                
-        d_chr_dim = {}
-        for i in chromosomes_list:
-            d_chr_dim[i] = custom_species_sizes[i]/bin_size
-    
-    d_chr_dim_inc = {}
-    k=1
-    for i in chromosomes_list:
-        d_chr_dim_inc[i] = sum(chr_dim[:k])
-        k+=1
-    
-    if isinstance(input_global_matrix,str):
-        if tab_sep == False:
-            full_matrix = load_matrix(input_global_matrix)
-        else:
-            full_matrix = load_matrix_tab(input_global_matrix)
-    else:
-        full_matrix = input_global_matrix
-    
-    if chr_row == '1':
-        row_start = 0
-    else:
-        row_start = d_chr_dim_inc[chromosomes_list[chromosomes_list.index(chr_row)-1]]
-    row_end = row_start + d_chr_dim[chr_row]
-    
-    if chr_col == '1':
-        col_start = 0
-    else:
-        col_start = d_chr_dim_inc[chromosomes_list[chromosomes_list.index(chr_col)-1]]
-    col_end = col_start + d_chr_dim[chr_col]
-    
-    output_matrix = full_matrix[row_start:row_end,col_start:col_end]
-    
-    if chr_row == chr_col:
-        if bin_size >= 1000000:
-            bin_size_str = str(bin_size/1000000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_' + bin_size_str + 'mb_' + data_type + '.txt'
-        elif bin_size < 1000000:
-            bin_size_str = str(bin_size/1000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_' + bin_size_str + 'kb_' + data_type + '.txt'
-        if save_output == True:
-            save_matrix(output_matrix, my_filename)
-    else:
-        dim_row = str(d_chr_dim[chr_row])
-        dim_col = str(d_chr_dim[chr_col])
-        if bin_size >= 1000000:
-            bin_size_str = str(bin_size/1000000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
-        elif bin_size < 1000000:
-            bin_size_str = str(bin_size/1000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
-        if save_output == True:
-            save_matrix_rectangular(output_matrix, my_filename)
-    
-    if save_tab == True:
-        save_matrix_tab(output_matrix, my_filename.split('.')[0] + '_tab.txt')
-    
-    return output_matrix
-
-
 def compute_full_tad_analysis(input_contact_matrix,
                               a_chr,
                               isGlobal,
@@ -749,34 +781,53 @@ def compute_full_tad_analysis(input_contact_matrix,
     """
     Compute DI values, HMM states and topological domain coordinates for a chromosome a_chr.
     Parameters:
-        input_contact_matrix (str): 
-        a_chr: chromosome number (example for chromosome 1: '1'). These are the values inside chr_list.
+        input_contact_matrix (str | obj): normalized intra-chromosomal contact matrix at a bin size of 40kb passed as a filename (str)
+        or an object. Either a single contact matrix or a global contact matrix can be passed (see following parameters).
+        a_chr: chromosome number (example for chromosome 1: '1').
+        isGlobal (bool): set True if your input matrix is a global matrix.
+        tab_sep (bool): set True if your input matrix is in a tab separated format. If the matrix is passed as an
+        object, this parameter is not taken into consideration.
+        species (str): 'hg38' or 'mm10' or any other species label in string format.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
+        of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
+        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your
+        custom species (example for chromosome X: 'X').
+        save_di (bool): if True, save the DI values to txt file.
+        save_hmm (bool): if True, save the HMM states to txt file.
     Output: 
         txt file containing topological domains coordinates.
     """        
+    import copy
     
     if isGlobal == False:
-        contact_matrix = load_matrix(input_contact_matrix)
+        if isinstance(input_contact_matrix, str):
+            if tab_sep == False:
+                contact_matrix = load_matrix(input_contact_matrix)
+            else:
+                contact_matrix = load_matrix_tab(input_contact_matrix)
+        else:
+            contact_matrix = copy.deepcopy(input_contact_matrix)
     else:
-        contact_matrix = extract_single_map(input_contact_matrix,
-                                            tab_sep,
-                                            a_chr,
-                                            a_chr,
-                                            species,
-                                            40000,
-                                            '',
-                                            custom_species_sizes,
-                                            sexual_chromosomes,
-                                            False,
-                                            False)
+        contact_matrix = extract_single_map(input_global_matrix=input_contact_matrix,
+                                            tab_sep=tab_sep,
+                                            chr_row=a_chr,
+                                            chr_col=a_chr,
+                                            species=species,
+                                            bin_size=40000,
+                                            data_type='',
+                                            custom_species_sizes=custom_species_sizes,
+                                            sexual_chromosomes=sexual_chromosomes,
+                                            save_output=False,
+                                            save_tab=False)
 
-    # Calculation of the DI
+    # DI VALUES
     DI = calculate_chromosome_DI(contact_matrix,a_chr,save_di)
     
-    ##### HMM STATES
+    # HMM STATES
     HMM = calculate_chromosome_true_DI(DI,a_chr,save_hmm)
     
-    ##### TOPOLOGICAL DOMAIN COORDINATES
+    # TOPOLOGICAL DOMAIN COORDINATES
     tad = calculate_chromosome_topological_domains(HMM,a_chr)
     return tad
     
