@@ -22,25 +22,18 @@ To calculate TAD coordinates for a chromosome (here chr 6) use the function ``co
    execfile('HiCtool_tad.py')
    global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
 
-   tad_coord = compute_full_tad_analysis(global_normalized_40kb, a_chr='6', isGlobal=True)
+   tad_coord = compute_full_tad_analysis(global_normalized_40kb, a_chr='6', isGlobal=True,
+                                         species='hg38', save_di=True, save_hmm=True)
    ```
-   
-
-
-
-
+   ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save the DI values and HMM biased states also.
 
 - If your data are normalized using the [Yaffe and Tanay approach](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-yaffe-tanay.md), you have normalized contact matrix per each single chromosome, therefore there is no need of loading them initially.
-
-
-
-If you have a global matrix
-```Python
-compute_full_tad_analysis('HiCtool_40kb_matrix_global_normalized_tab.txt','6',
-isGlobal=True,
-tab_sep=True)
-```
-
+   ```Python
+   execfile('HiCtool_tad.py')
+   
+   tad_coord = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6',isGlobal=False, tab_sep=False, species='hg38', save_di=True, save_hmm=True)
+   ```
+   ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save the DI values and HMM biased states also.
 
 
 
