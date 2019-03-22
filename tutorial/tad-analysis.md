@@ -32,7 +32,7 @@ To calculate TAD coordinates for a chromosome (here chr 6) use the function ``co
    my_chromosomes = ['1','2','6']
    my_tad_coord = {} # dictionary to save the tad coordinates of different chromosomes
    for i in my_chromosomes:
-   my_tad_coord[i] = compute_full_tad_analysis(global_normalized_40kb, a_chr=i, isGlobal=True,
+       my_tad_coord[i] = compute_full_tad_analysis(global_normalized_40kb, a_chr=i, isGlobal=True,
                                                 species='hg38', save_di=True, save_hmm=True)
    ```
 
