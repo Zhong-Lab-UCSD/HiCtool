@@ -13,7 +13,7 @@ This pipeline illustrates the procedure to calculate topologically associated do
 
 ## 1. Performing TAD analysis
 
-TAD coordinates are calculated using the shifts of the true Directionality Index (DI) as described by [Dixon et al., (2012)](http://www.nature.com/nature/journal/v485/n7398/abs/nature11082.html). DI values and true DI values (HMM biased states) are calculated follow the same paper as well.
+TAD coordinates are calculated using the shifts of the true Directionality Index (DI) as described by [Dixon et al., (2012)](http://www.nature.com/nature/journal/v485/n7398/abs/nature11082.html). DI values and true DI values (HMM biased states) are calculated following the same paper as well.
 
 To calculate TAD coordinates for a chromosome (here chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_tad.py](/scripts/HiCtool_tad.py).
 
@@ -27,10 +27,10 @@ To calculate TAD coordinates for a chromosome (here chr 6) use the function ``co
    ```
    ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save the DI values and HMM biased states also.
    
-   To calculate the topological domain coordinates for several chromosomes you may use an approach as the following (in the example for chromosomes 1, 2, 6):
+   To calculate the **topological domain coordinates for several chromosomes** you may use an approach as the following (in the example for chromosomes 1, 2, 6):
    ```Python
    my_chromosomes = ['1','2','6']
-   my_tad_coord = {} # dictionary to save the tad coordinates of different chromosomes
+   my_tad_coord = {} # dictionary to store the tad coordinates of different chromosomes
    for i in my_chromosomes:
        my_tad_coord[i] = compute_full_tad_analysis(global_normalized_40kb, a_chr=i, isGlobal=True,
                                                    species='hg38', save_di=True, save_hmm=True)
@@ -41,6 +41,17 @@ To calculate TAD coordinates for a chromosome (here chr 6) use the function ``co
    execfile('HiCtool_tad.py')
    
    tad_coord = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6',
-                                         isGlobal=False, tab_sep=False, species='hg38', save_di=True, save_hmm=True)
+                                         isGlobal=False, tab_sep=False, species='hg38',
+                                         save_di=True, save_hmm=True)
    ```
    ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save the DI values and HMM biased states also.
+
+   To calculate the **topological domain coordinates for several chromosomes** you may use an approach as the following (in the example for chromosomes 1, 2, 6):
+   ```Python
+   my_chromosomes = ['1','2','6']
+   my_tad_coord = {} # dictionary to store the tad coordinates of different chromosomes
+   for i in my_chromosomes:
+       my_tad_coord[i] = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a_chr=i, 
+                                                   isGlobal=False, tab_sep=False, species='hg38',
+                                                   save_di=True, save_hmm=True)
+```
