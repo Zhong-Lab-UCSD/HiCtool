@@ -276,8 +276,7 @@ def plot_chromosome_data(contact_matrix,
     """
     Plot a contact map and histogram of the contact distribution for observed data, normalized fend data, expected fend and enrichment data.
     Parameters:
-        contact_matrix (str | obj): txt file of the contact matrix generated with the function "normalize_chromosome_fend_data" 
-        or contact matrix returned by "normalize_chromosome_fend_data".
+        contact_matrix (str): txt file of the contact matrix generated with the function "normalize_chromosome_fend_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
         bin_size (int): bin size in bp of the contact matrix.
         full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
@@ -318,12 +317,8 @@ def plot_chromosome_data(contact_matrix,
         end_pos = (chr_size/bin_size)*bin_size
     
     # Plotting of the fend normalized data
-    if isinstance(contact_matrix, str):
-        matrix_data_full = load_matrix(contact_matrix)
-        print "Plotting " + contact_matrix + "..."
-    else:
-        print "Plotting contact matrix..."
-        matrix_data_full = contact_matrix
+    matrix_data_full = load_matrix(contact_matrix)
+    print "Plotting " + contact_matrix + "..."
     
     # Update matrix values to plot topological domains
     if topological_domains != '':
@@ -539,14 +534,16 @@ def plot_chromosome_enrich_data(contact_matrix,
                                 end_coord=0,
                                 species='hg38',
                                 chr_size=0,
+                                cutoff_max=0,
+                                cutoff_min=0,
                                 my_dpi=1000,
                                 plot_histogram=False):
     """
     Plot the log2 of the "observed / expected" contact map and histogram of the enrichment values distribution 
     generated with the function "normalize_chromosome_enrich_data".
     Parameters:
-        contact_matrix (str | obj): txt file of the "observed / expected" contact matrix generated with the function 
-        "normalize_chromosome_enrich_data" or contact matrix returned by the function "normalize_chromosome_enrich_data".
+        contact_matrix (str): txt file of the "observed / expected" contact matrix generated with the function 
+        "normalize_chromosome_enrich_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
         bin_size (int): bin size in bp of the contact matrix.
         full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
@@ -581,13 +578,9 @@ def plot_chromosome_enrich_data(contact_matrix,
         end_pos = (chr_size/bin_size)*bin_size
     
     # Plotting the enrichment contact data
-    if isinstance(contact_matrix, str):
-        matrix_data_full = load_matrix(contact_matrix)
-        print "Plotting " + contact_matrix + "..."
-    else:
-        print "Plotting contact matrix..."
-        matrix_data_full = contact_matrix
-    
+    matrix_data_full = load_matrix(contact_matrix)
+    print "Plotting " + contact_matrix + "..."
+
     # Selecting a part
     if full_matrix==False:
         start_bin = start_coord/bin_size
@@ -692,6 +685,13 @@ def plot_chromosome_enrich_data(contact_matrix,
             value = matrix_data_full[i][j]
             if value != -1 and value != 0:
                 matrix_data_full[i][j] = math.log(value,2)
+    
+    if cutoff_max != 0:
+        x_cutoff_max,y_cutoff_max = np.where(matrix_data_full > cutoff_max)
+        matrix_data_full[x_cutoff_max,y_cutoff_max] = cutoff_max
+    if cutoff_min != 0:
+        x_cutoff_min,y_cutoff_min = np.where(matrix_data_full < cutoff_min)
+        matrix_data_full[x_cutoff_min,y_cutoff_min] = cutoff_min
     
     threshold_max = np.max(matrix_data_full)
     threshold_min = np.min(matrix_data_full)

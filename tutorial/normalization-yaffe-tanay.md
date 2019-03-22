@@ -209,7 +209,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      plot_histogram=True)
 ```
-Instead of the contact matrix txt file, the fend contact matrix can be passed as a workspace object as well (``fend_normalized_chr6`` as first parameter instead of ``'HiCtool_chr6_40kb_normalized_fend.txt'``). This function can be used also to plot observed data, expected fend and enrichment data by simply passing a different input matrix as first parameter.
+This function can be used also to plot observed data, expected fend and enrichment data by simply passing a different input matrix as first parameter.
 
 Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
@@ -229,7 +229,7 @@ fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6',
 ```
 Then, we plot the entire heatmap (we also change here the color map to white and blue):
 ```Python
-plot_chromosome_data(fend_normalized_chr6, 
+plot_chromosome_data('HiCtool_chr6_1mb_normalized_fend.txt', 
                      a_chr='6', 
                      bin_size=1000000, 
                      full_matrix=True, 
@@ -257,7 +257,6 @@ plot_chromosome_enrich_data('HiCtool_chr6_40kb_normalized_enrich.txt',
                             my_dpi=1000, 
                             plot_histogram=True)
 ```
-Instead of the contact matrix txt file, the enrichment contact matrix can be passed as a workspace object as well (```enrich_normalized_chr6``` as first parameter instead of ```'HiCtool_chr6_40kb_normalized_enrich.txt'```).
 
 Heatmap             |  Histogram
 :-------------------------:|:-------------------------:
@@ -268,19 +267,23 @@ Heatmap             |  Histogram
 In order to change the heatmap resolution, first data have to be calculated at the desired resolution set with the parameter ``bin_size`` of ``normalize_chromosome_enrich_data`` ([see section 2.2.](#22-normalized-enrichment-data)):
 ```Python
 enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', 
-                                                        bin_size=1000000, 
-                                                        input_file='HiC_norm_binning.hdf5', 
-                                                        species='hg38',
-                                                        save_obs=False, 
-                                                        save_expect=False)
+                                                          bin_size=1000000, 
+                                                          input_file='HiC_norm_binning.hdf5', 
+                                                          species='hg38',
+                                                          save_obs=False, 
+                                                          save_expect=False)
 ```
-Then, we plot the entire heatmap:
+Then, we plot the entire heatmap with a maximum and minimum cutoff for the log2 at 4 and -4 respectively:
 ```Python
-plot_chromosome_enrich_data(enrich_normalized_chr6, 
+plot_chromosome_enrich_data('HiCtool_chr6_1mb_normalized_enrich.txt', 
                             a_chr='6', 
                             bin_size=1000000, 
                             full_matrix=True, 
                             species='hg38',
+                            cutoff_max=4,
+                            cutoff_min=-4,
                             plot_histogram=True)
 ```
-![](/figures/HiCtool_chr6_1mb_normalized_enrich.png)
+Heatmap             |  Histogram
+:-------------------------:|:-------------------------:
+![](/figures/HiCtool_chr6_1mb_normalized_enrich.png)  |  ![](/figures/HiCtool_chr6_1mb_normalized_enrich_histogram.png)

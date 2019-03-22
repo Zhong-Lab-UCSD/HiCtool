@@ -516,8 +516,7 @@ def extract_single_map(input_global_matrix,
     """
     Extract a single contact matrix for a pair of chromosomes from the full matrix.
     Parameters:
-        input_global_matrix (object | str): full contact matrix. This can be passed either as
-        an object of the workspace or a string of the filename saved to file.
+        input_global_matrix (str): full contact matrix passed as a string of the filename saved to file.
         tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
         tells if the global matrix was saved in tab separated format (True) or not (False).
         chr_row (str): chromosome in the rows of the output contact matrix.
@@ -563,13 +562,11 @@ def extract_single_map(input_global_matrix,
         d_chr_dim_inc[i] = sum(chr_dim[:k])
         k+=1
     
-    if isinstance(input_global_matrix,str):
-        if tab_sep == False:
-            full_matrix = load_matrix(input_global_matrix)
-        else:
-            full_matrix = load_matrix_tab(input_global_matrix)
+    # Loading global matrix
+    if tab_sep == False:
+        full_matrix = load_matrix(input_global_matrix)
     else:
-        full_matrix = input_global_matrix
+        full_matrix = load_matrix_tab(input_global_matrix)
     
     if chr_row == '1':
         row_start = 0
@@ -633,8 +630,7 @@ def plot_map(input_global_matrix,
     Plot a contact map, either global or single map. To plot the global matrix leave "chr_row" and
     "chr_col" as empty strings.
     Parameters:
-        input_global_matrix (object | str): full contact matrix. This can be passed either as
-        an object of the workspace or a string of the filename saved to file.
+        input_global_matrix (str): full contact matrix passed as a string of the filename saved to file.
         tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
         tells if the global matrix was saved in tab separated format (True) or not (False).
         chr_row (str): chromosome in the rows of the output contact matrix.
@@ -716,13 +712,10 @@ def plot_map(input_global_matrix,
             bin_size_str = str(bin_size/1000) + 'kb'
             my_filename = 'HiCtool_' + bin_size_str + '_' + data_type     
         
-        if isinstance(input_global_matrix,str):
-            if tab_sep == False:
-                matrix_data_full = load_matrix(input_global_matrix)
-            else:
-                matrix_data_full = load_matrix_tab(input_global_matrix)
+        if tab_sep == False:
+            matrix_data_full = load_matrix(input_global_matrix)
         else:
-            matrix_data_full = input_global_matrix
+            matrix_data_full = load_matrix_tab(input_global_matrix)
         
         print "Plotting..."
         # Adding grid to separate chromosomes
