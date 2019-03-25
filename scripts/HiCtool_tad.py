@@ -841,7 +841,14 @@ def compute_full_tad_analysis(input_contact_matrix,
                                             save_tab=False)
 
     # DI VALUES
-    DI = calculate_chromosome_DI(contact_matrix,a_chr,save_di)
+    DI = calculate_chromosome_DI(input_contact_matrix=contact_matrix,
+                                 a_chr=a_chr,
+                                 isGlobal=False,
+                                 tab_sep=False,
+                                 species=species,
+                                 custom_species_sizes=custom_species_sizes,
+                                 sexual_chromosomes=sexual_chromosomes,
+                                 save_file=save_di)
     
     # HMM STATES
     HMM = calculate_chromosome_true_DI(DI,a_chr,save_hmm)
@@ -849,4 +856,3 @@ def compute_full_tad_analysis(input_contact_matrix,
     # TOPOLOGICAL DOMAIN COORDINATES
     tad = calculate_chromosome_topological_domains(HMM,a_chr)
     return tad
-    

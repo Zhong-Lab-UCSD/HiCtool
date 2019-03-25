@@ -33,6 +33,8 @@ tad_coord = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a
 ```
 ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save also the DI values and HMM biased states to txt file.
 
+**Note!** The end coordinate of each domain is saved as the start position of the last bin (40 kb) belonging to each domain.
+
 To calculate the **topological domain coordinates for all the chromosomes at once** you may use an approach as the following:
 ```Python
 my_chromosomes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y']
@@ -87,6 +89,8 @@ tad_coord = compute_full_tad_analysis(global_normalized_40kb, a_chr='Y', isGloba
                                       species='hg38', save_di=True, save_hmm=True)
 ```
 ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save also the DI values and HMM biased states to txt file.
+
+**Note!** The end coordinate of each domain is saved as the start position of the last bin (40 kb) belonging to each domain.
    
 To calculate the **topological domain coordinates for all the chromosomes at once** you may use an approach as the following:
 ```Python
@@ -171,7 +175,7 @@ plot_chromosome_DI(DI_chr6, a_chr='6', full_chromosome=False,
 ```
 ![](/figures/HiCtool_chr6_DI.png)
 
-### 2.1. Calculating and plotting the true DI
+### 2.2. Calculating and plotting the true DI
 
 We use a Hidden Markov Model (HMM) based on the Directionality Index to identify biased states (true DI).
 
@@ -195,3 +199,22 @@ plot_chromosome_DI(input_file_DI=DI_chr6, a_chr='6', full_chromosome=False,
                    species='hg38', plot_legend=True, plot_grid=True)
 ```
 ![](/figures/HiCtool_chr6_DI_full.png)
+
+### 2.3. Calculating TAD coordinates
+
+The true DI values allow to infer the locations of the topological domains in the genome. A domain is initiated at the beginning of a single downstream biased HMM state (red color in the above figure). The domain is continuous throughout any consecutive downstream biased state. The domain will then end when the last in a series of upstream biased states (green color in the above figure) is reached, with the domain ending at the end of the last HMM upstream biased state.
+
+To calculate the topological domains coordinates, first we extract all the potential start and end coordinates according to the definition, and then we evaluate a list of conditions to take into account the possible presence of gaps between a series of positive or negative states values. The figure below shows a summary of the procedure:
+
+![](/figures/HiCtool_topological_domains_flowchart.png)
+
+Topological domain coordinates are calculated using the function ``calculate_chromosome_topological_domains`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py):
+```Python
+execfile('HiCtool_TAD.py')
+domains_chr6 = calculate_chromosome_topological_domains(input_file_hmm='HiCtool_chr6_hmm_states.txt', a_chr='6')
+```
+Topological domain coordinates are saved in a tab separated file. Each line is a topological domain, with two elements that are the start and end coordinate of the domain.
+Previously calculated topological domain coordinates and saved to file can be loaded using the function ``load_hmm_states``:
+```Python
+hmm_chr6 = load_hmm_states('HiCtool_chr6_hmm_states.txt')
+```
