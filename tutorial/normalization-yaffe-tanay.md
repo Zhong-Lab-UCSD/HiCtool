@@ -142,12 +142,10 @@ execfile('HiCtool_normalization_visualization.py')
 
 To calculate and save the **normalized intra-chromosomal contact matrix** for a chromosome ``a_chr``, use the function ``normalize_chromosome_fend_data`` (see API Documentation):
 ```Python
-fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', 
-                                                      bin_size=40000, 
+fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', bin_size=40000, 
                                                       input_file='HiC_norm_binning.hdf5', 
                                                       species='hg38',
-                                                      save_obs=True, 
-                                                      save_expect=False)
+                                                      save_obs=True, save_expect=False)
 ```
 Data are compressed in a format to reduce storage occupation and improving saving and loading time. To load a previously generated contact matrix use the function ```load_matrix```:
 ```Python
@@ -159,12 +157,10 @@ where ``'my_contact_matrix.txt'`` is a contact matrix file saved using ``normali
 
 To calculate and save the **"observed/expected" intra-chromosomal contact matrix** for a chromosome ``a_chr`` use the function ``normalize_chromosome_enrich_data`` (see API Documentation):
 ```Python
-enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', 
-                                                          bin_size=40000, 
+enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', bin_size=40000, 
                                                           input_file='HiC_norm_binning.hdf5', 
                                                           species='hg38',
-                                                          save_obs=True, 
-                                                          save_expect=False)
+                                                          save_obs=True, save_expect=False)
 ```
 **Note!**
 If you need only the normalized contact matrices, there is no need to calculate also the enrichment data. If you do not need the expected data, do not save it since they are the biggest files and the process may take time.
@@ -198,9 +194,7 @@ This part is to plot heatmaps and histograms of the contact data.
 To plot and save the heatmap and histogram use the function ```plot_chromosome_data```:
 ```Python
 plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt', 
-                     a_chr='6', 
-                     bin_size=40000, 
-                     full_matrix=False, 
+                     a_chr='6', bin_size=40000, full_matrix=False, 
                      start_coord=50000000, end_coord=54000000, 
                      species='hg38', 
                      data_type="normalized_fend", 

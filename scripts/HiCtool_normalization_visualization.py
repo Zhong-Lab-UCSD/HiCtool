@@ -296,7 +296,8 @@ def plot_chromosome_data(contact_matrix,
         max_color (str): to set the color of the bins with contact counts over "cutoff".
         my_dpi (int): resolution of the contact map in dpi.
         plot_histogram (bool): if true, plot and save to file the histogram of the contact distribution.
-        topological_domains (str): topological domains txt file to visualize domains on the heatmap. If empty string, no topological domains.
+        topological_domains (str | obj): topological domain coordinates to visualize domains on the heatmap. 
+        They can be passed either as a txt file or object (as generated from HiCtool_TAD.py) If empty string, no topological domains.
         domain_color (str): to set the color for topological domains on the heatmap.
     """        
     import matplotlib
@@ -332,7 +333,10 @@ def plot_chromosome_data(contact_matrix,
         if bin_size != 40000:
             print "ERROR! To plot topological domains the bin size should be 40000"
             return
-        domains = load_topological_domains(topological_domains)
+        if isinstance(topological_domains, str):
+            domains = load_topological_domains(topological_domains)
+        else:
+            domains = topological_domains
         diag_index = np.diag_indices(len(matrix_data_full))
         for domain in domains:
             temp_start = domain[0]/40000

@@ -612,12 +612,14 @@ def extract_single_map(input_global_matrix,
     return output_matrix
     
 
-def plot_map(input_global_matrix,
+def plot_map(input_matrix,
              isGlobal,
              tab_sep=False,
              chr_row='',
              chr_col='',
              bin_size=1000000,
+             chr_row_coord=[],
+             chr_col_coord=[],
              data_type='observed',
              species='hg38',
              custom_species_sizes={},
@@ -627,39 +629,43 @@ def plot_map(input_global_matrix,
              cutoff=99,
              max_color='#460000',
              my_dpi=2000,
+             plot_histogram=False,
              topological_domains='',
-             domain_color='#0000ff',
-             plot_histogram=False):
+             domain_color='#0000ff'):
     """
     Plot a contact map, either global or single map. To plot the global matrix leave "chr_row" and
     "chr_col" as empty strings.
     Parameters:
-        input_global_matrix (object | str): full contact matrix. This can be passed either as
+        input_matrix (object | str): contact matrix. This can be passed either as
         an object of the workspace or a string of the filename saved to file.
+        isGlobal (bool): set to True if you are passing a global matrix (chromosomes by chromosomes), False otherwise.
         tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
-        tells if the global matrix was saved in tab separated format (True) or not (False).
+        tells if the matrix was saved in tab separated format (True) or not (False).
         chr_row (str): chromosome in the rows of the output contact matrix.
         chr_col (str): chromosome in the columns of the output contact matrix. If chr_col is 
         equal to chr_row then the intrachromosomal map is extracted.
-        species (str): 'hg38' or 'mm10' or any other species label in string format.
         bin_size (int): bin size in bp of the contact matrix.
+        chr_row_coord (list): list of two integers with start and end coordinates for the chromosome on the rows to be plotted.
+        chr_col_coord (list): list of two integers with start and end coordinates for the chromosome on the rows to be plotted.
         data_type (str): which kind of data type you are extracting. "observed" or "normalized".
-        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
-        of your custom species. The keys of the dictionary are chromosomes in string
-        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
-        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your
-        custom species (example for chromosome X: 'X').
+        species (str): 'hg38' or 'mm10' or any other species label in string format.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
+        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your custom species (example for chromosome X: 'X').
         my_colormap (str | list): colormap to be used to plot the data. 1) Use a string if you choose among any colorbar here 
         https://matplotlib.org/examples/color/colormaps_reference.html 2) Use a list of strings with colors if you want
         a custom colorbar. Example: ['white', 'red', 'black']. Colors can be specified also in this format: '#000000'.
         cutoff_type (str): to select a type of cutoff ('percentile' or 'contact_number') or plot the full range of the data (set the 
         parameter as 'none').
+        cutoff_type (str): to select a type of cutoff ('percentile' or 'contact_number') or plot the full range of the data (set the 
+        parameter as 'None').
         cutoff (int): percentile to set a maximum cutoff on the number of contacts for the colorbar.
         max_color (str): to set the color of the bins with contact counts over "cutoff".
         my_dpi (int): resolution of the contact map in dpi.
-        topological_domains (str): topological domains txt file to visualize domains on the heatmap. If empty string, no topological domains.
-        domain_color (str): to set the color for topological domains on the heatmap.
         plot_histogram (bool): if True, plot the contact data distribution.
+        topological_domains (str | obj): topological domain coordinates to visualize domains on the heatmap. 
+        They can be passed either as a txt file or object (as generated from HiCtool_TAD.py) If empty string, no topological domains.
+        domain_color (str): to set the color for topological domains on the heatmap. 
     """         
     import matplotlib
     matplotlib.use('Agg')
@@ -709,6 +715,7 @@ def plot_map(input_global_matrix,
     label_pos = np.array(label_pos)
     label_name = tuple(label_name)
     
+    # Plot global heatmap
     if chr_row == '' and chr_col == '':
         if bin_size >= 1000000:
             bin_size_str = str(bin_size/1000000) + 'mb'
@@ -717,13 +724,13 @@ def plot_map(input_global_matrix,
             bin_size_str = str(bin_size/1000) + 'kb'
             my_filename = 'HiCtool_' + bin_size_str + '_' + data_type     
         
-        if isinstance(input_global_matrix,str):
+        if isinstance(input_matrix,str):
             if tab_sep == False:
-                matrix_data_full = load_matrix(input_global_matrix)
+                matrix_data_full = load_matrix(input_matrix)
             else:
-                matrix_data_full = load_matrix_tab(input_global_matrix)
+                matrix_data_full = load_matrix_tab(input_matrix)
         else:
-            matrix_data_full = copy.deepcopy(input_global_matrix)
+            matrix_data_full = copy.deepcopy(input_matrix)
         
         print "Plotting..."
         # Adding grid to separate chromosomes
@@ -760,7 +767,7 @@ def plot_map(input_global_matrix,
             plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=14)
             cbar = plt.colorbar(extend='max')
             cbar.cmap.set_over(max_color)
-        elif cutoff_type == 'none':
+        elif cutoff_type == 'None':
             plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmin=0)
             plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=14)
             cbar = plt.colorbar()
@@ -772,20 +779,21 @@ def plot_map(input_global_matrix,
         plt.savefig(my_filename + '.pdf', format = 'pdf', dpi=my_dpi)
         print "Done!"
     
+    # Plot a single heatmap
     elif chr_row != '' and chr_col != '':
         if isGlobal == True:
-            matrix_data_full = extract_single_map(input_global_matrix,tab_sep,chr_row,chr_col,species,bin_size,data_type,custom_species_sizes,sexual_chromosomes,False,False)
+            matrix_data_full = extract_single_map(input_matrix,tab_sep,chr_row,chr_col,species,bin_size,data_type,custom_species_sizes,sexual_chromosomes,False,False)
         else:
-            if isinstance(input_global_matrix,str):
+            if isinstance(input_matrix,str):
                 if tab_sep == True:
-                    matrix_data_full = load_matrix_tab(input_global_matrix)
+                    matrix_data_full = load_matrix_tab(input_matrix)
                 else:
                     if chr_row == chr_col:
-                        matrix_data_full = load_matrix(input_global_matrix)
+                        matrix_data_full = load_matrix(input_matrix)
                     else:
-                        matrix_data_full = load_matrix_rectangular(input_global_matrix)
+                        matrix_data_full = load_matrix_rectangular(input_matrix)
             else:
-                matrix_data_full = copy.deepcopy(input_global_matrix)
+                matrix_data_full = copy.deepcopy(input_matrix)
     
     elif (chr_row != '' and chr_col == '') or (chr_row == '' and chr_col != ''):
         print "ERROR! Both the chromosomes have to be declared."
@@ -808,7 +816,7 @@ def plot_map(input_global_matrix,
             bin_size_str = str(bin_size/1000) + 'kb'
             my_filename = 'HiCtool_' + chromosome_row + '_' + chromosome_col + '_' + bin_size_str + '_' + row_str + 'x' + col_str + '_' + data_type
         
-            # Update matrix values to plot topological domains
+        # Update matrix values to plot topological domains
         if topological_domains != '':
             if bin_size != 40000:
                 print "ERROR! To plot topological domains the bin size should be 40000"
@@ -819,7 +827,10 @@ def plot_map(input_global_matrix,
             if chr_row == '' and chr_col == '':
                 print "ERROR! To plot topological domains select a single intrachromosomal contact matrix. Use chr_row and chr_col for that."
                 return
-            domains = load_topological_domains(topological_domains)
+            if isinstance(topological_domains, str):
+                domains = load_topological_domains(topological_domains)
+            else:
+                domains = topological_domains
             diag_index = np.diag_indices(len(matrix_data_full))
             for domain in domains:
                 temp_start = domain[0]/40000
@@ -827,6 +838,41 @@ def plot_map(input_global_matrix,
                 matrix_data_full[temp_start,temp_start:temp_end] = -1
                 matrix_data_full[temp_start:temp_end,temp_end-1] = -1
                 matrix_data_full[(diag_index[0][temp_start:temp_end],diag_index[1][temp_start:temp_end])] = -1
+        
+        # Selecting a part of a single heatmap
+        if len(chr_row_coord) > 0 or len(chr_col_coord) > 0:
+            if len(chr_row_coord) == 0:
+                print "ERROR! Coordinates on the chromosome on the rows should be declared (no empty chr_row_coord)."
+                return
+            if len(chr_col_coord) == 0:
+                print "ERROR! Coordinates on the chromosome on the cols should be declared (no empty chr_col_coord)."
+                return
+            if len(chr_row_coord) == 1 or len(chr_col_coord) == 1:
+                print "ERROR! Start and end coordinate for each chromosome should be declared."
+                return
+            if len(chr_row_coord) > 2 or len(chr_col_coord) > 2:
+                print "ERROR! Only two coordinates (start and end) for each chromosome should be declared."
+                return
+            if len(chr_row_coord) == 2 or len(chr_col_coord) == 2:
+                chr_row_bin = map(lambda x: x/bin_size, chr_row_coord)
+                chr_col_bin = map(lambda x: x/bin_size, chr_col_coord)
+        
+                if chr_row_coord[0] >= chr_row_coord[1] or chr_col_coord[0] >= chr_col_coord[1]:
+                    print "ERROR! Start coordinate should be lower than end coordinate"
+                    return
+                if chr_row_bin[0] >= chr_row_bin[1] or chr_col_bin[0] >= chr_col_bin[1]:
+                    print "ERROR! Start coordinate should be much lower than the end coordinate given the bin size"
+                    return
+                if chr_row_coord[1] > d_chr_dim[chr_row]:
+                    print "ERROR! End coordinate of the chromosome on the rows should be lower than the chromosome size"
+                    return
+                if chr_col_coord[1] > d_chr_dim[chr_col]:
+                    print "ERROR! End coordinate of the chromosome on the cols should be lower than the chromosome size"
+                    return
+                
+                matrix_data_full = matrix_data_full[chr_row_bin[0]:chr_row_bin[1]+1,chr_col_bin[0]:chr_col_bin[1]+1]
+                row = np.shape(matrix_data_full)[0]
+                col = np.shape(matrix_data_full)[1]
         
         output_vect = np.reshape(matrix_data_full,row*col,1)
         non_zero = np.nonzero(output_vect)
@@ -865,7 +911,7 @@ def plot_map(input_global_matrix,
                 cbar = plt.colorbar(extend='max')
                 cbar.cmap.set_over(max_color)
                 cbar.cmap.set_under(domain_color)
-        elif cutoff_type == 'none':
+        elif cutoff_type == 'None':
             if topological_domains == '':
                 plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
                 cbar = plt.colorbar()
@@ -878,12 +924,20 @@ def plot_map(input_global_matrix,
         cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
         plt.ylabel(chromosome_row + ' coordinate (bp)', fontsize=12)
         plt.xlabel(chromosome_col + ' coordinate (bp)', fontsize=12)
-        ticks_row = (np.arange(0, row, row/4) * bin_size)
-        format_ticks_row = [format_e(i) for i in ticks_row.tolist()]
-        ticks_col = (np.arange(0, col, col/4) * bin_size)
-        format_ticks_col = [format_e(i) for i in ticks_col.tolist()]
-        plt.yticks(np.arange(0, row, row/4), format_ticks_row)
-        plt.xticks(np.arange(0, col, col/4), format_ticks_col)
+        if len(chr_row_coord) == 2 and len(chr_col_coord) == 2:
+            ticks_row = (np.arange(0, row, row/4) * bin_size) + chr_row_coord[0]
+            ticks_col = (np.arange(0, col, col/4) * bin_size) + chr_col_coord[0]
+            format_ticks_row = [format_e(i) for i in ticks_row.tolist()]
+            format_ticks_col = [format_e(i) for i in ticks_col.tolist()]
+            plt.yticks(np.arange(0, row, row/4), format_ticks_row) + chr_row_coord[0]
+            plt.xticks(np.arange(0, col, col/4), format_ticks_col) + chr_col_coord[0]
+        else:
+            ticks_row = (np.arange(0, row, row/4) * bin_size)
+            ticks_col = (np.arange(0, col, col/4) * bin_size)
+            format_ticks_row = [format_e(i) for i in ticks_row.tolist()]
+            format_ticks_col = [format_e(i) for i in ticks_col.tolist()]
+            plt.yticks(np.arange(0, row, row/4), format_ticks_row)
+            plt.xticks(np.arange(0, col, col/4), format_ticks_col)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
         plt.savefig(my_filename + '.pdf', format = 'pdf', dpi=my_dpi)

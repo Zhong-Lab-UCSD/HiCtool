@@ -94,21 +94,15 @@ After having generated the global observed contact matrix, it is possible to ext
 execfile('HiCtool_full_map.py')
 global_observed = load_matrix('HiCtool_1mb_matrix_global_observed.txt')
 
-chr1_intra = extract_single_map(input_global_matrix=global_observed, 
-                                tab_sep=False, 
+chr1_intra = extract_single_map(input_global_matrix=global_observed, tab_sep=False, 
                                 chr_row='1', chr_col='1', 
-                                bin_size=1000000,
-                                data_type='observed',
-                                save_output=True,
-                                save_tab=True)
+                                bin_size=1000000, data_type='observed',
+                                save_output=True, save_tab=True)
 
-chr1_2_inter = extract_single_map(input_global_matrix=global_observed, 
-                                  tab_sep=False, 
+chr1_2_inter = extract_single_map(input_global_matrix=global_observed, tab_sep=False, 
                                   chr_row='1', chr_col='2', 
-                                  bin_size=1000000,
-                                  data_type='observed',
-                                  save_output=True,
-                                  save_tab=True)
+                                  bin_size=1000000, data_type='observed',
+                                  save_output=True, save_tab=True)
 ```
 **Tip!** ``extract_single_map`` can accept also directly the path to the global matrix file (``input_global_matrix='HiCtool_1mb_matrix_global_observed.txt'``) however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix in the workspace using ``load_matrix`` and then work with it.
 
@@ -159,21 +153,15 @@ After having normalized the data, it is possible to extract a single normalized 
 execfile('HiCtool_full_map.py')
 global_normalized = load_matrix_tab("output_ic_mes/output_normalized.txt")
 
-chr1_intra_norm = extract_single_map(input_global_matrix=global_normalized, 
-                                     tab_sep=True, 
+chr1_intra_norm = extract_single_map(input_global_matrix=global_normalized, tab_sep=True, 
                                      chr_row='1', chr_col='1', 
-                                     bin_size=1000000,
-                                     data_type='normalized',
-                                     save_output=True,
-                                     save_tab=True)  
+                                     bin_size=1000000, data_type='normalized',
+                                     save_output=True, save_tab=True)  
 
-chr1_2_inter_norm = extract_single_map(input_global_matrix=global_normalized, 
-                                       tab_sep=True, 
+chr1_2_inter_norm = extract_single_map(input_global_matrix=global_normalized, tab_sep=True, 
                                        chr_row='1', chr_col='2', 
-                                       bin_size=1000000,
-                                       data_type='normalized',
-                                       save_output=True,
-                                       save_tab=True)
+                                       bin_size=1000000, data_type='normalized',
+                                       save_output=True, save_tab=True)
 ```
 **Tip!** ``extract_single_map`` can accept also directly the path to the global matrix file (``input_global_matrix='output_ic_mes/output_normalized.txt'``) however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix in the workspace using ``load_matrix_tab`` and then work with it.
 
@@ -192,29 +180,19 @@ global_normalized = load_matrix_tab('output_ic_mes/output_normalized.txt')
 You can visualize either the observed or the normalized data. Here we plot both the global maps at 1 Mb resolution as calculated above.
 ```Python
 # Observed data
-plot_map(input_global_matrix=global_observed,
-         tab_sep=False,
-         bin_size=1000000,
-         data_type='observed',
-         species='hg38',
+plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
+         bin_size=1000000, data_type='observed', species='hg38',
          my_colormap=['white', 'red'],
-         cutoff_type='perc',
-         cutoff=99,
-         max_color='#460000')
+         cutoff_type='perc', cutoff=99, max_color='#460000')
 ```
 ![](/figures/HiCtool_1mb_observed.png)
 
 ```Python
 # Normalized data
-plot_map(input_global_matrix=global_normalized,
-         tab_sep=True,
-         bin_size=1000000,
-         data_type='normalized',
-         species='hg38',
+plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+         bin_size=1000000, data_type='normalized', species='hg38',
          my_colormap=['white', 'red'],
-         cutoff_type='perc',
-         cutoff=99,
-         max_color='#460000')
+         cutoff_type='perc', cutoff=99, max_color='#460000')
 ```
 ![](/figures/HiCtool_1mb_normalized.png)
 
@@ -225,7 +203,7 @@ A single contact matrix can be plotted by passing as argument the chromosome in 
 To plot the **intra-chromosomal heatmap** of chromosome 6, run the following:
 ```Python
 # Observed contact heatmap
-plot_map(input_global_matrix=global_observed,
+plot_map(input_matrix=global_observed, isGlobal=True,
          tab_sep=False,
          chr_row='6', chr_col='6', 
          bin_size=1000000, 
@@ -237,7 +215,7 @@ plot_map(input_global_matrix=global_observed,
          max_color='#460000')
 
 # Normalized contact heatmap
-plot_map(input_global_matrix=global_normalized,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          tab_sep=True,
          chr_row='6', chr_col='6', 
          bin_size=1000000, 
@@ -255,7 +233,7 @@ Observed (chr 6)           |  Normalized (chr 6)
 An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col`` (we plot also the histogram of the contact distribution):
 ```Python
 # Observed contact heatmap
-plot_map(input_global_matrix=global_observed,
+plot_map(input_matrix=global_observed, isGlobal=True,
          tab_sep=False,
          chr_row='6', chr_col='3', 
          bin_size=1000000, 
@@ -268,7 +246,7 @@ plot_map(input_global_matrix=global_observed,
          plot_histogram=True)
 
 # Normalized contact heatmap
-plot_map(input_global_matrix=global_normalized,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          tab_sep=True,
          chr_row='6', chr_col='3', 
          bin_size=1000000, 
