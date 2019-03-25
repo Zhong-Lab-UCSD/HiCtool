@@ -1,6 +1,6 @@
 # TAD analysis
 
-This section illustrates the procedure to calculate topologically associated domain (TAD) coordinates and visualize TADs. Topological domain coordinates should be calculated on the normalized data (as we do here) but, if you wish, you can also use this pipeline to calculate TAD coordinates on the observed data.
+This pipeline illustrates the procedure to calculate topologically associated domain (TAD) coordinates and visualize TADs. Topological domain coordinates should be calculated on the normalized data (as we do here) but, if you wish, you can also use this pipeline to calculate TAD coordinates on the observed data.
 
 - [Section 1 (Performing TAD analysis)](#1-performing-tad-analysis) is a pipeline to compute TAD coordinates and plot TADs on the heatmap.
 - [Section 2 (Supplementary TAD analysis)](#2-supplementary-tad-analysis) gives additional details about the analysis performed in Section 1.
@@ -78,7 +78,7 @@ Use these instructions if you normalized your data using the [Hi-Corrector](http
 
 To calculate TAD coordinates for a chromosome (here for chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py).
 
-Given the big dimension of the global normalized contact matrix, it is suggested to load it to your workspace ahead of the analysis and then always point to this object instead of the matrix file. This will avoid several reloadings of the contact matrix and save time.
+**Tip!** Given the big dimension of the global normalized contact matrix, it is suggested to load it to your workspace ahead of the analysis and then always point to this object instead of the matrix file. This will avoid several reloadings of the contact matrix and save time.
 ```Python
 execfile('HiCtool_TAD.py')
 global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
@@ -122,18 +122,20 @@ plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
 ![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_domains.png)
 
 
+## 2. Supplementary TAD analysis
+
+This section illustrates details about the calculation of the DI values, true DI values (HMM states) and topological domains coordinates ([Dixon et al., (2012)](http://www.nature.com/nature/journal/v485/n7398/abs/nature11082.html)).
 
 
+### 2.1. Calculating and plotting the observed DI
+
+Regions at the periphery of the topological domains are highly biased in their interaction frequencies: the most upstream portion of a topological domain is highly biased towards interacting downstream, and the downstream portion of a topological domain is highly biased towards interacting upstream. To determine the directional bias at any given bin in the genome the Directionality Index (DI) is used, quantifying the degree of upstream or downstream bias of a given bin:
+
+This is the formula used to calculate the DI:
+
+$($\frac{B-A}{|B-A|}$)$      \left(\frac{\left(A-E\right)^2}{E}+\frac{\left(B-E\right)^2}{E}\right
 
 
-
-
-
-
-
-
-
-### 2.1. Plotting the observed and true DI values
 
 Observed DI values and HMM states can be also calculated and plotted separately.
 
