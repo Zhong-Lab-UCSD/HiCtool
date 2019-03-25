@@ -780,7 +780,10 @@ def plot_map(input_matrix,
         print "Done!"
     
     # Plot a single heatmap
-    elif chr_row != '' and chr_col != '':
+    if (chr_row != '' and chr_col == '') or (chr_row == '' and chr_col != ''):
+        print "ERROR! Both the chromosomes have to be declared."
+        return
+    if chr_row != '' and chr_col != '':
         if isGlobal == True:
             matrix_data_full = extract_single_map(input_matrix,tab_sep,chr_row,chr_col,species,bin_size,data_type,custom_species_sizes,sexual_chromosomes,False,False)
         else:
@@ -795,26 +798,19 @@ def plot_map(input_matrix,
             else:
                 matrix_data_full = copy.deepcopy(input_matrix)
     
-    elif (chr_row != '' and chr_col == '') or (chr_row == '' and chr_col != ''):
-        print "ERROR! Both the chromosomes have to be declared."
-        return
-        
         print "Plotting..."
         row = np.shape(matrix_data_full)[0]
         col = np.shape(matrix_data_full)[1]
-        
-        row_str = str(row)
-        col_str = str(col)
         
         chromosome_row = 'chr' + chr_row
         chromosome_col = 'chr' + chr_col        
         
         if bin_size >= 1000000:
             bin_size_str = str(bin_size/1000000) + 'mb'
-            my_filename = 'HiCtool_' + chromosome_row + '_' + chromosome_col + '_' + bin_size_str + '_' + row_str + 'x' + col_str + '_' + data_type
+            my_filename = 'HiCtool_' + chromosome_row + '_' + chromosome_col + '_' + bin_size_str + '_' + data_type
         elif bin_size < 1000000:
             bin_size_str = str(bin_size/1000) + 'kb'
-            my_filename = 'HiCtool_' + chromosome_row + '_' + chromosome_col + '_' + bin_size_str + '_' + row_str + 'x' + col_str + '_' + data_type
+            my_filename = 'HiCtool_' + chromosome_row + '_' + chromosome_col + '_' + bin_size_str + '_' + data_type
         
         # Update matrix values to plot topological domains
         if topological_domains != '':
@@ -863,10 +859,10 @@ def plot_map(input_matrix,
                 if chr_row_bin[0] >= chr_row_bin[1] or chr_col_bin[0] >= chr_col_bin[1]:
                     print "ERROR! Start coordinate should be much lower than the end coordinate given the bin size"
                     return
-                if chr_row_coord[1] > d_chr_dim[chr_row]:
+                if chr_row_bin[1] > d_chr_dim[chr_row]:
                     print "ERROR! End coordinate of the chromosome on the rows should be lower than the chromosome size"
                     return
-                if chr_col_coord[1] > d_chr_dim[chr_col]:
+                if chr_col_bin[1] > d_chr_dim[chr_col]:
                     print "ERROR! End coordinate of the chromosome on the cols should be lower than the chromosome size"
                     return
                 
@@ -929,8 +925,8 @@ def plot_map(input_matrix,
             ticks_col = (np.arange(0, col, col/4) * bin_size) + chr_col_coord[0]
             format_ticks_row = [format_e(i) for i in ticks_row.tolist()]
             format_ticks_col = [format_e(i) for i in ticks_col.tolist()]
-            plt.yticks(np.arange(0, row, row/4), format_ticks_row) + chr_row_coord[0]
-            plt.xticks(np.arange(0, col, col/4), format_ticks_col) + chr_col_coord[0]
+            plt.yticks(np.arange(0, row, row/4), format_ticks_row)
+            plt.xticks(np.arange(0, col, col/4), format_ticks_col)
         else:
             ticks_row = (np.arange(0, row, row/4) * bin_size)
             ticks_col = (np.arange(0, col, col/4) * bin_size)

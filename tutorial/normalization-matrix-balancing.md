@@ -95,14 +95,12 @@ execfile('HiCtool_full_map.py')
 global_observed = load_matrix('HiCtool_1mb_matrix_global_observed.txt')
 
 chr1_intra = extract_single_map(input_global_matrix=global_observed, tab_sep=False, 
-                                chr_row='1', chr_col='1', 
-                                bin_size=1000000, data_type='observed',
-                                save_output=True, save_tab=True)
+                                chr_row='1', chr_col='1', bin_size=1000000, 
+                                data_type='observed', save_output=True, save_tab=True)
 
 chr1_2_inter = extract_single_map(input_global_matrix=global_observed, tab_sep=False, 
-                                  chr_row='1', chr_col='2', 
-                                  bin_size=1000000, data_type='observed',
-                                  save_output=True, save_tab=True)
+                                  chr_row='1', chr_col='2', bin_size=1000000, 
+                                  data_type='observed', save_output=True, save_tab=True)
 ```
 **Tip!** ``extract_single_map`` can accept also directly the path to the global matrix file (``input_global_matrix='HiCtool_1mb_matrix_global_observed.txt'``) however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix in the workspace using ``load_matrix`` and then work with it.
 
@@ -154,14 +152,12 @@ execfile('HiCtool_full_map.py')
 global_normalized = load_matrix_tab("output_ic_mes/output_normalized.txt")
 
 chr1_intra_norm = extract_single_map(input_global_matrix=global_normalized, tab_sep=True, 
-                                     chr_row='1', chr_col='1', 
-                                     bin_size=1000000, data_type='normalized',
-                                     save_output=True, save_tab=True)  
+                                     chr_row='1', chr_col='1', bin_size=1000000,       
+                                     data_type='normalized', save_output=True, save_tab=True)  
 
 chr1_2_inter_norm = extract_single_map(input_global_matrix=global_normalized, tab_sep=True, 
-                                       chr_row='1', chr_col='2', 
-                                       bin_size=1000000, data_type='normalized',
-                                       save_output=True, save_tab=True)
+                                       chr_row='1', chr_col='2', bin_size=1000000, 
+                                       data_type='normalized', save_output=True, save_tab=True)
 ```
 **Tip!** ``extract_single_map`` can accept also directly the path to the global matrix file (``input_global_matrix='output_ic_mes/output_normalized.txt'``) however, especially at higher resolution, the loading step of the matrix may require long time. Therefore, it is suggested to load once the matrix in the workspace using ``load_matrix_tab`` and then work with it.
 
@@ -203,62 +199,67 @@ A single contact matrix can be plotted by passing as argument the chromosome in 
 To plot the **intra-chromosomal heatmap** of chromosome 6, run the following:
 ```Python
 # Observed contact heatmap
-plot_map(input_matrix=global_observed, isGlobal=True,
-         tab_sep=False,
-         chr_row='6', chr_col='6', 
-         bin_size=1000000, 
-         data_type="observed",
-         species='hg38',
-         my_colormap=['white', 'red'],
-         cutoff_type='perc',
-         cutoff=99,
-         max_color='#460000')
+plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
+         chr_row='6', chr_col='6', bin_size=1000000, 
+         data_type="observed", species='hg38',
+         my_colormap=['white', 'red'], cutoff_type='perc',
+         cutoff=99, max_color='#460000')
 
 # Normalized contact heatmap
-plot_map(input_matrix=global_normalized, isGlobal=True,
-         tab_sep=True,
-         chr_row='6', chr_col='6', 
-         bin_size=1000000, 
-         data_type="normalized",
-         species='hg38',
+plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+         chr_row='6', chr_col='6', bin_size=1000000, 
+         data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
-         cutoff_type='perc',
-         cutoff=99,
-         max_color='#460000')
+         cutoff_type='perc', cutoff=99, max_color='#460000')
 ```
 Observed (chr 6)           |  Normalized (chr 6)
 :-------------------------:|:-------------------------:
-![](/figures/HiCtool_chr6_chr6_1mb_170x170_observed.png)  |  ![](/figures/HiCtool_chr6_chr6_1mb_170x170_normalized.png)
+![](/figures/HiCtool_chr6_chr6_1mb_observed.png)  |  ![](/figures/HiCtool_chr6_chr6_1mb_normalized.png)
 
 An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col`` (we plot also the histogram of the contact distribution):
 ```Python
 # Observed contact heatmap
-plot_map(input_matrix=global_observed, isGlobal=True,
-         tab_sep=False,
-         chr_row='6', chr_col='3', 
-         bin_size=1000000, 
-         data_type="observed",
-         species='hg38',
+plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
+         chr_row='6', chr_col='3', bin_size=1000000, 
+         data_type="observed", species='hg38',
          my_colormap=['white', 'red'],
-         cutoff_type='perc',
-         cutoff=99,
-         max_color='#460000',
+         cutoff_type='perc', cutoff=99, max_color='#460000',
          plot_histogram=True)
 
 # Normalized contact heatmap
-plot_map(input_matrix=global_normalized, isGlobal=True,
-         tab_sep=True,
-         chr_row='6', chr_col='3', 
-         bin_size=1000000, 
-         data_type="normalized",
-         species='hg38',
+plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+         chr_row='6', chr_col='3', bin_size=1000000, 
+         data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
-         cutoff_type='perc',
-         cutoff=99,
-         max_color='#460000',
+         cutoff_type='perc', cutoff=99, max_color='#460000',
          plot_histogram=True)
 ```
 Observed (chr6-chr3)            |  Normalized (chr6-chr3)
+:-------------------------:|:-------------------------:
+![](/figures/HiCtool_chr6_chr3_1mb_observed.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_normalized.png)
+![](/figures/HiCtool_chr6_chr3_1mb_observed_histogram.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_normalized_histogram.png)
+
+In addition, only a region of the heatmap can be plotted by setting the parameters ``chr_row_coord`` and ``chr_col_coord``. These are lists with two integers indicating the start and end coordinate of the chromosome on the rows and on the columns respectively.
+```Python
+# Intrachromosomal map
+plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+         chr_row='6', chr_col='6', bin_size=1000000, 
+         chr_row_coord=[0,50000000], chr_col_coord=[0,50000000],
+         data_type="normalized", species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc', cutoff=99, max_color='#460000',
+         plot_histogram=False)
+
+# Interchromosomal map
+plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+         chr_row='6', chr_col='3', bin_size=1000000, 
+         chr_row_coord=[0,40000000], chr_col_coord=[0,50000000],
+         data_type="normalized", species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc', cutoff=99, max_color='#460000',
+         plot_histogram=False)
+```
+Normalized (chr6) 0-50 Mb         |  Normalized (chr6-chr3) 0-40Mb; 0-50Mb
 :-------------------------:|:-------------------------:
 ![](/figures/HiCtool_chr6_chr3_1mb_170x198_observed.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_170x198_normalized.png)
 ![](/figures/HiCtool_chr6_chr3_1mb_170x198_observed_histogram.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_170x198_normalized_histogram.png)
