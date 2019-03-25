@@ -55,7 +55,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_80-120kb_normalized_fend_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_fend_domains.pdf)
 
 Zoom in on a smaller region (chr6: 50,000,000-54,000,000):
 ```Python
@@ -69,7 +69,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_50-54kb_normalized_fend_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_fend_domains.pdf)
 
 
 ### 1.2. Data normalized with Hi-Corrector
@@ -99,29 +99,27 @@ for i in my_chromosomes:
 To plot the topological domains on the heatmap, use the function ``plot_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) and pass the topological domain coordinates with the argument ``topological_domains``. Here we plot the heatmap for chr6: 80,000,000-120,000,000.
 ```Python
 execfile('HiCtool_full_map.py')
-plot_map(input_global_matrix=global_normalized_40kb, tab_sep=True,
+plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
          chr_row='6', chr_col='6', bin_size=40000, 
+         chr_row_coord=[80000000,120000000], chr_col_coord=[80000000,120000000],
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
-         cutoff_type='perc', cutoff=99, max_color='#460000',
-         my_dpi=1000,
+         cutoff_type='perc', cutoff=95, max_color='#460000',
          topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_80-120kb_normalized_fend_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_domains.pdf)
 
 Zoom in on a smaller region (chr6: 50,000,000-54,000,000):
 ```Python
-plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt', 
-a_chr='6', bin_size=40000, full_matrix=False, 
-start_coord=50000000, end_coord=54000000, 
-species='hg38', 
-data_type="normalized_fend", 
-my_colormap=['white', 'red'], 
-cutoff_type='percentile', cutoff=95, max_color='#460000', 
-my_dpi=1000, 
-topological_domains='HiCtool_chr6_topological_domains.txt')
+plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
+         chr_row='6', chr_col='6', bin_size=40000, 
+         chr_row_coord=[50000000,54000000], chr_col_coord=[50000000,54000000],
+         data_type="normalized", species='hg38',
+         my_colormap=['white', 'red'],
+         cutoff_type='perc', cutoff=95, max_color='#460000',
+         topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_50-54kb_normalized_fend_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_domains.pdf)
 
 
 

@@ -239,27 +239,26 @@ Observed (chr6-chr3)            |  Normalized (chr6-chr3)
 ![](/figures/HiCtool_chr6_chr3_1mb_observed.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_normalized.png)
 ![](/figures/HiCtool_chr6_chr3_1mb_observed_histogram.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_normalized_histogram.png)
 
-In addition, only a region of the heatmap can be plotted by setting the parameters ``chr_row_coord`` and ``chr_col_coord``. These are lists with two integers indicating the start and end coordinate of the chromosome on the rows and on the columns respectively.
+In addition, only a **region of the heatmap** can be plotted by setting the parameters ``chr_row_coord`` and ``chr_col_coord``. These are lists with two integers indicating the start and end coordinate of the chromosome on the rows and on the columns respectively.
 ```Python
-# Intrachromosomal map
+# Intra-chromosomal map
 plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
          chr_row='6', chr_col='6', bin_size=1000000, 
-         chr_row_coord=[0,50000000], chr_col_coord=[0,50000000],
+         chr_row_coord=[0,80000000], chr_col_coord=[0,80000000],
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
          cutoff_type='perc', cutoff=99, max_color='#460000',
          plot_histogram=False)
 
-# Interchromosomal map
+# Inter-chromosomal map
 plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
          chr_row='6', chr_col='3', bin_size=1000000, 
-         chr_row_coord=[0,40000000], chr_col_coord=[0,50000000],
+         chr_row_coord=[0,50000000], chr_col_coord=[0,80000000],
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
          cutoff_type='perc', cutoff=99, max_color='#460000',
          plot_histogram=False)
 ```
-Normalized (chr6) 0-50 Mb         |  Normalized (chr6-chr3) 0-40Mb; 0-50Mb
+Normalized (chr6) 0-80 Mb         |  Normalized (chr6-chr3) 0-50Mb; 0-80Mb
 :-------------------------:|:-------------------------:
-![](/figures/HiCtool_chr6_chr3_1mb_170x198_observed.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_170x198_normalized.png)
-![](/figures/HiCtool_chr6_chr3_1mb_170x198_observed_histogram.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_170x198_normalized_histogram.png)
+![](/figures/HiCtool_chr6_chr6_1mb_0-80mb_normalized.png)  |  ![](/figures/HiCtool_chr6_chr3_1mb_0-50_0-80mb_normalized.png)

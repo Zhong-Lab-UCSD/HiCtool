@@ -827,6 +827,7 @@ def plot_map(input_matrix,
                 domains = load_topological_domains(topological_domains)
             else:
                 domains = topological_domains
+            my_filename = my_filename + '_domains'
             diag_index = np.diag_indices(len(matrix_data_full))
             for domain in domains:
                 temp_start = domain[0]/40000
