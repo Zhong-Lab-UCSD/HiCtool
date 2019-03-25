@@ -170,3 +170,28 @@ plot_chromosome_DI(DI_chr6, a_chr='6', full_chromosome=False,
                    plot_legend=True, plot_grid=True)
 ```
 ![](/figures/HiCtool_chr6_DI.png)
+
+### 2.1. Calculating and plotting the true DI
+
+We use a Hidden Markov Model (HMM) based on the Directionality Index to identify biased states (true DI).
+
+For true DI calculation, we consider the **emission sequence** as the observed DI values and the Transition Matrix, Emission Matrix and initial State Sequence as unknown. We have **three emissions** 1, 2, 0 corresponding to a positive (1), negative (2) or zero (0) value of the observed DI. In our analysis, we associate to the emission '0' all the absolute DI values under a threshold of 0.4. So, first we estimate the model parameters and then the most probable sequence of states using the Viterbi algorithm. 
+
+All these steps are performed using the function ``calculate_chromosome_true_DI`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py), which calculates true DI values and save the output to a txt file:
+```Python
+execfile('HiCtool_TAD.py')
+hmm_chr6 = calculate_chromosome_true_DI(input_file_DI='HiCtool_chr6_DI.txt', 
+                                        a_chr='6',
+                                        save_file=True)
+```
+Previously calculated true DI values and saved to file can be loaded using the function ``load_hmm_states``:
+```Python
+hmm_chr6 = load_hmm_states('HiCtool_chr6_hmm_states.txt')
+```
+**DI and true DI values can be plotted** using the function ``plot_chromosome_DI`` and passing also ``hmm_chr6`` (or ``'HiCtool_chr6_hmm_states.txt'``) as input parameter:
+```Python
+plot_chromosome_DI(input_file_DI=DI_chr6, a_chr='6', full_chromosome=False,
+                   start_pos=50000000, end_pos=54000000, input_file_hmm=hmm_chr6,
+                   species='hg38', plot_legend=True, plot_grid=True)
+```
+![](/figures/HiCtool_chr6_DI_full.png)
