@@ -55,7 +55,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_fend_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_fend_domains.png)
 
 Zoom in on a smaller region (chr6: 50,000,000-54,000,000):
 ```Python
@@ -69,7 +69,7 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_dpi=1000, 
                      topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_fend_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_fend_domains.png)
 
 
 ### 1.2. Data normalized with Hi-Corrector
@@ -107,7 +107,7 @@ plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
          cutoff_type='perc', cutoff=95, max_color='#460000',
          topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_domains.png)
 
 Zoom in on a smaller region (chr6: 50,000,000-54,000,000):
 ```Python
@@ -119,7 +119,7 @@ plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
          cutoff_type='perc', cutoff=95, max_color='#460000',
          topological_domains='HiCtool_chr6_topological_domains.txt')
 ```
-![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_domains.pdf)
+![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_domains.png)
 
 
 
