@@ -613,6 +613,7 @@ def extract_single_map(input_global_matrix,
     
 
 def plot_map(input_global_matrix,
+             isGlobal,
              tab_sep=False,
              chr_row='',
              chr_col='',
@@ -709,7 +710,6 @@ def plot_map(input_global_matrix,
     label_name = tuple(label_name)
     
     if chr_row == '' and chr_col == '':
-        
         if bin_size >= 1000000:
             bin_size_str = str(bin_size/1000000) + 'mb'
             my_filename = 'HiCtool_' + bin_size_str + '_' + data_type
@@ -772,9 +772,25 @@ def plot_map(input_global_matrix,
         plt.savefig(my_filename + '.pdf', format = 'pdf', dpi=my_dpi)
         print "Done!"
     
-    else:
+    elif chr_row != '' and chr_col != '':
+        if isGlobal == True:
+            matrix_data_full = extract_single_map(input_global_matrix,tab_sep,chr_row,chr_col,species,bin_size,data_type,custom_species_sizes,sexual_chromosomes,False,False)
+        else:
+            if isinstance(input_global_matrix,str):
+                if tab_sep == True:
+                    matrix_data_full = load_matrix_tab(input_global_matrix)
+                else:
+                    if chr_row == chr_col:
+                        matrix_data_full = load_matrix(input_global_matrix)
+                    else:
+                        matrix_data_full = load_matrix_rectangular(input_global_matrix)
+            else:
+                matrix_data_full = copy.deepcopy(input_global_matrix)
+    
+    elif (chr_row != '' and chr_col == '') or (chr_row == '' and chr_col != ''):
+        print "ERROR! Both the chromosomes have to be declared."
+        return
         
-        matrix_data_full = extract_single_map(input_global_matrix,tab_sep,chr_row,chr_col,species,bin_size,data_type,custom_species_sizes,sexual_chromosomes,False,False)
         print "Plotting..."
         row = np.shape(matrix_data_full)[0]
         col = np.shape(matrix_data_full)[1]
@@ -799,6 +815,9 @@ def plot_map(input_global_matrix,
                 return
             if chr_row != chr_col:
                 print "ERROR! To plot topological domains the matrix should be intrachromosomal"
+                return
+            if chr_row == '' and chr_col == '':
+                print "ERROR! To plot topological domains select a single intrachromosomal contact matrix. Use chr_row and chr_col for that."
                 return
             domains = load_topological_domains(topological_domains)
             diag_index = np.diag_indices(len(matrix_data_full))
