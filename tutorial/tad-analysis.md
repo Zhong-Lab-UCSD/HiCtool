@@ -133,8 +133,9 @@ Regions at the periphery of the topological domains are highly biased in their i
 
 This is the formula used to calculate the DI:
 
-$($\frac{B-A}{|B-A|}$)$      \left(\frac{\left(A-E\right)^2}{E}+\frac{\left(B-E\right)^2}{E}\right
-
+\[
+(\frac{B-A}{|B-A|})
+\]
 
 
 Observed DI values and HMM states can be also calculated and plotted separately.
