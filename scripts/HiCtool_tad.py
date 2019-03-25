@@ -539,12 +539,13 @@ def load_hmm_states(input_file):
 
 
 def plot_chromosome_DI(input_file_DI, 
-                       a_chr, 
-                       start_pos, 
-                       end_pos,
-                       full_chromosome=False,
+                       a_chr,
+                       full_chromosome,
+                       start_pos=0, 
+                       end_pos=0,
                        input_file_hmm='',
                        species='hg38',
+                       custom_species_sizes={},
                        plot_legend=True,
                        plot_grid=True):
     """
@@ -553,12 +554,15 @@ def plot_chromosome_DI(input_file_DI,
         input_file_DI (str | obj): txt file of the DI values generated with the function "calculate_chromosome_DI" or
         object with the DI values returned by "calculate_chromosome_DI".
         a_chr (str): chromosome number (example for chromosome 1: '1').
+        full_chromosome (bool): if True, plot the full chromosome "a_chr". In this case "start_pos" and "end_pos" parameters are not considered.
         start_pos (int): start coordinate for the plot in bp.
         end_pos (int): end coordinate for the plot in bp.
-        full_chromosome (bool): if True, plot the full chromosome "a_chr". In this case "start_pos" and "end_pos" parameters are not considered.
         input_file_hmm (str | obj): txt file of the true DI values generated with the function "calculate_chromosome_true_DI" or
         object with the true DI values returned by "calculate_chromosome_true_DI.
         species (str): species name (hg38, mm10, etc.).
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
+        of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
         plot_legend (bool): if True, plot the legend.
         plot_grid (bool): if True, plot the grid.
     """    
@@ -570,18 +574,35 @@ def plot_chromosome_DI(input_file_DI,
     bin_size = 40000
     
     if full_chromosome == True:
-        start_pos = 0
-        end_pos = int(round((chromosomes[species][a_chr])/bin_size))*bin_size
-        start_index = 0
-        end_index = int(round((chromosomes[species][a_chr])/bin_size)) + 1
+        if species in chromosomes.keys():
+            start_pos = 0
+            end_pos = int(round((chromosomes[species][a_chr])/bin_size))*bin_size
+            start_index = 0
+            end_index = int(round((chromosomes[species][a_chr])/bin_size)) + 1
+        else:
+            if len(custom_species_sizes) == 0:
+                print "ERROR: insert custom_species_sizes parameter"
+            start_pos = 0
+            end_pos = int(round((custom_species_sizes[a_chr])/bin_size))*bin_size
+            start_index = 0
+            end_index = int(round((custom_species_sizes[a_chr])/bin_size)) + 1
     else:
+        if end_pos == 0:
+            print "ERROR: insert start and end coordinates"
+            return
         start_index = int(round(start_pos/bin_size))
-        end_index = int(round((end_pos)/bin_size)) + 1
+        end_index = int(round((end_pos)/bin_size))
     
-        if species == 'hg38' or species == 'mm10':
+        if species in chromosomes.keys():
             if end_pos > int(round((chromosomes[species][a_chr])/bin_size))*bin_size and end_pos <= chromosomes[species][a_chr]:
                 end_pos = int(round((chromosomes[species][a_chr])/bin_size))*bin_size
             elif end_pos > chromosomes[species][a_chr]:
+                print("ERROR: end coordinate exceeds chromosome dimension")
+                return
+        else:
+            if end_pos > int(round((custom_species_sizes[a_chr])/bin_size))*bin_size and end_pos <= custom_species_sizes[a_chr]:
+                end_pos = int(round((custom_species_sizes[a_chr])/bin_size))*bin_size
+            elif end_pos > custom_species_sizes[a_chr]:
                 print("ERROR: end coordinate exceeds chromosome dimension")
                 return
     

@@ -10,7 +10,7 @@ This pipeline illustrates the procedure to calculate topologically associated do
 1. [Performing TAD analysis](#1-performing-tad-analysis)
    - [1.1. Data normalized with Yaffe-Tanay method](#11-data-normalized-with-yaffe-tanay-method)
    - [1.2. Data normalized with Hi-Corrector](#12-data-normalized-with-hi-corrector)
-   2. [Supplementary TAD analysis](#2-supplementary-tad-analysis)
+2. [Supplementary TAD analysis](#2-supplementary-tad-analysis)
    - [2.1. Calculating and plotting the observed DI](#21-calculating-and-plotting-the-observed-di)
    - [2.2. Calculating and plotting the true DI](#22-calculating-and-plotting-the-true-di)
    - [2.3. Calculating TAD coordinates](#23-calculating-tad-coordinates)
@@ -147,17 +147,17 @@ Observed DI values and HMM states can be also calculated and plotted separately.
 
 To **calculate the DI values** use the function ``calculate_chromosome_DI`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py) as following:
 ```Python
-#
 execfile('HiCtool_TAD.py')
 
 # Yaffe and Tanay normalization method
 DI_chr6 = calculate_chromosome_DI(input_contact_matrix='HiCtool_chr6_40kb_normalized_fend.txt', 
-                                  a_chr='6', isGlobal=False, tab_sep=False)
+                                  a_chr='6', isGlobal=False, tab_sep=False,
+                                  species='hg38', save_file=True)
 
 # Hi-Corrector normalization method
 global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
 DI_chr6 = calculate_chromosome_DI(input_contact_matrix=global_normalized_40kb, 
-                                  a_chr='6', isGlobal=True)
+                                  a_chr='6', isGlobal=True, species='hg38', save_file=True)
 ```
 Previously calculated DI values and saved to file can be loaded using the function ``load_DI_values``:
 ```Python
@@ -165,6 +165,8 @@ DI_chr6 = load_DI_values('HiCtool_chr6_DI.txt')
 ```
 **DI values can be plotted** using the function ``plot_chromosome_DI``:
 ```Python
-plot_chromosome_DI(DI_chr6, a_chr='6', start_pos=50000000, end_pos=54000000)
+plot_chromosome_DI(DI_chr6, a_chr='6', full_chromosome=False,
+                   start_pos=50000000, end_pos=54000000, species='hg38',
+                   plot_legend=True, plot_grid=True)
 ```
 ![](/figures/HiCtool_chr6_DI.png)
