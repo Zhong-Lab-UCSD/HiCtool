@@ -21,16 +21,15 @@ This pipeline illustrates the procedure to normalize Hi-C **intra-chromosomal co
 
 ## 1. Running HiFive functions
 
-The function ``run_hive`` of [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run all the six steps needed in order to normalize the data, whose outputs are ``hdf5`` files. For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following code on the Python or iPython console:
+The function ``run_hifive`` of [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run all the six steps needed in order to normalize the data, whose outputs are ``hdf5`` files. For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following code on the Python or iPython console:
 ```Python
 execfile('HiCtool_hifive.py')
 run_hifive(fend_file='restrictionsites_gc_map_valid.bed',
-           bam_file1='HiCfile_pair1.bam', 
-           bam_file2='HiCfile_pair2.bam',
+           bam_file1='HiCfile_pair1.bam', bam_file2='HiCfile_pair2.bam',
            restriction_enzyme='MboI',
            model='Yaffe-Tanay')
 ```
-More details about all the steps performed here are illustrated in the following steps 1.1.-1.6. If not interested, go to [section 2](#2-normalizing-the-data).
+More details about all the steps performed here are illustrated in the following steps 1.1.-1.6. If not interested, jump to [section 2](#2-normalizing-the-data).
 
 ***
 
@@ -140,7 +139,7 @@ execfile('HiCtool_normalization_visualization.py')
 ```
 ### 2.1. Normalized fend data
 
-To calculate and save the **normalized intra-chromosomal contact matrix** for a chromosome ``a_chr``, use the function ``normalize_chromosome_fend_data`` (see API Documentation):
+To calculate and save the **normalized intra-chromosomal contact matrix** for a chromosome ``a_chr``, use the function ``normalize_chromosome_fend_data``:
 ```Python
 fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', bin_size=40000, 
                                                       input_file='HiC_norm_binning.hdf5', 

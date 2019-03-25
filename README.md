@@ -7,6 +7,7 @@ HiCtool is an open-source bioinformatic tool based on Python, which integrates s
 - [Overview](#overview)
 - [Installation](#installation)
 - [Tutorial](#tutorial)
+- [API documentation](#api-documentation)
 - [Reference](#reference)
 - [Support](#support)
 
@@ -58,6 +59,10 @@ HiCtool is in a pipeline format to allow extreme flexibility and easy usage. In 
 ## Tutorial
 
 We have compiled a full tutorial to show the usage of the pipeline. Please check the [Tutorial Homepage](./tutorial/ReadMe.md).
+
+## API documentation
+
+All the functions used in this documentation are reported with all the input parameters in this [API documentation]().
 
 ## Reference
 

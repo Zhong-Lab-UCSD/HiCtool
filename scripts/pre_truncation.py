@@ -5,15 +5,16 @@ def pre_truncation(input_fastq,
         To perform pre-truncation on reads that contain potential ligation junctions. 
         To be executed before the mapping step.
         Parameters:
-            input_fastq (str): input fastq file as 'myfile.fastq'
+            input_fastq (str): path to the input fastq file.
             restriction_enzyme (str): restriction enzyme used in the Hi-C experiment. 
             One between 'HindIII', 'MboI', 'DpnII' and 'NcoI' (if different, you need to specify custom_ligation_junction)
             custom_ligation_junction (str): ligation junction sequence to be used if a different restriction enzyme rather than 
             the above ones is used.
-        Output:
+        Output files:
             Fastq files with pre-truncated reads.
             Log files with pre-truncation information.
             Plot of the distribution of truncated reads length.
+        Return: None.
         """
     
     from collections import Counter

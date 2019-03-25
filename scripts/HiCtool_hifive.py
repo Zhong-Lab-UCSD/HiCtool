@@ -5,51 +5,13 @@ def run_hifive(fend_file,
                model):
     """
     Program to run HiFive functions.
-    
-    1) Creating a Fend object (hifive.Fend)
-    
-    A Fragment-end (Fend) object (hdf5 format) contains information about the fragments created by 
-    digestion of a genome by a specific restriction enzyme (RE). In this program this information is supplied 
-    in the form of a BED-formatted file.
-    
-    2) Creating a HiCData object (hifive.HiCData)
-    
-    HiC dataset created from a Fend file and mapped data in BAM format. When a data object is created PCR duplicates
-    are removed and reads with ends mapping to adjacent fragments on opposite strands were also excluded, 
-    to consider the possibility of incomplete restriction enzyme digestion and fragment circularization.
-    
-    3) Creating a HiC project object (hifive.HiC)
-    
-    The HiC project object contains links to HiCData and Fend object, information about which fends to
-    include in the analysis, model parameters and learned model values. This is the standard way of
-    working with Hi-C data in HiFive and this object will be used for learning the model, extracting
-    portions of data, plotting and downstream analysis.
-    
-    Only if model is Yaffe-Tanay performs these last three steps:
-    
-    4) Filtering HiC fends (hifive.filter_fends)
-    
-    Filtering out fends with specific properties to be not taken into account for learning fend correction
-    parameters.
-    
-    5) Finding HiC distance function (hifive.find_distance_parameters)
-    
-    Estimation of the distance-dependence relationship from the data prior to normalization, in order to
-    avoid biases that may result due to restriction site distribution characteristics or the influence 
-    of distance/signal relationship. This is related to the fact that restriction sites throughout the
-    genome are unevenly distributed and the interaction signal is strongly inversely-related to 
-    inter-fragment distance.
-    
-    6) Learning correction parameters using the binning algorithm (hic.find_binning_fend_corrections)
-    
-    Algorithm to learn the correction values for Hi-C data. We take into account of fragment
-    lengths, inter fragments distance, GC content and mappability biases for the normalization.
     Parameters:
     fend_file: fend file from preprocessing.
     bam_file_1: bam file for the first read of the pairs.
     bam_file_2: bam file for the second read of the pairs.
-    restriction_enzyme (str): restriction enzyme used in the Hi-C experiment
+    restriction_enzyme (str): restriction enzyme used in the Hi-C experiment.
     model (str): model you wish to use for the following normalization procedure: either 'Yaffe-Tanay' or 'Hi-Corrector'.
+    Returns: None.
     """
     import hifive
     
@@ -106,7 +68,7 @@ def run_hifive(fend_file,
                                 [bam_file_1,bam_file_2],
                                 maxinsert=500,
                                 skip_duplicate_filtering=False)
-                                data.save()
+        data.save()
                                 
         # Creating a HiC Project object
         hic = hifive.HiC('HiC_project_object.hdf5', 'w')
