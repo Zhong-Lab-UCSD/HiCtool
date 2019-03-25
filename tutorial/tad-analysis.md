@@ -133,23 +133,29 @@ Regions at the periphery of the topological domains are highly biased in their i
 
 This is the formula used to calculate the DI:
 
-\[
-(\frac{B-A}{|B-A|})
-\]
+![](/figures/DI_formula.png)
 
+where:
+
+- *A* is the the number of reads that map from a given 40 kb bin to the upstream 2 Mb.
+- *B* is the the number of reads that map from a given 40 kb bin to the downstream 2 Mb.
+- *E* is the expected number of contacts for each bin and it equals (A+B)/2.
+
+To compute DI, we need the fend normalized contact data at a bin size of 40 kb. Since the bin size is 40 kb (here we used 40 kbpb which stands for 40 kb per bin), hence the detection region of upstream or downstream biases 2 Mb is converted to 50 bins (2 Mb / 40 kbpb = 50 bins).
 
 Observed DI values and HMM states can be also calculated and plotted separately.
 
-To **calculate the DI values** use the function ``calculate_chromosome_DI`` as following:
+To **calculate the DI values** use the function ``calculate_chromosome_DI`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py) as following:
 ```Python
 #
-execfile('HiCtool_tad.py')
+execfile('HiCtool_TAD.py')
 
 # Yaffe and Tanay normalization method
 DI_chr6 = calculate_chromosome_DI(input_contact_matrix='HiCtool_chr6_40kb_normalized_fend.txt', 
                                   a_chr='6', isGlobal=False, tab_sep=False)
 
-# Hi-Corrector normalization method (global matrix already loaded above)
+# Hi-Corrector normalization method
+global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
 DI_chr6 = calculate_chromosome_DI(input_contact_matrix=global_normalized_40kb, 
                                   a_chr='6', isGlobal=True)
 ```
@@ -159,9 +165,6 @@ DI_chr6 = load_DI_values('HiCtool_chr6_DI.txt')
 ```
 **DI values can be plotted** using the function ``plot_chromosome_DI``:
 ```Python
-execfile('HiCtool_tad.py')
-
 plot_chromosome_DI(DI_chr6, a_chr='6', start_pos=50000000, end_pos=54000000)
 ```
-
 ![](/figures/HiCtool_chr6_DI.png)
