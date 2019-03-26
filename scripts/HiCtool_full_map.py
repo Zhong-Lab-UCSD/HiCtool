@@ -595,14 +595,14 @@ def extract_single_map(input_global_matrix,
         if save_output == True:
             save_matrix(output_matrix, my_filename)
     else:
-        dim_row = str(d_chr_dim[chr_row])
-        dim_col = str(d_chr_dim[chr_col])
+        #dim_row = str(d_chr_dim[chr_row])
+        #dim_col = str(d_chr_dim[chr_col])
         if bin_size >= 1000000:
             bin_size_str = str(bin_size/1000000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + data_type + '.txt'
         elif bin_size < 1000000:
             bin_size_str = str(bin_size/1000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + data_type + '.txt'
         if save_output == True:
             save_matrix_rectangular(output_matrix, my_filename)
     
@@ -776,6 +776,7 @@ def plot_map(input_matrix,
         cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
         plt.xticks(label_pos, label_name, rotation='vertical', fontsize = 6)
         plt.yticks(label_pos, label_name, fontsize = 6)
+        plt.tick_params(axis='both', which='both', length=0)
         plt.savefig(my_filename + '.pdf', format = 'pdf', dpi=my_dpi)
         print "Done!"
     

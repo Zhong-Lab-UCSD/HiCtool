@@ -162,7 +162,7 @@ def normalize_chromosome_fend_data(a_chr,
                                    bin_size, 
                                    input_file='HiC_norm_binning.hdf5',
                                    species='hg38', 
-                                   chr_size=0,
+                                   custom_species_sizes={},
                                    save_obs=True, 
                                    save_expect=False):
     """
@@ -175,7 +175,8 @@ def normalize_chromosome_fend_data(a_chr,
         input_file (str): object containing learned correction parameters in .hdf5 format obtained with
         HiCtool_hifive.py (default: 'HiC_norm_binning.hdf5')
         species (str): 'hg38' or 'mm10' or any other species label in string format.
-        chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
         save_obs (bool): if true, save the observed contact data.
         save_expect (bool): if true, save the expected contact data.
     Returns:
@@ -195,10 +196,10 @@ def normalize_chromosome_fend_data(a_chr,
         output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_'    
     
     start_pos = 0
-    if species == 'hg38' or species == 'mm10':
+    if species in chromosomes.keys():
         end_pos = (chromosomes[species][a_chr]/bin_size)*bin_size
     else:
-        end_pos = (chr_size/bin_size)*bin_size
+        end_pos = (custom_species_sizes[a_chr]/bin_size)*bin_size
         
     # Expected raw (number of possible fend interactions). 
     # These are needed to scale the fend expected data by the mean fend pairs 
@@ -265,7 +266,7 @@ def plot_chromosome_data(contact_matrix,
                         end_coord=0,
                         species='hg38',
                         data_type='normalized_fend',
-                        chr_size=0,
+                        custom_species_sizes={},
                         my_colormap=['white', 'red'],
                         cutoff_type='percentile',
                         cutoff=95,
@@ -286,7 +287,8 @@ def plot_chromosome_data(contact_matrix,
         end_coord (int): end coordinate for the plot in bp.
         species (str): 'hg38' or 'mm10' or any other species label in string format.
         data_type (str): type of data to plot either "observed", "normalized_fend", "expected_fend", "expected_enrich".
-        chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
         my_colormap (str | list): colormap to be used to plot the data. 1) Use a string if you choose among any colorbar here 
         https://matplotlib.org/examples/color/colormaps_reference.html 2) Use a list of strings with colors if you want
         a custom colorbar. Example: ['white', 'red', 'black']. Colors can be specified also in this format: '#000000'.
@@ -315,10 +317,10 @@ def plot_chromosome_data(contact_matrix,
         bin_size_str = str(bin_size/1000)
         output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_' + data_type
     
-    if species == 'hg38' or species == 'mm10':
+    if species in chromosomes.keys():
         end_pos = (chromosomes[species][a_chr]/bin_size)*bin_size
     else:
-        end_pos = (chr_size/bin_size)*bin_size
+        end_pos = (custom_species_sizes[a_chr]/bin_size)*bin_size
     
     # Plotting of the data
     if isinstance(contact_matrix, str):
@@ -360,15 +362,18 @@ def plot_chromosome_data(contact_matrix,
             return
     
         if end_coord > end_pos:
-            if species == 'hg38' or species == 'mm10':
+            if species in chromosomes.keys():
                 print "ERROR! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
                 return
             else:
-                print "ERROR! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+                print "ERROR! End coordinate is larger than chromosome size " + str((custom_species_sizes[a_chr]/bin_size)*bin_size) + " bp"
                 return
     else:
         start_bin = 0
-        end_bin = chromosomes[species][a_chr]/bin_size
+        if species in chromosomes.keys():   
+            end_bin = chromosomes[species][a_chr]/bin_size
+        else:
+            end_bin = custom_species_sizes[a_chr]/bin_size
     
     matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1] 
     
@@ -466,7 +471,7 @@ def normalize_chromosome_enrich_data(a_chr,
                                      bin_size,
                                      input_file='HiC_norm_binning.hdf5',
                                      species='hg38', 
-                                     chr_size=0,
+                                     custom_species_sizes={},
                                      save_obs=True, 
                                      save_expect=False):
     """
@@ -480,7 +485,8 @@ def normalize_chromosome_enrich_data(a_chr,
         input_file (str): object containing learned correction parameters in .hdf5 format obtained with
         HiCtool_hifive.py (default: 'HiC_norm_binning.hdf5').
         species (str): 'hg38' or 'mm10' or any other species label in string format.
-        chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
         save_obs (bool): if true, save the observed contact data.
         save_expect (bool): if true, save the expected contact data.
     Returns:
@@ -500,10 +506,10 @@ def normalize_chromosome_enrich_data(a_chr,
         output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_'
     
     start_pos = 0
-    if species == 'hg38' or species == 'mm10':
+    if species in chromosomes.keys():
         end_pos = (chromosomes[species][a_chr]/bin_size)*bin_size
     else:
-        end_pos = (chr_size/bin_size)*bin_size
+        end_pos = (custom_species_sizes[a_chr]/bin_size)*bin_size
 
     # Enrichment data
     hic = hifive.HiC(input_file)
@@ -546,7 +552,7 @@ def plot_chromosome_enrich_data(contact_matrix,
                                 start_coord=0, 
                                 end_coord=0,
                                 species='hg38',
-                                chr_size=0,
+                                custom_species_sizes={},
                                 cutoff_max=0,
                                 cutoff_min=0,
                                 my_dpi=1000,
@@ -563,7 +569,8 @@ def plot_chromosome_enrich_data(contact_matrix,
         start_coord (int): start coordinate for the plot in bp.
         end_coord (int): end coordinate for the plot in bp.
         species (str): 'hg38' or 'mm10' or any other species label in string format.
-        chr_size (int): chromosome size of your custom species if you did not use 'hg38' or 'mm10'.
+        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
+        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
         my_dpi (int): resolution of the contact map in dpi.
         plot_histogram (bool): if true, plot the histogram.
     """                                       
@@ -586,10 +593,10 @@ def plot_chromosome_enrich_data(contact_matrix,
         bin_size_str = str(bin_size/1000)
         output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_normalized_enrich'
     
-    if species == 'hg38' or species == 'mm10':
+    if species in chromosomes.keys():
         end_pos = (chromosomes[species][a_chr]/bin_size)*bin_size
     else:
-        end_pos = (chr_size/bin_size)*bin_size
+        end_pos = (custom_species_sizes[a_chr]/bin_size)*bin_size
     
     # Plotting the enrichment contact data
     if isinstance(contact_matrix, str):

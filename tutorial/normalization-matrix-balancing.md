@@ -176,7 +176,7 @@ global_normalized = load_matrix_tab('output_ic_mes/output_normalized.txt')
 You can visualize either the observed or the normalized data. Here we plot both the global maps at 1 Mb resolution as calculated above.
 ```Python
 # Observed data
-plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
+plot_map(input_matrix=global_observed, isGlobal=True,
          bin_size=1000000, data_type='observed', species='hg38',
          my_colormap=['white', 'red'],
          cutoff_type='perc', cutoff=99, max_color='#460000')
@@ -185,7 +185,7 @@ plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
 
 ```Python
 # Normalized data
-plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          bin_size=1000000, data_type='normalized', species='hg38',
          my_colormap=['white', 'red'],
          cutoff_type='perc', cutoff=99, max_color='#460000')
@@ -199,14 +199,14 @@ A single contact matrix can be plotted by passing as argument the chromosome in 
 To plot the **intra-chromosomal heatmap** of chromosome 6, run the following:
 ```Python
 # Observed contact heatmap
-plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
+plot_map(input_matrix=global_observed, isGlobal=True,
          chr_row='6', chr_col='6', bin_size=1000000, 
          data_type="observed", species='hg38',
          my_colormap=['white', 'red'], cutoff_type='perc',
          cutoff=99, max_color='#460000')
 
 # Normalized contact heatmap
-plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          chr_row='6', chr_col='6', bin_size=1000000, 
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
@@ -219,7 +219,7 @@ Observed (chr 6)           |  Normalized (chr 6)
 An **inter-chromosomal heatmap** can be also plotted (chr6-chr3) by setting the parameters ``chr_row`` and ``chr_col`` (we plot also the histogram of the contact distribution):
 ```Python
 # Observed contact heatmap
-plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
+plot_map(input_matrix=global_observed, isGlobal=True,
          chr_row='6', chr_col='3', bin_size=1000000, 
          data_type="observed", species='hg38',
          my_colormap=['white', 'red'],
@@ -227,7 +227,7 @@ plot_map(input_matrix=global_observed, isGlobal=True, tab_sep=False,
          plot_histogram=True)
 
 # Normalized contact heatmap
-plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          chr_row='6', chr_col='3', bin_size=1000000, 
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
@@ -242,7 +242,7 @@ Observed (chr6-chr3)            |  Normalized (chr6-chr3)
 In addition, only a **region of the heatmap** can be plotted by setting the parameters ``chr_row_coord`` and ``chr_col_coord``. These are lists with two integers indicating the start and end coordinate of the chromosome on the rows and on the columns respectively.
 ```Python
 # Intra-chromosomal map
-plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          chr_row='6', chr_col='6', bin_size=1000000, 
          chr_row_coord=[0,80000000], chr_col_coord=[0,80000000],
          data_type="normalized", species='hg38',
@@ -251,7 +251,7 @@ plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
          plot_histogram=False)
 
 # Inter-chromosomal map
-plot_map(input_matrix=global_normalized, isGlobal=True, tab_sep=True,
+plot_map(input_matrix=global_normalized, isGlobal=True,
          chr_row='6', chr_col='3', bin_size=1000000, 
          chr_row_coord=[0,50000000], chr_col_coord=[0,80000000],
          data_type="normalized", species='hg38',
