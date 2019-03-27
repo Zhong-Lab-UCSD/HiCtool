@@ -624,7 +624,7 @@ def plot_chromosome_enrich_data(contact_matrix,
                 print "ERROR! End coordinate is larger than chromosome size " + str((chromosomes[species][a_chr]/bin_size)*bin_size) + " bp"
                 return
             else:
-                print "ERROR! End coordinate is larger than chromosome size " + str((chr_size/bin_size)*bin_size) + " bp"
+                print "ERROR! End coordinate is larger than chromosome size " + str((custom_species_sizes[a_chr]/bin_size)*bin_size) + " bp"
                 return
     else:
         start_bin = 0
@@ -652,7 +652,7 @@ def plot_chromosome_enrich_data(contact_matrix,
             if not (vmin < midpoint < vmax):
                 raise ValueError("midpoint must be between maxvalue and minvalue.")       
             elif vmin == vmax:
-                result.fill(0) # Or should it be all masked? Or 0.5?
+                result.fill(0)
             elif vmin > vmax:
                 raise ValueError("maxvalue must be bigger than minvalue")
             else:
@@ -663,7 +663,6 @@ def plot_chromosome_enrich_data(contact_matrix,
                     result = ma.array(np.clip(result.filled(vmax), vmin, vmax),
                                       mask=mask)
     
-                # ma division is very slow; we can take a shortcut
                 resdat = result.data
     
                 #First scale to -1 to 1 range, than to from 0 to 1.
