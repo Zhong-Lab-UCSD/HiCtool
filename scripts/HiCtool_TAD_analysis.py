@@ -352,14 +352,14 @@ def extract_single_map(input_global_matrix,
         if save_output == True:
             save_matrix(output_matrix, my_filename)
     else:
-        dim_row = str(d_chr_dim[chr_row])
-        dim_col = str(d_chr_dim[chr_col])
+        #dim_row = str(d_chr_dim[chr_row])
+        #dim_col = str(d_chr_dim[chr_col])
         if bin_size >= 1000000:
             bin_size_str = str(bin_size/1000000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'mb_' + data_type + '.txt'
         elif bin_size < 1000000:
             bin_size_str = str(bin_size/1000)
-            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + dim_row + 'x' + dim_col + '_' + data_type + '.txt'
+            my_filename = 'HiCtool_' 'chr' + chr_row + '_chr' + chr_col + '_' + bin_size_str + 'kb_' + data_type + '.txt'
         if save_output == True:
             save_matrix_rectangular(output_matrix, my_filename)
     

@@ -2,6 +2,8 @@
 
 This pipeline illustrates the procedure to calculate topologically associated domain (TAD) coordinates and visualize TADs. Topological domain coordinates should be calculated on the normalized data (as we do here) but, if you wish, you can also use this pipeline to calculate TAD coordinates on the observed data.
 
+**Note!** Contact data must be at 40 kb resolution to perform TAD analysis!
+
 - [Section 1 (Performing TAD analysis)](#1-performing-tad-analysis) is a pipeline to compute TAD coordinates and plot TADs on the heatmap.
 - [Section 2 (Supplementary TAD analysis)](#2-supplementary-tad-analysis) gives additional details about the analysis performed in Section 1.
 
@@ -19,13 +21,15 @@ This pipeline illustrates the procedure to calculate topologically associated do
 
 TAD coordinates, as well as DI values and true DI values (HMM states), are calculated as described by [Dixon et al., (2012)](http://www.nature.com/nature/journal/v485/n7398/abs/nature11082.html). More details about this are reported in [Supplementary TAD analysis](#2-supplementary-tad-analysis).
 
-### 1.1. Data normalized with Yaffe-Tanay
+**Note!** Contact data must be at 40 kb resolution to perform TAD analysis!
+
+### 1.1. Data normalized with Yaffe-Tanay method
 
 Use these instructions if you normalized your data using the method from [Yaffe and Tanay](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-yaffe-tanay.md).
 
-To calculate TAD coordinates for a chromosome (here for chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py) as following:
+To calculate TAD coordinates for a chromosome (here for chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py) as following:
 ```Python
-execfile('HiCtool_TAD.py')
+execfile('HiCtool_TAD_analysis.py')
 
 tad_coord = compute_full_tad_analysis('HiCtool_chr6_40kb_normalized_fend.txt', a_chr='6',
                                       isGlobal=False, tab_sep=False, species='hg38',
@@ -44,9 +48,9 @@ for i in my_chromosomes:
                                                 a_chr=i, isGlobal=False, tab_sep=False, 
                                                 species='hg38', save_di=True, save_hmm=True)
 ```
-To plot the topological domains on the heatmap, use the function ``plot_chromosome_data`` of [HiCtool_normalization_visualization.py](/scripts/HiCtool_normalization_visulization.py) and pass the topological domain coordinates with the argument ``topological_domains``. Here we plot the heatmap for chr6: 80,000,000-120,000,000.
+To plot the topological domains on the heatmap, use the function ``plot_chromosome_data`` of [HiCtool_yaffe_tanay.py](/scripts/HiCtool_yaffe_tanay.py) and pass the topological domain coordinates with the argument ``topological_domains``. Here we plot the heatmap for chr6: 80,000,000-120,000,000. The color of the domains can be changed by using the parameter ``domain_color``.
 ```Python
-execfile('HiCtool_normalization_visualization.py')
+execfile('HiCtool_yaffe_tanay.py')
 plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt', 
                      a_chr='6', bin_size=40000, full_matrix=False, 
                      start_coord=80000000, end_coord=120000000, 
@@ -55,7 +59,8 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_colormap=['white', 'red'], 
                      cutoff_type='percentile', cutoff=95, max_color='#460000', 
                      my_dpi=1000, 
-                     topological_domains='HiCtool_chr6_topological_domains.txt')
+                     topological_domains='HiCtool_chr6_topological_domains.txt',
+                     domain_color='#0000ff')
 ```
 ![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_fend_domains.png)
 
@@ -69,7 +74,8 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
                      my_colormap=['white', 'red'], 
                      cutoff_type='percentile', cutoff=95, max_color='#460000', 
                      my_dpi=1000, 
-                     topological_domains='HiCtool_chr6_topological_domains.txt')
+                     topological_domains='HiCtool_chr6_topological_domains.txt',
+                     domain_color='#0000ff')
 ```
 ![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_fend_domains.png)
 
@@ -78,11 +84,11 @@ plot_chromosome_data('HiCtool_chr6_40kb_normalized_fend.txt',
 
 Use these instructions if you normalized your data using the [Hi-Corrector](https://github.com/Zhong-Lab-UCSD/HiCtool/blob/master/tutorial/normalization-matrix-balancing.md).
 
-To calculate TAD coordinates for a chromosome (here for chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py).
+To calculate TAD coordinates for a chromosome (here for chr 6) use the function ``compute_full_tad_analysis`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py).
 
 **Tip!** Given the big dimension of the global normalized contact matrix, it is suggested to load it to your workspace ahead of the analysis and then always point to this object instead of the matrix file. This will avoid several reloadings of the contact matrix and save time.
 ```Python
-execfile('HiCtool_TAD.py')
+execfile('HiCtool_TAD_analysis.py')
 global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
 
 tad_coord = compute_full_tad_analysis(global_normalized_40kb, a_chr='Y', isGlobal=True,
@@ -100,16 +106,17 @@ for i in my_chromosomes:
     my_tad_coord[i] = compute_full_tad_analysis(global_normalized_40kb, a_chr=i, isGlobal=True,
                                                 species='hg38', save_di=True, save_hmm=True)
 ```
-To plot the topological domains on the heatmap, use the function ``plot_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) and pass the topological domain coordinates with the argument ``topological_domains``. Here we plot the heatmap for chr6: 80,000,000-120,000,000.
+To plot the topological domains on the heatmap, use the function ``plot_map`` of [HiCtool_full_map_analysis.py](/scripts/HiCtool_full_map_analysis.py) and pass the topological domain coordinates with the argument ``topological_domains``. Here we plot the heatmap for chr6: 80,000,000-120,000,000. The color of the domains can be changed by using the parameter ``domain_color``.
 ```Python
-execfile('HiCtool_full_map.py')
+execfile('HiCtool_full_map_analysis.py')
 plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
          chr_row='6', chr_col='6', bin_size=40000, 
          chr_row_coord=[80000000,120000000], chr_col_coord=[80000000,120000000],
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
          cutoff_type='perc', cutoff=95, max_color='#460000',
-         topological_domains='HiCtool_chr6_topological_domains.txt')
+         topological_domains='HiCtool_chr6_topological_domains.txt',
+         domain_color='#0000ff')
 ```
 ![](/figures/HiCtool_chr6_40kb_80-120mb_normalized_domains.png)
 
@@ -121,7 +128,8 @@ plot_map(input_matrix=global_normalized_40kb, isGlobal=True, tab_sep=True,
          data_type="normalized", species='hg38',
          my_colormap=['white', 'red'],
          cutoff_type='perc', cutoff=95, max_color='#460000',
-         topological_domains='HiCtool_chr6_topological_domains.txt')
+         topological_domains='HiCtool_chr6_topological_domains.txt',
+         domain_color='#0000ff')
 ```
 ![](/figures/HiCtool_chr6_40kb_50-54mb_normalized_domains.png)
 
@@ -149,9 +157,9 @@ To compute DI, we need the fend normalized contact data at a bin size of 40 kb. 
 
 Observed DI values and HMM states can be also calculated and plotted separately.
 
-To **calculate the DI values** use the function ``calculate_chromosome_DI`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py) as following:
+To **calculate the DI values** use the function ``calculate_chromosome_DI`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py) as following:
 ```Python
-execfile('HiCtool_TAD.py')
+execfile('HiCtool_TAD_analysis.py')
 
 # Yaffe and Tanay normalization method
 DI_chr6 = calculate_chromosome_DI(input_contact_matrix='HiCtool_chr6_40kb_normalized_fend.txt', 
@@ -181,9 +189,9 @@ We use a Hidden Markov Model (HMM) based on the Directionality Index to identify
 
 For true DI calculation, we consider the **emission sequence** as the observed DI values and the Transition Matrix, Emission Matrix and initial State Sequence as unknown. We have **three emissions** 1, 2, 0 corresponding to a positive (1), negative (2) or zero (0) value of the observed DI. In our analysis, we associate to the emission '0' all the absolute DI values under a threshold of 0.4. So, first we estimate the model parameters and then the most probable sequence of states using the Viterbi algorithm. 
 
-All these steps are performed using the function ``calculate_chromosome_true_DI`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py), which calculates true DI values and save the output to a txt file:
+All these steps are performed using the function ``calculate_chromosome_true_DI`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py), which calculates true DI values and save the output to a txt file:
 ```Python
-execfile('HiCtool_TAD.py')
+execfile('HiCtool_TAD_analysis.py')
 hmm_chr6 = calculate_chromosome_true_DI(input_file_DI='HiCtool_chr6_DI.txt', 
                                         a_chr='6',
                                         save_file=True)
@@ -208,13 +216,13 @@ To calculate the topological domains coordinates, first we extract all the poten
 
 ![](/figures/HiCtool_topological_domains_flowchart.png)
 
-Topological domain coordinates are calculated using the function ``calculate_chromosome_topological_domains`` of [HiCtool_TAD.py](/scripts/HiCtool_TAD.py):
+Topological domain coordinates are calculated using the function ``calculate_chromosome_topological_domains`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py) and passing as input the HMM states:
 ```Python
-execfile('HiCtool_TAD.py')
+execfile('HiCtool_TAD_analysis.py')
 domains_chr6 = calculate_chromosome_topological_domains(input_file_hmm='HiCtool_chr6_hmm_states.txt', a_chr='6')
 ```
 Topological domain coordinates are saved in a tab separated file. Each line is a topological domain, with two elements that are the start and end coordinate of the domain.
-Previously calculated topological domain coordinates and saved to file can be loaded using the function ``load_hmm_states``:
+Previously calculated topological domain coordinates and saved to file can be loaded using the function ``load_topological_domains``:
 ```Python
-hmm_chr6 = load_hmm_states('HiCtool_chr6_hmm_states.txt')
+domains_chr6 = load_topological_domains('HiCtool_chr6_topological_domains.txt')
 ```
