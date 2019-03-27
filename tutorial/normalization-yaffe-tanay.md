@@ -1,6 +1,6 @@
 # Data normalization with explicit-factor correction model of Yaffe and Tanay
 
-This pipeline illustrates the procedure to normalize Hi-C **intra-chromosomal contact data only** following the explicit-factor model of [Yaffe and Tanay](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html).
+This pipeline illustrates the procedure to normalize and visualize Hi-C **intra-chromosomal contact data only** following the explicit-factor model of [Yaffe and Tanay](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html).
 
 ## Table of contents
 
@@ -133,9 +133,9 @@ For each chromosome, the following five matrices are computed at a bin size of 4
 - The **normalized fend data** contain the corrected read count for each bin.
 - The **normalized enrichment data** ("observed over expected" matrix) contain the enrichment value (O/E) for each bin.
 
-First execute the script [HiCtool_normalization_visualization.py](/scripts/HiCtool_normalization_visualization.py) in the Python or iPython console:
+First execute the script [HiCtool_yaffe_tanay.py](/scripts/HiCtool_yaffe_tanay.py) in the Python or iPython console:
 ```Python
-execfile('HiCtool_normalization_visualization.py')
+execfile('HiCtool_yaffe_tanay.py')
 ```
 ### 2.1. Normalized fend data
 
@@ -182,9 +182,9 @@ execfile('HiCtool_normalize_enrich_parallel.py')
 ```
 ## 3. Visualizing the data
 
-To plot the contact maps, first execute the script [HiCtool_normalization_visualization.py](/tutorial/HiCtool_normalization_visualization.py) in the Python or iPython console:
+To plot the contact maps, first execute the script [HiCtool_yaffe_tanay.py](/tutorial/HiCtool_yaffe_tanay.py) in the Python or iPython console:
 ```Python
-execfile('HiCtool_normalization_visualization.py')
+execfile('HiCtool_yaffe_tanay.py')
 ```
 ### 3.1. Visualizing the contact data
 

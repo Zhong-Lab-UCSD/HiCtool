@@ -1,6 +1,6 @@
 # Data normalization with the matrix balancing approach of Hi-Corrector
 
-This pipeline illustrates the procedure to normalize a **global Hi-C contact map** (intra- and inter-chromosomal interactions) following the matrix balancing approach of [Hi-Corrector](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html).
+This pipeline illustrates the procedure to normalize and normalize a **global Hi-C contact map** (intra- and inter-chromosomal interactions) following the matrix balancing approach of [Hi-Corrector](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html).
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ More details about all the steps performed here are illustrated in the following
 
 ### 1.1. Creating the Fend object
 
-A Fragment-end (Fend) object (``hdf5`` format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (``restrictionsites_gc_map_valid.bed``) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)). In this case, the information of GC content and mappability score is not used. If you computed your custom FEND file, you can use the ``restrictionsites.bed`` file, without need of adding GC content and mappability score.
+A Fragment-end (Fend) object (``hdf5`` format) contains information about the fragments created by digestion of a genome by a specific restriction enzyme (RE). In our script, this information is supplied in the form of a BED-formatted file (``restrictionsites_gc_map_valid.bed``) containing information about the fragment ends like coordinates, GC content and mappability score (see [preprocessing, step 5](/tutorial/data-preprocessing.md#5-creating-the-fragment-end-fend-bed-file)). In this case, the information of GC content and mappability score is not used. If you computed your custom FEND file, you can use the ``restrictionsites.bed`` file, **without need of adding GC content and mappability score**.
 
 To create a Fend object use the function ``hifive.fend``:
 ```Python
@@ -89,9 +89,9 @@ execfile('HiCtool_full_map_parallel.py')
 ```
 The global matrix will be saved as default using a compressed format but **to normalize the data using Hi-Corrector a tab separated format is required**. Therefore, also the global contact matrix in tab separated format will be saved, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
-After having generated the global observed contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) as following:
+After having generated the global observed contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map_analysis.py](/scripts/HiCtool_full_map_analysis.py) as following:
 ```Python
-execfile('HiCtool_full_map.py')
+execfile('HiCtool_full_map_analysis.py')
 global_observed = load_matrix('HiCtool_1mb_matrix_global_observed.txt')
 
 chr1_intra = extract_single_map(input_global_matrix=global_observed, tab_sep=False, 
@@ -106,9 +106,9 @@ chr1_2_inter = extract_single_map(input_global_matrix=global_observed, tab_sep=F
 
 ### 2.1. Single-processor matrix generation
 
-To generate the global observed contact matrix with a single processor, open the Python or iPython console and use the function ``compute_matrix_data_full_observed`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py):
+To generate the global observed contact matrix with a single processor, open the Python or iPython console and use the function ``compute_matrix_data_full_observed`` of [HiCtool_full_map_analysis.py](/scripts/HiCtool_full_map_analysis.py):
 ```Python
-execfile('HiCtool_full_map.py')
+execfile('HiCtool_full_map_analysis.py')
 my_global_matrix = compute_matrix_data_full_observed(input_file='HiC_project_object.hdf5',
                                                      bin_size=1000000, 
                                                      species='hg38', 
@@ -146,9 +146,9 @@ This command creates a **folder named ``output_ic_mes``** with 3 files inside:
 - ``output.bias``: a bias file used by the software to normalize the data
 - ``output_normalized.txt``: the **global normalized contact matrix** in tab separated format
 
-After having normalized the data, it is possible to extract a single normalized contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py) as following:
+After having normalized the data, it is possible to extract a single normalized contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map_analysis.py](/scripts/HiCtool_full_map_analysis.py) as following:
 ```Python
-execfile('HiCtool_full_map.py')
+execfile('HiCtool_full_map_analysis.py')
 global_normalized = load_matrix_tab("output_ic_mes/output_normalized.txt")
 
 chr1_intra_norm = extract_single_map(input_global_matrix=global_normalized, tab_sep=True, 
@@ -163,9 +163,9 @@ chr1_2_inter_norm = extract_single_map(input_global_matrix=global_normalized, ta
 
 ## 4. Visualizing the data
 
-To plot the contact maps use the function ``plot_map`` of [HiCtool_full_map.py](/scripts/HiCtool_full_map.py).
+To plot the contact maps use the function ``plot_map`` of [HiCtool_full_map_analysis.py](/scripts/HiCtool_full_map_analysis.py).
 ```Python
-execfile('HiCtool_full_map.py')
+execfile('HiCtool_full_map_analysis.py')
 global_observed = load_matrix('HiCtool_1mb_matrix_global_observed.txt')
 global_normalized = load_matrix_tab('output_ic_mes/output_normalized.txt')
 ```
