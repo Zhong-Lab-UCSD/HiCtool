@@ -54,7 +54,7 @@ chromosomes = {'hg38':{'1':248956422,
 
 def save_matrix(a_matrix, output_file):
     """
-    Format and save an intra-chromosomal contact matrix in a txt file. 
+    Save an intra-chromosomal contact matrix in the HiCtool compressed format to txt file.
     1) The upper-triangular part of the matrix is selected (including the
     diagonal).
     2) Data are reshaped to form a vector.
@@ -63,7 +63,7 @@ def save_matrix(a_matrix, output_file):
     4) Data are saved to a txt file.
     Arguments:
         a_matrix (numpy matrix): input contact matrix to be saved
-        output_file: output file name in txt format.
+        output_file (str): output file name in txt format.
     Output: 
         txt file containing the formatted data.
     """
@@ -136,6 +136,46 @@ def load_matrix(input_file):
     print "Done!"
     return output_matrix
 
+def save_matrix_tab(input_matrix, output_filename):
+    """
+    Save a contact matrix in a txt file in a tab separated format. Columns are
+    separated by tabs, rows are in different lines.
+    Arguments:
+        input_matrix (numpy matrix): input contact matrix to be saved
+        output_filename (str): output file name in txt format
+    Output:
+        txt file containing the tab separated data
+    """
+    with open (output_filename, 'w') as f:
+            for i in xrange(len(input_matrix)):
+                row = [str(j) for j in input_matrix[i]]
+                if i != len(input_matrix) - 1:
+                    f.write('\t'.join(row) + '\n')
+                else:
+                    f.write('\t'.join(row))
+                    
+def load_matrix_tab(input_file):
+    """
+    Load a contact matrix saved in a tab separated format using the function
+    "save_matrix_tab".
+    Arguments:
+        input_file (str): input contact matrix to be loaded.
+    Return: 
+        numpy array containing the parsed values stored in the input tab separated txt file to build a contact matrix.
+    """
+    import numpy as np
+    
+    print "Loading " + input_file + "..."
+    with open (input_file, 'r') as infile:
+        lines = infile.readlines()
+        temp = []
+        for line in lines:
+            row = [float(i) for i in line.strip().split('\t')]
+            temp.append(row)
+            
+        output_matrix = np.array(temp)
+    print "Done!"
+    return output_matrix
 
 def load_topological_domains(input_file):
     """
