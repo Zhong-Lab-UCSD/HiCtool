@@ -8,16 +8,11 @@ Data are compressed based on the fact that contact maps are symmetric (contacts 
 
 ![](/figures/HiCtool_compression.png)
 
-The figure shows a simplified example of the compression workflow, where the intra-chromosomal contact matrix is represented by a 4 × 4 symmetric and sparse matrix.
-
-(1) The upper-triangular part of the matrix is selected (including the diagonal); 
-(2) data are reshaped to form a vector; 
-(3) all the consecutive zeros are replaced with a “0” followed by the number of zeros that are repeated consecutively;
-(4) data are saved into a txt file.
+The figure shows a simplified example of the compression workflow, where the intra-chromosomal contact matrix is represented by a 4 × 4 symmetric and sparse matrix. (1) The upper-triangular part of the matrix is selected (including the diagonal); (2) data are reshaped to form a vector; (3) all the consecutive zeros are replaced with a “0” followed by the number of zeros that are repeated consecutively; (4) data are saved into a txt file.
 
 ## Inter-chromosomal compressed format
 
-
+The same compression workflow applies for the inter-chromosomal contact matrix, **except for the selection of the upper triangular matrix (step 1)** which is skipped: the entire matrix data are considered (since the matrix is rectangular).
 
 
 

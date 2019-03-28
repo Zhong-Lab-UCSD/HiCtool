@@ -129,7 +129,7 @@ For the normalization, observed data and correction parameters to remove biases 
 
 For each chromosome, the following five matrices are computed at a bin size of 40 kb (the bin size can be changed with a function parameter). Every contact matrix is AUTOMATICALLY saved in txt format using the function ``save_matrix``.
 
-Data are compressed in a format to reduce storage occupation and improving saving and loading time ([see here for more details]()).
+Data are compressed in a format to reduce storage occupation and improving saving and loading time ([see here for more details](/tutorial/HiCtool_compressed_format.md)).
 
 - The **observed data** contain the observed reads count for each bin.
 - The **fend expected data** contain the learned correction value to remove biases related to fends for each bin.
