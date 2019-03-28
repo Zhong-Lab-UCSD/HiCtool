@@ -1,6 +1,8 @@
 # Data normalization with the matrix balancing approach of Hi-Corrector
 
-This pipeline illustrates the procedure to normalize and normalize a **global Hi-C contact map** (intra- and inter-chromosomal interactions) following the matrix balancing approach of [Hi-Corrector](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html). Default species that you can use are human *hg38* and mouse *mm10*. For other species use the specific function arguments (see API documentation).
+This pipeline illustrates the procedure to normalize and normalize a **global Hi-C contact map** (intra- and inter-chromosomal interactions) following the matrix balancing approach of [Hi-Corrector](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html). Default species that you can use are human *hg38* and mouse *mm10*. For other species use the specific function arguments (see [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf)).
+
+For more information about the Python functions used here check the [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf).
 
 ## Table of Contents
 

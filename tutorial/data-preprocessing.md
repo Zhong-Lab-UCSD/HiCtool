@@ -1,6 +1,6 @@
 # Data preprocessing
 
-This is the first section of the pipeline and it allows to pre-process the raw Hi-C data (fastq files), in order to generate input files for the normalization step.
+This is the first section of the pipeline and it allows to pre-process the raw Hi-C data (fastq files), in order to generate input files for the normalization step. For more information about the Python functions used here check the [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf).
 
 ## Table of Contents
 
