@@ -650,34 +650,35 @@ def plot_map(input_matrix,
     Arguments:
         input_matrix (object | str): contact matrix. This can be passed either as
         an object of the workspace or a string of the filename saved to file.
-        isGlobal (bool): set to True if you are passing a global matrix (chromosomes by chromosomes), False otherwise.
-        tab_sep (bool): if "input_global_matrix" is passed with a filename, then this boolean 
+        isGlobal (bool): set to True if you are passing a global matrix (all-by-all chromosomes), False otherwise.
+        tab_sep (bool): if "input_matrix" is passed with a filename, then this boolean 
         tells if the matrix was saved in tab separated format (True) or not (False).
         chr_row (str): chromosome in the rows of the output contact matrix.
         chr_col (str): chromosome in the columns of the output contact matrix. If chr_col is 
         equal to chr_row then the intrachromosomal map is extracted.
         bin_size (int): bin size in bp of the contact matrix.
-        chr_row_coord (list): list of two integers with start and end coordinates for the chromosome on the rows to be plotted.
-        chr_col_coord (list): list of two integers with start and end coordinates for the chromosome on the rows to be plotted.
-        data_type (str): which kind of data type you are extracting. "observed" or "normalized".
+        chr_row_coord (list): list of two integers with start and end coordinates for the chromosome on the rows to be plotted (only if a single map is selected).
+        chr_col_coord (list): list of two integers with start and end coordinates for the chromosome on the columns to be plotted (only if a single map is selected).
+        data_type (str): which kind of data type you are extracting ("observed" or "normalized").
         species (str): 'hg38' or 'mm10' or any other species label in string format.
         custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
         format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
-        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your custom species (example for chromosome X: 'X').
+        sexual_chromosomes (list): list of the sexual chromosomes (if present) in your custom species (example for chromosomes X and Y: ['X','Y']).
         my_colormap (str | list): colormap to be used to plot the data. 1) Use a string if you choose among any colorbar here 
         https://matplotlib.org/examples/color/colormaps_reference.html 2) Use a list of strings with colors if you want
         a custom colorbar. Example: ['white', 'red', 'black']. Colors can be specified also in this format: '#000000'.
-        cutoff_type (str): to select a type of cutoff ('percentile' or 'contact_number') or plot the full range of the data (set the 
-        parameter as 'none').
         cutoff_type (str): to select a type of cutoff ('percentile' or 'contact_number') or plot the full range of the data (set the 
         parameter as 'None').
         cutoff (int): percentile to set a maximum cutoff on the number of contacts for the colorbar.
         max_color (str): to set the color of the bins with contact counts over "cutoff".
         my_dpi (int): resolution of the contact map in dpi.
-        plot_histogram (bool): if True, plot the contact data distribution.
+        plot_histogram (bool): if True, plot the contact data distribution (only if a single map is selected).
         topological_domains (str | obj): topological domain coordinates to visualize domains on the heatmap. 
-        They can be passed either as a txt file or object (as generated from HiCtool_TAD.py) If empty string, no topological domains.
+        They can be passed either as a txt file or object (as generated from HiCtool_TAD_analysis.py) If empty string, no topological domains (only if a single map is selected).
         domain_color (str): to set the color for topological domains on the heatmap. 
+    Outputs:
+        Heatmap saved in pdf format.
+        Histogram saved in pdf format if "plot_histogram=True".
     """         
     import matplotlib
     matplotlib.use('Agg')

@@ -54,12 +54,12 @@ chromosomes = {'hg38':{'1':248956422,
 
 def save_list(a_list, output_file):
     """
-    Save a list in a .txt file.
-    Parameters:
-        a_list: name of the list to save.
-        output_file: output file name in txt format.
+    Save a list in a txt file.
+    Arguments:
+        a_list (obj): name of the list to save.
+        output_file (str): output file name in txt format.
     Output: 
-        .txt file containing the saved list.       
+        txt file containing the saved list.       
     """
     with open (output_file,'w') as fout:
         n = len(a_list)
@@ -68,16 +68,16 @@ def save_list(a_list, output_file):
 
 def save_matrix_rectangular(a_matrix, output_file):
     """
-    Format and save an inter-chromosomal contact matrix in a txt file. 
+    Save an inter-chromosomal contact matrix in the HiCtool compressed format to txt file.
     1) Data are reshaped to form a vector.
     2) All the consecutive zeros are replaced with a "0" followed by the
     number of times zeros are repeated consecutively.
     3) Data are saved to a txt file.
-    Parameters:
-    a_matrix (numpy matrix): input contact matrix to be saved
-    output_file: output file name in txt format
+    Arguments:
+        a_matrix (numpy matrix): input contact matrix to be saved
+        output_file (str): output file name in txt format
     Output:
-    txt file containing the formatted data
+        txt file containing the formatted data
     """
     import numpy as np
     n_row = np.shape(a_matrix)[0]
@@ -114,18 +114,18 @@ def save_matrix_rectangular(a_matrix, output_file):
 
 def save_matrix(a_matrix, output_file):
     """
-    Format and save an intra-chromosomal contact matrix in a txt file. 
+    Save an intra-chromosomal contact matrix in the HiCtool compressed format to txt file.
     1) The upper-triangular part of the matrix is selected (including the
     diagonal).
     2) Data are reshaped to form a vector.
     3) All the consecutive zeros are replaced with a "0" followed by the
     number of times zeros are repeated consecutively.
     4) Data are saved to a txt file.
-    Parameters:
-    a_matrix (numpy matrix): input contact matrix to be saved
-    output_file: output file name in txt format
+    Arguments:
+        a_matrix (numpy matrix): input contact matrix to be saved
+        output_file (str): output file name in txt format
     Output:
-    txt file containing the formatted data
+        txt file containing the formatted data
     """
     import numpy as np
     n = len(a_matrix)
@@ -199,11 +199,11 @@ def save_matrix_tab(input_matrix, output_filename):
     """
     Save a contact matrix in a txt file in a tab separated format. Columns are
     separated by tabs, rows are in different lines.
-    Parameters:
-    input_matrix (numpy matrix): input contact matrix to be saved
-    output_filename: output file name in txt format
+    Arguments:
+        input_matrix (numpy matrix): input contact matrix to be saved
+        output_filename (str): output file name in txt format
     Output:
-    txt file containing the tab separated data
+        txt file containing the tab separated data
     """
     with open (output_filename, 'w') as f:
             for i in xrange(len(input_matrix)):
@@ -553,14 +553,16 @@ def plot_chromosome_DI(input_file_DI,
         full_chromosome (bool): if True, plot the full chromosome "a_chr". In this case "start_pos" and "end_pos" parameters are not considered.
         start_pos (int): start coordinate for the plot in bp.
         end_pos (int): end coordinate for the plot in bp.
-        input_file_hmm (str | obj): txt file of the true DI values generated with the function "calculate_chromosome_true_DI" or
-        object with the true DI values returned by "calculate_chromosome_true_DI.
+        input_file_hmm (str | obj): txt file of the true DI values generated with the function "calculate_chromosome_hmm_states" or
+        object with the true DI values returned by "calculate_chromosome_hmm_states".
         species (str): species name (hg38, mm10, etc.).
         custom_species_sizes (dict): dictionary containing the sizes of the chromosomes
         of your custom species. The keys of the dictionary are chromosomes in string
-        format (example for chromosome 1: '1'), the values are chromosome lengths as int.
+        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
         plot_legend (bool): if True, plot the legend.
         plot_grid (bool): if True, plot the grid.
+    Output:
+        Plot saved to pdf file.
     """    
     import numpy as np
     import matplotlib.pyplot as plt
@@ -679,9 +681,11 @@ def save_topological_domains(a_matrix, output_file):
     Function to save the topological domains coordinates to text file.
     Each topological domain coordinates (start and end) occupy one row and are
     tab separated.
-    Parameters:
+    Arguments:
         a_matrix (numpy matrix): file to be saved with topological domains coordinates.
-        output_file: output file name in txt format.
+        output_file (str): output file name in txt format.
+    Output:
+        Tab separated txt file with topological domain start and end coordinates.
     """
     def compile_row_string(a_row):
         return str(a_row).strip(']').strip('[').lstrip().replace(' ','\t')

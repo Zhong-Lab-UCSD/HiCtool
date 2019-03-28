@@ -121,10 +121,10 @@ It is possible also to use a custom species (see API documentation). Note that t
 
 Here we normalize the data using the sequential implementation from Hi-Corrector (ic_mes) which is "memory efficient and can run on any single computer with limited memory, even for Hi-C datasets of large size. It is designed to overcome the memory limit by loading a portion of data into the memory at each time." ([Li, Wenyuan, et al. "Hi-Corrector: a fast, scalable and memory-efficient package for normalizing large-scale Hi-C data." Bioinformatics 31.6 (2014): 960-962](https://academic.oup.com/bioinformatics/article/31/6/960/215261)).
 
-First, you should have downloaded Hi-Corrector source code ([see here](https://github.com/Zhong-Lab-UCSD/HiCtool#installation)). Then to normalize the data, download the bash script [run_ic_mes.sh](/scripts/run_ic_mes.sh), copy it inside your working directory, go into your working directory and run the following unix commands:
+First, you should have downloaded Hi-Corrector source code ([see here](https://github.com/Zhong-Lab-UCSD/HiCtool#installation)). Then to normalize the data, download the bash script [HiCtool_run_ic_mes.sh](/scripts/HiCtool_run_ic_mes.sh), copy it inside your working directory, go into your working directory and run the following unix commands:
 ```unix
-chmod u+x run_ic_mes.sh
-./run_ic_mes.sh -q 100 \
+chmod u+x HiCtool_run_ic_mes.sh
+./HiCtool_run_ic_mes.sh -q 100 \
                 -m "100" \
                 -r 3078 \
                 -s 17237 \

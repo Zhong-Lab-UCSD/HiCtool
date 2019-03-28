@@ -36,18 +36,18 @@ print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 def save_matrix(a_matrix, output_file):
     """
-    Format and save an intra-chromosomal contact matrix in a txt file. 
+    Save an intra-chromosomal contact matrix in the HiCtool compressed format to txt file.
     1) The upper-triangular part of the matrix is selected (including the
     diagonal).
     2) Data are reshaped to form a vector.
     3) All the consecutive zeros are replaced with a "0" followed by the
     number of times zeros are repeated consecutively.
     4) Data are saved to a txt file.
-    Parameters:
-    a_matrix (numpy matrix): input contact matrix to be saved
-    output_file: output file name in txt format
+    Arguments:
+        a_matrix (numpy matrix): input contact matrix to be saved
+        output_file (str): output file name in txt format
     Output:
-    txt file containing the formatted data
+        txt file containing the formatted data
     """
     import numpy as np
     n = len(a_matrix)

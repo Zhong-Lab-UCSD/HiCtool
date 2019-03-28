@@ -40,9 +40,9 @@ where paired-end reads in SRRXXXXXXX.sra are split and stored into **SRRXXXXXXX_
 
 ## 2. Pre-trunction of the reads that contain potential ligation junction
 
-After the fastq files are obtained, pre-truncation is performed on the reads that contain potential ligation junctions to keep the longest piece without a junction sequence ([Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7)). To do so, use the code in [pre_truncation.py](/scripts/pre_truncation.py) and run the following code on your Python or iPython console:
+After the fastq files are obtained, pre-truncation is performed on the reads that contain potential ligation junctions to keep the longest piece without a junction sequence ([Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7)). To do so, use the code in [HiCtool_pre_truncation.py](/scripts/HiCtool_pre_truncation.py) and run the following code on your Python or iPython console:
 ```Python
-execfile('pre_truncation.py')
+execfile('HiCtool_pre_truncation.py')
 pre_truncation('SRR1658570_1.fastq', 'MboI')
 pre_truncation('SRR1658570_2.fastq', 'MboI')
 ```
@@ -50,7 +50,7 @@ where the first argument is the fastq file, the second argument is the restricti
 
 The output files will have the same filename with extension ```.trunc.fastq```. If a different restriction enzyme (RE) than HindIII, MboI, NcoI and DpnII has been used in the Hi-C experiment, then run the following for each fastq file:
 ```Python
-execfile('pre_truncation.py')
+execfile('HiCtool_pre_truncation.py')
 pre_truncation('a_file.fastq', 'custom_RE', 'custom_ligation_junction')
 ```
 where ``custom_ligation_junction`` is the ligation junction sequence of nucleotides associated to the restriction enzyme you are using (see [Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7) for more details), ``custom_RE`` is your restriction enzyme name.
@@ -275,13 +275,13 @@ for i in "${chromosomes[@]}"; do
 awk -v var="$i" '(NR>1) && ($1==var)' gc5Base.bedGraph | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
 done
 ```
-- Add the GC content information using the Python script [add_fend_gc_content.py](/scripts/add_fend_gc_content.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the gc content information (using 24 threads, we took around 9 hours for all the chromosomes of hg38-MboI):
+- Add the GC content information using the Python script [HiCtool_add_fend_gc_content.py](/scripts/HiCtool_add_fend_gc_content.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the gc content information (using 24 threads, we took around 9 hours for all the chromosomes of hg38-MboI):
 ```Python
-execfile('add_fend_gc_content.py')
+execfile('HiCtool_add_fend_gc_content.py')
 ```
-- Generate artificial reads using the Python function inside [artificial_reads.py](/scripts/artificial_reads.py) (this step is required only once per reference genome):
+- Generate artificial reads using the Python function inside [HiCtool_artificial_reads.py](/scripts/HiCtool_artificial_reads.py) (this step is required only once per reference genome):
 ```Python
-execfile('artificial_reads.py')
+execfile('HiCtool_artificial_reads.py')
 generate_artificial_reads(genome_file, output_reads_file)
 ```
 where ``genome_file`` is the reference genome sequence in ``fasta`` format, ``output_reads_file`` is the file where to save reads in ``fastq`` format.
@@ -298,9 +298,9 @@ for i in "${chromosomes[@]}"; do
 awk -v var="$i" '(NR>1) && ($1==var)' artificial_reads_mapped.txt | awk -v OFS='\t' '{print $1, $2, $3, $4}' > $i.txt
 done
 ```
-- Add the mappability score information using the Python script [add_fend_mappability.py](/scripts/add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads, we took around 9 hours for all the chromosomes of hg38-MboI):
+- Add the mappability score information using the Python script [HiCtool_add_fend_mappability.py](/scripts/HiCtool_add_fend_mappability.py). Open the script, **update the parameters on the top and save**. Then just execute the script to add the mappability information (using 24 threads, we took around 9 hours for all the chromosomes of hg38-MboI):
 ```Python
-execfile('add_fend_mappability.py')
+execfile('HiCtool_add_fend_mappability.py')
 ```
 - Sort by coordinate, merge the files together, remove fragment ends with a mappability score < 0.5, parse GC content and mappability score in comma separated format and add the header:
 ```unix
