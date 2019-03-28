@@ -1,7 +1,7 @@
 """
 Program to:
 1) Generate the global matrix containing all the contact matrices (intra and inter)
-for all the chromosomes to be normalized using "normalize_global_data.sh".
+for all the chromosomes to be normalized using "HiCtool_run_ic_mes.sh".
 2) Plot the global contact matrix or the a single contact matrix.
 
 To use this code, an HiC_project_object.hdf5 must be provided (see HiCtool_hifive.py)
@@ -56,14 +56,14 @@ chromosomes = {'hg38':{'1':248956422,
 
 def save_matrix_rectangular(a_matrix, output_file):
     """
-    Format and save an inter-chromosomal contact matrix in a txt file. 
+    Save an inter-chromosomal contact matrix in the HiCtool compressed format to txt file.
     1) Data are reshaped to form a vector.
     2) All the consecutive zeros are replaced with a "0" followed by the
     number of times zeros are repeated consecutively.
     3) Data are saved to a txt file.
     Arguments:
         a_matrix (numpy matrix): input contact matrix to be saved
-        output_file: output file name in txt format
+        output_file (str): output file name in txt format
     Output:
         txt file containing the formatted data
     """
@@ -132,7 +132,7 @@ def load_matrix_rectangular(input_file, n_row, n_col):
 
 def save_matrix(a_matrix, output_file):
     """
-    Format and save an intra-chromosomal contact matrix in a txt file. 
+    Save an intra-chromosomal contact matrix in the HiCtool compressed format to txt file.
     1) The upper-triangular part of the matrix is selected (including the
     diagonal).
     2) Data are reshaped to form a vector.
@@ -141,7 +141,7 @@ def save_matrix(a_matrix, output_file):
     4) Data are saved to a txt file.
     Arguments:
         a_matrix (numpy matrix): input contact matrix to be saved
-        output_file: output file name in txt format
+        output_file (str): output file name in txt format
     Output:
         txt file containing the formatted data
     """
@@ -221,7 +221,7 @@ def save_matrix_tab(input_matrix, output_filename):
     separated by tabs, rows are in different lines.
     Arguments:
         input_matrix (numpy matrix): input contact matrix to be saved
-        output_filename: output file name in txt format
+        output_filename (str): output file name in txt format
     Output:
         txt file containing the tab separated data
     """
