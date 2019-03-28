@@ -15,3 +15,7 @@ The **explicit-factor correction model of Yaffe and Tanay** is applied to normal
 - ### [2.2. Matrix balancing approach of Hi-Corrector](/tutorial/normalization-matrix-balancing.md)
 ## [3. TAD analysis](/tutorial/tad-analysis.md)
 
+***
+
+### HiCtool compressed format information
+
