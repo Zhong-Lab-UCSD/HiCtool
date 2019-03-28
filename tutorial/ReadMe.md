@@ -16,6 +16,7 @@ The **explicit-factor correction model of Yaffe and Tanay** is applied to normal
 ## [3. TAD analysis](/tutorial/tad-analysis.md)
 
 ***
+## Supplementary information
 
-### HiCtool compressed format information
+- ### [HiCtool contact matrix compressed format](/tutorial/HiCtool_compressed_format.md)
 
