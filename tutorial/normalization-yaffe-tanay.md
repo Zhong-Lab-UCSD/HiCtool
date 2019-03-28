@@ -150,7 +150,7 @@ fend_normalized_chr6 = normalize_chromosome_fend_data(a_chr='6', bin_size=40000,
                                                       species='hg38',
                                                       save_obs=True, save_expect=False)
 ```
-Data are compressed in a format to reduce storage occupation and improving saving and loading time ([see here for more details]()). To load a previously generated contact matrix use the function ```load_matrix```:
+Data are compressed in a format to reduce storage occupation and improving saving and loading time ([see here for more details](/tutorial/HiCtool_compressed_format.md)). To load a previously generated contact matrix use the function ```load_matrix```:
 ```Python
 my_contact_matrix = load_matrix('my_contact_matrix.txt')
 ```
@@ -168,7 +168,7 @@ enrich_normalized_chr6 = normalize_chromosome_enrich_data(a_chr='6', bin_size=40
 **Note!**
 If you need only the normalized contact matrices, there is no need to calculate also the enrichment data. If you do not need the expected data, do not save it since they are the biggest files and the process may take time.
 
-Data are compressed in a format to reduce storage occupation and improving saving and loading time ([see here for more details]()). To load a previously generated contact matrix use the function ```load_matrix```:
+Data are compressed in a format to reduce storage occupation and improving saving and loading time ([see here for more details](/tutorial/HiCtool_compressed_format.md)). To load a previously generated contact matrix use the function ```load_matrix```:
 ```Python
 my_contact_matrix = load_matrix('my_contact_matrix.txt')
 ```

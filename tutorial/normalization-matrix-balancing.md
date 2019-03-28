@@ -89,7 +89,7 @@ To calculate and save the global observed contact matrix in parallel use the scr
 ```Python
 execfile('HiCtool_full_map_parallel.py')
 ```
-The global matrix will be saved as default using a compressed format but **to normalize the data using Hi-Corrector a tab separated format is required**. Therefore, also the global contact matrix in tab separated format will be saved, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
+The global matrix will be saved as default using a compressed format ([see here for more details](/tutorial/HiCtool_compressed_format.md)), but **to normalize the data using Hi-Corrector a tab separated format is required**. Therefore, also the global contact matrix in tab separated format will be saved, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
 After having generated the global observed contact matrix, it is possible to extract a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_full_map_analysis.py](/scripts/HiCtool_full_map_analysis.py) as following:
 ```Python
@@ -117,7 +117,7 @@ my_global_matrix = compute_matrix_data_full_observed(input_file='HiC_project_obj
                                                      save_each_matrix=False, 
                                                      save_tab=True)
 ```
-It is possible also to use a custom species (see API documentation). Note that the global matrix will be saved as default using a compressed format but **to normalize the data using Hi-Corrector a tab separated format is required**. The parameter ``save_tab`` set as ``True`` will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
+It is possible also to use a custom species (see [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf)). Note that the global matrix will be saved as default using a compressed format ([see here for more details](/tutorial/HiCtool_compressed_format.md)), but **to normalize the data using Hi-Corrector a tab separated format is required**. The parameter ``save_tab`` set as ``True`` will save the global contact matrix in tab separated format, and this will be the input file to the normalization algorithm of Hi-Corrector. Besides the global contact matrix file, another file named **info.txt** will be saved. This contains information that are required to be inserted as Hi-Corrector input as well.
 
 ## 3. Normalizing the global contact matrix
 
