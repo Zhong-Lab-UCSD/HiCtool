@@ -33,13 +33,14 @@ print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 def add_mappability_score(chromosome):
     """
-        Add for each fragment the mappability score of 500bp upstream and downstream to the restriction site per
-        a single chromosome. 
-        Parameters:
-            chromosome (int): chromosome number (example for chromosome 1: '1').
-        
+        Add for each fragment of the FEND file the mappability score of 500bp upstream and downstream 
+        to the restriction site per a single chromosome. 
+        Arguments:
+            chromosome (str): chromosome number (example for chromosome 1: '1').
+        Returns: None.
         Output:
-        Fend bed file with additional mappability information added in two columns: mappability_upstream and mappability_downstream.
+            Fend bed file with additional mappability information added in two columns: 
+            mappability_upstream and mappability_downstream.
         """
     
     import pybedtools

@@ -29,13 +29,14 @@ print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 def add_gc_content(chromosome):
     """
-        Add for each fragment the GC content of 200bp upstream and downstream to the restriction site per a single
-        chromosome. 
-        Parameters:
-            chromosome (int): chromosome number (example for chromosome 1: '1').
-
+        Add for each fragment of the FEND file the GC content of 200bp upstream and 
+        downstream to the restriction site per a single chromosome. 
+        Arguments:
+            chromosome (str): chromosome number (example for chromosome 1: '1').
+        Returns: None.
         Output:
-        Fend bed file with additional GC content information added in two columns: gc_upstream and gc_downstream.
+            Fend bed file with additional GC content information added in two columns: 
+            gc_upstream and gc_downstream.
     """
 
     import pybedtools

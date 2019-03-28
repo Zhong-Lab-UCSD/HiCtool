@@ -1,10 +1,10 @@
 def generate_artificial_reads(genome_file,output_reads_file):
     """
-        Split the genome into 50 bp artificial reads every 10 bp and save the output in fastq format.
-        Parameters:
-            genome_file (str): genome fasta file (example: 'genome.fasta').
-            output_reads_file (str): output fastq file to save reads (example: 'artificial_reads.fastq').
-        
+        Split the input genome into 50 bp artificial reads every 10 bp and save the output in fastq format.
+        Arguments:
+            genome_file (str): genome fasta file.
+            output_reads_file (str): output fastq file to save reads.
+        Returns: None.
         Output:
             Fastq file containing all the artificial reads. A fixed and intermediate score "I" is given to each base of each read.
         """

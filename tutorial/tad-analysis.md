@@ -1,6 +1,6 @@
 # TAD analysis
 
-This pipeline illustrates the procedure to calculate topologically associated domain (TAD) coordinates and visualize TADs. Topological domain coordinates should be calculated on the normalized data (as we do here) but, if you wish, you can also use this pipeline to calculate TAD coordinates on the observed data.
+This pipeline illustrates the procedure to calculate topologically associated domain (TAD) coordinates and visualize TADs. Topological domain coordinates should be calculated on the normalized data (as we do here) but, if you wish, you can also use this pipeline to calculate TAD coordinates on the observed data. Default species that you can use are human *hg38* and mouse *mm10*. For other species use the specific function arguments (see API documentation).
 
 **Note!** Contact data must be at 40 kb resolution to perform TAD analysis!
 
@@ -189,12 +189,12 @@ We use a Hidden Markov Model (HMM) based on the Directionality Index to identify
 
 For true DI calculation, we consider the **emission sequence** as the observed DI values and the Transition Matrix, Emission Matrix and initial State Sequence as unknown. We have **three emissions** 1, 2, 0 corresponding to a positive (1), negative (2) or zero (0) value of the observed DI. In our analysis, we associate to the emission '0' all the absolute DI values under a threshold of 0.4. So, first we estimate the model parameters and then the most probable sequence of states using the Viterbi algorithm. 
 
-All these steps are performed using the function ``calculate_chromosome_true_DI`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py), which calculates true DI values and save the output to a txt file:
+All these steps are performed using the function ``calculate_chromosome_hmm_states`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py), which calculates true DI values and save the output to a txt file:
 ```Python
 execfile('HiCtool_TAD_analysis.py')
-hmm_chr6 = calculate_chromosome_true_DI(input_file_DI='HiCtool_chr6_DI.txt', 
-                                        a_chr='6',
-                                        save_file=True)
+hmm_chr6 = calculate_chromosome_hmm_states(input_file_DI='HiCtool_chr6_DI.txt', 
+                                           a_chr='6',
+                                           save_file=True)
 ```
 Previously calculated true DI values and saved to file can be loaded using the function ``load_hmm_states``:
 ```Python

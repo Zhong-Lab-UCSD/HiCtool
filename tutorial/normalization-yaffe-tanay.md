@@ -1,6 +1,6 @@
 # Data normalization with explicit-factor correction model of Yaffe and Tanay
 
-This pipeline illustrates the procedure to normalize and visualize Hi-C **intra-chromosomal contact data only** following the explicit-factor model of [Yaffe and Tanay](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html).
+This pipeline illustrates the procedure to normalize and visualize Hi-C **intra-chromosomal contact data only** following the explicit-factor model of [Yaffe and Tanay](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html). Default species that you can use are human *hg38* and mouse *mm10*. For other species use the specific function arguments (see API documentation).
 
 ## Table of contents
 

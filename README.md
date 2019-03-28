@@ -62,7 +62,7 @@ We have compiled a full tutorial to show the usage of the pipeline. Please check
 
 ## API documentation
 
-All the functions used in this documentation are reported with all the input parameters in this [API documentation]().
+All the functions used in this documentation are reported with all the input parameters in the [API documentation]().
 
 ## Reference
 
