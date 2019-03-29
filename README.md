@@ -67,7 +67,7 @@ All the functions used in this documentation are reported with all the input par
 
 ## Version history
 
-March 28, 2019
+### March 28, 2019
 
 - Version 2.0 released:
 
@@ -79,7 +79,7 @@ March 28, 2019
    - Possibility of plotting topological domains over the heatmaps.
    - Small bug fixes.
 
-2015 - October 2018
+### December 2015 - October 2018
 
 - The initial release of HiCtool came out in late 2015. GITAR manuscript (including HiCtool) published in October 2018.
 
