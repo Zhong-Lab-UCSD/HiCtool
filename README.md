@@ -74,7 +74,7 @@ All the functions used in this documentation are reported with all the input par
    - HiCtool code is now hosted on GitHub.
    - Added inter-chromosomal analysis and visualization.
    - Included an additional global normalization method based on a matrix balancing approach.
-   - New function to plot all-by-all chromosomes global contact matrix.
+   - New function to plot the all-by-all chromosomes global contact matrix.
    - Possibility of saving contact matrices in tab separated format.
    - Possibility of plotting topological domains over the heatmaps.
    - Small bug fixes.
