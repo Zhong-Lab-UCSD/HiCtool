@@ -1,4 +1,4 @@
-# HiCtool: a standardized pipeline to process and visualize Hi-C data
+# HiCtool: a standardized pipeline to process and visualize Hi-C data (v2.0)
 
 HiCtool is an open-source bioinformatic tool based on Python, which integrates several software to perform a standardized Hi-C data analysis, from the processing of raw data, to the visualization of heatmaps and the identification of topologically associated domains (TADs).
 
@@ -8,6 +8,7 @@ HiCtool is an open-source bioinformatic tool based on Python, which integrates s
 - [Installation](#installation)
 - [Tutorial](#tutorial)
 - [API documentation](#api-documentation)
+- [Version history](#version-history)
 - [Reference](#reference)
 - [Support](#support)
 
@@ -63,6 +64,22 @@ We have compiled a full tutorial to show the usage of the pipeline. Please check
 ## API documentation
 
 All the functions used in this documentation are reported with all the input parameters in the [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf).
+
+## Version history
+
+March 28, 2019
+
+- Version 2.0 released:
+   - HiCtool code is now hosted on GitHub.
+   - Added inter-chromosomal analysis and visualization.
+   - Included an additional global normalization method based on a matrix balancing approach.
+   - New function to plot an all-by-all chromosomes global contact matrix.
+   - Possibility of saving contact matrices in tab separated format as well.
+   - Possibility of plotting topological domains over the heatmaps.
+
+2015 - October 2018
+
+- The initial release of HiCtool came out in late 2015. GITAR manuscript (including HiCtool) published in October 2018.
 
 ## Reference
 
