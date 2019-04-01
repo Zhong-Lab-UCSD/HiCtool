@@ -6,12 +6,16 @@ def run_hifive(fend_file,
     """
     Program to run HiFive functions.
     Arguments:
-        fend_file: fend file from preprocessing.
-        bam_file_1: bam file for the first read of the pairs.
-        bam_file_2: bam file for the second read of the pairs.
+        fend_file (str): fend file from preprocessing.
+        bam_file_1 (str): bam file for the first read of the pairs.
+        bam_file_2 (str): bam file for the second read of the pairs.
         restriction_enzyme (str): restriction enzyme used in the Hi-C experiment.
         model (str): model you wish to use for the following normalization procedure: either 'Yaffe-Tanay' or 'Hi-Corrector'.
-    Return: None.
+    Return: 
+        None.
+    Outputs:
+        HiC_project_object.hdf5 and HiC_norm_binning.hdf5 if model='Yaffe-Tanay'
+        HiC_project_object.hdf5 if model='Hi-Corrector'
     """
     import hifive
     
