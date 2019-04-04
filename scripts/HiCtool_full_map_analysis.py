@@ -751,7 +751,9 @@ def plot_map(input_matrix,
         for i in chromosomes_list[:-1]:
             matrix_data_full = np.insert(matrix_data_full, d_chr_dim_inc[i]+k, -1, axis=1)
             matrix_data_full = np.insert(matrix_data_full, d_chr_dim_inc[i]+k, -1, axis=0)
-            k += 1
+            matrix_data_full = np.insert(matrix_data_full, d_chr_dim_inc[i]+k, -1, axis=1)
+            matrix_data_full = np.insert(matrix_data_full, d_chr_dim_inc[i]+k, -1, axis=0)
+            k += 2
         
         row = np.shape(matrix_data_full)[0]
         col = np.shape(matrix_data_full)[1]
