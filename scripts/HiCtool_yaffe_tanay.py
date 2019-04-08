@@ -455,6 +455,8 @@ def plot_chromosome_data(contact_matrix,
             return
     
     plt.close("all")
+    #plt.gcf().subplots_adjust(left=0.15)
+    #plt.gcf().subplots_adjust(bottom=0.15)
     if cutoff_type == 'None':
         if topological_domains == '':
             plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest')
@@ -475,16 +477,17 @@ def plot_chromosome_data(contact_matrix,
             cbar.cmap.set_over(max_color)
             cbar.cmap.set_under(domain_color)
     
-    plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=14)
-    plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
-    plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
+    plt.title(data_type + ' contact map (' + my_bin_size + ')', fontsize=12)
+    plt.xlabel(chromosome + ' coordinate (bp)', fontsize=10)
+    plt.ylabel(chromosome + ' coordinate (bp)', fontsize=10)
     cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
     ticks = (np.arange(0, n, n/4) * bin_size) + start_coord
     format_ticks = [format_e(i) for i in ticks.tolist()]
     plt.xticks(np.arange(0, n, n/4), format_ticks)
     plt.yticks(np.arange(0, n, n/4), format_ticks)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
+    plt.tick_params(axis='both', which='both', direction='out', top=False, right=False)
     plt.tight_layout()
     plt.savefig(output_filename + '.pdf', format = 'pdf', dpi=my_dpi)
         
@@ -786,11 +789,13 @@ def plot_chromosome_enrich_data(contact_matrix,
         my_bin_size = bin_size_str + ' kb'     
     
     plt.close("all")
+    #plt.gcf().subplots_adjust(left=0.15)
+    #plt.gcf().subplots_adjust(bottom=0.15)
     norm = MidPointNorm(midpoint=0)
     plt.imshow(matrix_data_full, cmap='seismic', interpolation='nearest', vmax=threshold_max, vmin=threshold_min, norm=norm)
-    plt.title('O/E contact map (' + my_bin_size + ')', fontsize=14)
-    plt.xlabel(chromosome + ' coordinate (bp)', fontsize=12)
-    plt.ylabel(chromosome + ' coordinate (bp)', fontsize=12)
+    plt.title('O/E contact map (' + my_bin_size + ')', fontsize=12)
+    plt.xlabel(chromosome + ' coordinate (bp)', fontsize=10)
+    plt.ylabel(chromosome + ' coordinate (bp)', fontsize=10)
     cbar = plt.colorbar()
     cbar.cmap.set_over('black') # loci where expected enrich values are zero (log not existing)
     cbar.cmap.set_under('gray') # loci where observed values are zero (log equal to minus infinity)
@@ -799,8 +804,9 @@ def plot_chromosome_enrich_data(contact_matrix,
     format_ticks = [format_e(i) for i in ticks.tolist()]
     plt.xticks(np.arange(0, n, n/4), format_ticks)
     plt.yticks(np.arange(0, n, n/4), format_ticks)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
+    plt.tick_params(axis='both', which='both', direction='out', top=False, right=False)
     plt.tight_layout()
     plt.savefig(output_filename + '.pdf', format = 'pdf', dpi = my_dpi)
     

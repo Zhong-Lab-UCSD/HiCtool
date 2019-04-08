@@ -718,7 +718,7 @@ def plot_map(input_matrix,
     k = 0 # to consider the pixel occupied by the grid added after
     for i in chromosomes_list:
         d_chr_label_pos[i] = d_chr_dim_inc[i] - d_chr_dim[i]/2 + k
-        k+=1
+        k+=2
     
     label_pos = []
     label_name = []
@@ -773,22 +773,20 @@ def plot_map(input_matrix,
         if cutoff_type == 'perc':
             perc = np.percentile(output_vect[non_zero[0]],cutoff)
             plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc , vmin=0)
-            plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=14)
             cbar = plt.colorbar(extend='max')
             cbar.cmap.set_over(max_color)
         elif cutoff_type == 'contact':
             perc = cutoff 
             plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc , vmin=0)
-            plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=14)
             cbar = plt.colorbar(extend='max')
             cbar.cmap.set_over(max_color)
         elif cutoff_type == 'None':
             plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmin=0)
-            plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=14)
             cbar = plt.colorbar()
             
         cbar.cmap.set_under('black')   
         cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
+        plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=12)
         plt.xticks(label_pos, label_name, rotation='vertical', fontsize = 6)
         plt.yticks(label_pos, label_name, fontsize = 6)
         plt.tick_params(axis='both', which='both', length=0)
@@ -814,10 +812,7 @@ def plot_map(input_matrix,
             else:
                 matrix_data_full = copy.deepcopy(input_matrix)
     
-        print "Plotting..."
-        row = np.shape(matrix_data_full)[0]
-        col = np.shape(matrix_data_full)[1]
-        
+        print "Plotting..."        
         chromosome_row = 'chr' + chr_row
         chromosome_col = 'chr' + chr_col        
         
@@ -884,8 +879,9 @@ def plot_map(input_matrix,
                     return
                 
                 matrix_data_full = matrix_data_full[chr_row_bin[0]:chr_row_bin[1]+1,chr_col_bin[0]:chr_col_bin[1]+1]
-                row = np.shape(matrix_data_full)[0]
-                col = np.shape(matrix_data_full)[1]
+                
+        row = np.shape(matrix_data_full)[0]
+        col = np.shape(matrix_data_full)[1]
         
         output_vect = np.reshape(matrix_data_full,row*col,1)
         non_zero = np.nonzero(output_vect)
@@ -901,6 +897,7 @@ def plot_map(input_matrix,
         
         plt.close("all")
         plt.gcf().subplots_adjust(left=0.15)
+        plt.gcf().subplots_adjust(bottom=0.15)
         
         if cutoff_type == 'perc':
             perc = np.percentile(output_vect[non_zero[0]],cutoff)
@@ -933,10 +930,10 @@ def plot_map(input_matrix,
                 cbar = plt.colorbar()
                 cbar.cmap.set_under(domain_color)
         
-        plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=14)
+        plt.title(data_type + ' contact map (' + bin_size_str + ')', fontsize=12)
         cbar.ax.set_ylabel(data_type + ' contact counts', rotation=270, labelpad=20)
-        plt.ylabel(chromosome_row + ' coordinate (bp)', fontsize=12)
-        plt.xlabel(chromosome_col + ' coordinate (bp)', fontsize=12)
+        plt.ylabel(chromosome_row + ' coordinate (bp)', fontsize=10)
+        plt.xlabel(chromosome_col + ' coordinate (bp)', fontsize=10)
         if len(chr_row_coord) == 2 and len(chr_col_coord) == 2:
             ticks_row = (np.arange(0, row, row/4) * bin_size) + chr_row_coord[0]
             ticks_col = (np.arange(0, col, col/4) * bin_size) + chr_col_coord[0]
@@ -951,8 +948,9 @@ def plot_map(input_matrix,
             format_ticks_col = [format_e(i) for i in ticks_col.tolist()]
             plt.yticks(np.arange(0, row, row/4), format_ticks_row)
             plt.xticks(np.arange(0, col, col/4), format_ticks_col)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
+        plt.tick_params(axis='both', which='both', direction='out', top=False, right=False)
+        plt.xticks(fontsize=8)
+        plt.yticks(fontsize=8)
         plt.savefig(my_filename + '.pdf', format = 'pdf', dpi=my_dpi)
         
         # Plot of the histogram
