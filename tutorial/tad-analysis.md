@@ -93,7 +93,7 @@ To calculate TAD coordinates for a chromosome (here for chr 6) use the function 
 execfile('HiCtool_TAD_analysis.py')
 global_normalized_40kb = load_matrix_tab('output_ic_mes/output_normalized.txt')
 
-tad_coord = compute_full_tad_analysis(global_normalized_40kb, a_chr='Y', isGlobal=True,
+tad_coord = compute_full_tad_analysis(global_normalized_40kb, a_chr='6', isGlobal=True,
                                       species='hg38', save_di=True, save_hmm=True)
 ```
 ``tad_coord`` is a list of topological domains. Each topological domain is a list of two elements that are the start and end coordinate of the domain. ``save_di`` and ``save_hmm`` set to ``True`` allow to save also the DI values and HMM biased states to txt file.

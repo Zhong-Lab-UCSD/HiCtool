@@ -25,8 +25,7 @@ The function ``run_hifive`` of [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) i
 ```Python
 execfile('HiCtool_hifive.py')
 run_hifive(fend_file='restrictionsites_gc_map_valid.bed',
-           bam_file1='HiCfile_pair1.bam', 
-           bam_file2='HiCfile_pair2.bam',
+           bam_file_1='HiCfile_pair1.bam', bam_file_2='HiCfile_pair2.bam',
            restriction_enzyme='MboI',
            model='Hi-Corrector')
 ```

@@ -86,7 +86,7 @@ Now align the reads to the reference sequence:
 where:
 
 - ``-p`` refers to a specified number of parallel search threads (update it accordingly to your number of available cores). This can be useful to decrease the processing time in aligning the reads.
-- ``-x`` specifies the basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final ``/.1.bt2``, ``/.2.bt2``, etc.
+- ``-x`` specifies the basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final ``.1.bt2``, ``.2.bt2``, etc.
 - ``-S`` specifies the output file in ``sam`` format.
 - ```HiCfile1_log.txt``` and ```HiCfile2_log.txt``` are log files containing the statistics of the alignment:
 
