@@ -187,7 +187,7 @@ where:
 - ``--coord``: List of two integers with start and end coordinates for the chromosome to be plotted.
 - ``--data_type``: Data type to label your data, example: observed, normalized, expected_fend etc.
 - ``--my_colormap``: Colormap to be used to plot the data. You can choose among any colorbar at https://matplotlib.org/examples/color/colormaps_reference.html, or input a list of colors if you want a custom colorbar. Example: [white, red, black]. Colors can be specified also HEX format. Default: [white,red].
-- ``--cutoff_type``: To select a type of cutoff (percentile or contact_number) or plot the full range of the data (not declared). Default: percentile.
+- ``--cutoff_type``: To select a type of cutoff (percentile or contact) or plot the full range of the data (not declared). Default: percentile.
 - ``--cutoff``: To set a maximum cutoff on the number of contacts for the colorbar based on ``--cutoff_type``. Default: 95.
 - ``--max_color``: To set the color of the bins with contact counts over ``--cutoff``. Default: "#460000".
 - ``--plot_histogram``: Set to 1 to plot the histogram of the data distribution, 0 otherwise.

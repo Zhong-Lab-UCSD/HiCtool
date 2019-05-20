@@ -133,7 +133,7 @@ where:
 - ``--chr_row``: Chromosome to plot the DI values of.
 - ``--chr_col``: Same as ``--chr_row`` since this is only for intra-chromosomal maps.
 - ``--my_colormap``: Colormap to be used to plot the data. You can choose among any colorbar at https://matplotlib.org/examples/color/colormaps_reference.html, or input a list of colors if you want a custom colorbar. Example: [white, red, black]. Colors can be specified also HEX format. Default: [white,red].
-- ``--cutoff_type``: To select a type of cutoff (percentile or contact_number) or plot the full range of the data (not declared). Default: percentile.
+- ``--cutoff_type``: To select a type of cutoff (percentile or contact) or plot the full range of the data (not declared). Default: percentile.
 - ``--cutoff``: To set a maximum cutoff on the number of contacts for the colorbar based on ``--cutoff_type``. Default: 95.
 - ``--max_color``: To set the color of the bins with contact counts over ``--cutoff``. Default: "#460000".
 - ``--chr_row_coord``:  List of two integers with start and end coordinates for the chromosome on the rows.

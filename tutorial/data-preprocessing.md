@@ -59,7 +59,7 @@ chmod u+x ./HiCtool-master/scripts/HiCtool_run_preprocessing.sh
 
 # Run the script
 ./HiCtool-master/scripts/HiCtool_run_preprocessing.sh \
--h /HiCtool-master/scripts/ \
+-h ./HiCtool-master/scripts/ \
 -o /your_output_directory/ \
 -1 /myfastq_path/file1.fastq \
 -2 /myfastq_path/file2.fastq \

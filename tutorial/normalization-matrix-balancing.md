@@ -145,7 +145,7 @@ where:
 - ``-q``: maximum number of iterations performed in the algorithm.
 - ``-m``: the memory size in Megabytes (MB). The bigger memory you allocate for the normalization process, the faster it is. Even 100 Mb is fine for 1 Mb resolution map, suggested at least 16000 Mb (16 GB) for 40 kb resolution.
 - ``-r``: the number of rows or columns of the input chromatin contact frequency matrix to be normalized (provided in  ``info_matrix_global_observed_1mb.txt`` generated in [section 2](#2-generating-the-global-observed-contact-matrix)).
-- ``-s``: the row sum after normalization. The iterative correction algorithm can allow users to specify the row sum after the normalization, because this method is a matrix scaling approach that normalizes the matrix to be a doubly stochastic matrix (rows and columns sums equal to 1). Then we can multiple each element of this normalized matrix by the given value of this parameter, say 10.0 or 100.0 or whatever you choose. In such a way, the row sums of normalized matrix becomes this number (10.0 or 100.0 or whatever you choose). In ``info.txt`` we provide a row sum value that you could use calculated as "the average number of contacts of the observed matrix multiplied by the number of rows" to make the normalized data counts "comparable" with the observed ones. The choice is arbitrary.
+- ``-s``: the row sum after normalization. The iterative correction algorithm can allow users to specify the row sum after the normalization, because this method is a matrix scaling approach that normalizes the matrix to be a doubly stochastic matrix (rows and columns sums equal to 1). Then we can multiple each element of this normalized matrix by the given value of this parameter, say 10.0 or 100.0 or whatever you choose. In such a way, the row sums of normalized matrix becomes this number (10.0 or 100.0 or whatever you choose). In ``info_matrix_global_observed_1mb.txt`` we provide a row sum value that you could use calculated as "the average number of contacts of the observed matrix multiplied by the number of rows" to make the normalized data counts "comparable" with the observed ones. The choice is arbitrary.
 - ``-h``: the path to the Hi-Corrector source code with the final trailing slash ``/``.
 - ``-i``: the observed global contact matrix in tab delimited format.
 
@@ -225,7 +225,7 @@ where:
 - ``--tab_sep``: Set to 1 if the input matrix is in a tab separated format, 0 if it is in compressed format.
 - ``--data_type``: Data type to label your data, example: observed, normalized, etc.
 - ``--my_colormap``: Colormap to be used to plot the data. You can choose among any colorbar at https://matplotlib.org/examples/color/colormaps_reference.html, or input a list of colors if you want a custom colorbar. Example: [white, red, black]. Colors can be specified also HEX format. Default: [white,red].
-- ``--cutoff_type``: To select a type of cutoff (percentile or contact_number) or plot the full range of the data (not declared). Default: percentile.
+- ``--cutoff_type``: To select a type of cutoff (percentile or contact) or plot the full range of the data (not declared). Default: percentile.
 - ``--cutoff``: To set a maximum cutoff on the number of contacts for the colorbar based on ``--cutoff_type``. Default: 95.
 - ``--max_color``: To set the color of the bins with contact counts over ``--cutoff``. Default: "#460000".
 
