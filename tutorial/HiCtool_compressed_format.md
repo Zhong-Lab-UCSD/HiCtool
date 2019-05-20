@@ -24,7 +24,7 @@ The same compression workflow applies for the inter-chromosomal contact matrix, 
 | Optimized | 100           | 110.4 (32%)                   | 49.9 (47%)                    | 00:25 (37%)           | 00:17 (57%)  |
 | Full      | 40            | 1566.7                        | 213                           | 06:18                 | 03:24        |
 | Optimized | 40            | 208.6 (13%)                   | 93.1 (44%)                    | 01:50 (29%)           | 01:14 (36%)  |
-| Full      | 10            | 19,957.80                     | 451.3                         | 90:16:00              | 85:41:00     |
+| Full      | 10            | 19,957.80                     | 451.3                         | 90:16              | 85:41     |
 | Optimized | 10            | 393.6 (2%)                    | 177.1 (39%)                   | 26:31 (29%)           | 18:49 (22%)  |
 
 Hardware: 2.9 GHz Intel Core i5, 16 GB of RAM. The percentage of optimization (optimized/full) at each resolution is indicated in the parentheses. kb, kilobase; MB, megabyte.
