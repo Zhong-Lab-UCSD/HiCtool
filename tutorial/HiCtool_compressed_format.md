@@ -10,10 +10,6 @@ Data are compressed based on the fact that contact maps are symmetric (contacts 
 
 The figure shows a simplified example of the compression workflow, where the intra-chromosomal contact matrix is represented by a 4 × 4 symmetric and sparse matrix. (1) The upper-triangular part of the matrix is selected (including the diagonal); (2) data are reshaped to form a vector; (3) all the consecutive zeros are replaced with a “0” followed by the number of zeros that are repeated consecutively; (4) data are saved into a txt file.
 
-## Inter-chromosomal compressed format
-
-The same compression workflow applies for the inter-chromosomal contact matrix, **except for the selection of the upper triangular matrix (step 1)** which is skipped: the entire matrix data are considered (since the matrix is rectangular).
-
 ### Comparison between full and compressed data for the entire human genome (only intra-chromosomal maps)
 
 | Data type | Bin size (kb) | Storage usage txt format (MB) | Storage usage zip format (MB) | Saving time (min:sec) | Loading time |
@@ -28,3 +24,9 @@ The same compression workflow applies for the inter-chromosomal contact matrix, 
 | Optimized | 10            | 393.6 (2%)                    | 177.1 (39%)                   | 26:31 (29%)           | 18:49 (22%)  |
 
 Hardware: 2.9 GHz Intel Core i5, 16 GB of RAM. The percentage of optimization (optimized/full) at each resolution is indicated in the parentheses. kb, kilobase; MB, megabyte.
+
+## Inter-chromosomal compressed format
+
+The same compression workflow applies for the inter-chromosomal contact matrix, **except for the selection of the upper triangular matrix (step 1)** which is skipped: the entire matrix data are considered (since the matrix is rectangular).
+
+
