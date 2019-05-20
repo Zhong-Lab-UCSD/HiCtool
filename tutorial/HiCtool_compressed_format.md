@@ -14,7 +14,7 @@ The figure shows a simplified example of the compression workflow, where the int
 
 The same compression workflow applies for the inter-chromosomal contact matrix, **except for the selection of the upper triangular matrix (step 1)** which is skipped: the entire matrix data are considered (since the matrix is rectangular).
 
-## Comparison between full and compressed data for the entire human genome (only intra-chromosomal maps)
+### Comparison between full and compressed data for the entire human genome (only intra-chromosomal maps)
 
 | Data type | Bin size (kb) | Storage usage txt format (MB) | Storage usage zip format (MB) | Saving time (min:sec) | Loading time |
 |-----------|---------------|-------------------------------|-------------------------------|-----------------------|--------------|
