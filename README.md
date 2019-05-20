@@ -61,7 +61,7 @@ We have compiled a full tutorial to show the usage of the pipeline. Please check
 
 ## Version history
 
-### Date
+### May 20, 2019
 
 - Version 2.1 released:
 
