@@ -21,16 +21,16 @@ To perform TAD analysis (calculating DI, HMM states and topological domain coord
 
 **Performing the analysis starting from the global matrix for all the chromosomes**
 
-In this case, you should have normalized the data using the Hi-Corrector approach. We renamed the global matrix ``/output_ic_mes/output_normalized.txt`` as ``HiCtool_40kb_matrix_global_normalized_tab.txt``.
+In this case, you should have normalized the data using the Hi-Corrector approach.
 
-**Note!** Since the global matrix at 40kb is pretty big (53 GB for this dataser), it may take sometime to load it. Therefore, it is suggested to run the analysis for all the chromosomes, taking advantage of the matrix already loaded in the workspace (as we do below). However, you may select the chromosomes you want with the parameter ``--chr``.
+**Note!** Since the global matrix at 40kb is pretty big (53 GB for this dataset), it may take sometime to load it. Therefore, it is suggested to run the analysis for all the chromosomes, taking advantage of the matrix already loaded in the workspace (as we do below). However, you may select the chromosomes you want with the parameter ``--chr``.
 ```unix
 chromosomes=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y]
 
-python /HiCtool-master/scripts/HiCtool_TAD_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 --action full_tad_analysis \
 -i HiCtool_40kb_matrix_global_normalized_tab.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -s hg38 \
 --isGlobal 1 \
 --tab_sep 1 \
@@ -61,10 +61,10 @@ This script will produce four output files per each chromosome (here example for
 
 Here we take chromosome 6 as example. For this case, you may either have normalized the data using the Hi-Corrector approach and [extracted already a single contact matrix](https://github.com/rcalandrelli/HiCtool/blob/master/tutorial/normalization-matrix-balancing.md#21-extracting-single-contact-matrices) (``HiCtool_chr6_40kb_normalized.txt``) or have used the approach from Yaffe and Tanay which gives you already single contact matrices (``HiCtool_chr6_40kb_normalized_fend.txt``).
 ```unix
-python /HiCtool-master/scripts/HiCtool_TAD_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 --action full_tad_analysis \
 -i HiCtool_chr6_40kb_normalized.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -s hg38 \
 --isGlobal 0 \
 --tab_sep 0 \
@@ -77,10 +77,10 @@ To calculate the **topological domain coordinates for multiple chromosomes start
 chromosomes=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "X" "Y")
 
 for i in "${chromosomes[@]}"; do
-	python /HiCtool-master/scripts/HiCtool_TAD_analysis.py \
+	python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 	--action full_tad_analysis \
 	-i HiCtool_chr$i_40kb_normalized.txt \
-	-c /HiCtool-master/scripts/chromSizes/ \
+	-c ./HiCtool-master/scripts/chromSizes/ \
 	-s hg38 \
 	--isGlobal 0 \
 	--tab_sep 0 \
@@ -100,10 +100,10 @@ To plot the topological domains on the heatmap, use the function ``plot_map`` of
 **Note!** To plot topological domains on the heatmap this should be with a bin size of 40kb or lower!
 
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_chr6_40kb_normalized.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 40000 \
 -s hg38 \
 --isGlobal 0 \
@@ -142,10 +142,10 @@ where:
 
 Zoom in on a smaller region (chr6: 50,000,000-54,000,000):
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_chr6_40kb_normalized.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 40000 \
 -s hg38 \
 --isGlobal 0 \
@@ -184,10 +184,10 @@ To compute DI, we need the fend normalized contact data at a bin size of 40 kb. 
 
 To **plot the DI values** use the function ``plot_chromosome_DI`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py) as following (in this case we plot DI values for chromosome 6, from 50 to 54 Mb):
 ```unix
-python /HiCtool-master/scripts/HiCtool_TAD_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 --action plot_chromosome_DI \
 -i HiCtool_chr6_DI.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -s hg38 \
 --chr 6 \
 --full_chromosome 0 \
@@ -213,10 +213,10 @@ For true DI calculation, we consider the **emission sequence** as the observed D
 
 To **plot the DI values and HMM states** use the function ``plot_chromosome_DI`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py) and add the parameter ``--input_file_hmm`` to input the HMM states file as following:
 ```unix
-python /HiCtool-master/scripts/HiCtool_TAD_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 --action plot_chromosome_DI \
 -i HiCtool_chr6_DI.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -s hg38 \
 --chr 6 \
 --full_chromosome 0 \
