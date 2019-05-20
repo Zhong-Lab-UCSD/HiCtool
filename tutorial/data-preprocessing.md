@@ -178,6 +178,7 @@ Since generating the FEND bed file may be time consuming, we provide the most co
 - [NcoI-hg38](http://data.genomegitar.org/NcoI_hg38_gc_map_valid.zip)
 - [HindIII-mm10](http://data.genomegitar.org/HindIII_mm10_gc_map_valid.zip)
 - [MboI-mm10 (or DpnII-mm10)](http://data.genomegitar.org/MboI_mm10_gc_map_valid.zip)
+- [MboI-dm6 (or DpnII-dm6)](http://data.genomegitar.org/MboI_dm6_gc_map.zip)
 
 **Perform the following steps ONLY if you need to generate a new fragment end bed file (because you are using another species or a different restriction enzyme than those provided above). Otherwise, download the file of interest above and go to the [data normalization section](https://github.com/Zhong-Lab-UCSD/HiCtool/tree/master/tutorial#2-data-normalization-and-visualization).**
 
