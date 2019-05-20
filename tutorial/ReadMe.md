@@ -2,7 +2,7 @@
 
 This is a full tutorial of HiCtool. The tutorial steps have to be followed in sequence. At the normalization step, choose the preferred method.
 
-All the scripts used in the tutorial are inside the main folder [scripts](https://github.com/Zhong-Lab-UCSD/HiCtool/tree/master/scripts).
+All the scripts used in the tutorial are inside the main folder [scripts](https://github.com/Zhong-Lab-UCSD/HiCtool/tree/master/scripts). In this tutorial, all the commands are run supposing that you have downloaded the ``HiCtool-master`` folder inside your working directory, otherwise update the paths when you run the commands accordingly.
 
 ![](/tutorial/HiCtool_flowchart.png)
 

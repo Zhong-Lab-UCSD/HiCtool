@@ -55,10 +55,10 @@ bowtie2-build hg38.fa index
 
 ```unix
 # Make the bash script executable
-chmod u+x /HiCtool-master/scripts/HiCtool_run_preprocessing.sh
+chmod u+x ./HiCtool-master/scripts/HiCtool_run_preprocessing.sh
 
 # Run the script
-/HiCtool-master/scripts/HiCtool_run_preprocessing.sh \
+./HiCtool-master/scripts/HiCtool_run_preprocessing.sh \
 -h /HiCtool-master/scripts/ \
 -o /your_output_directory/ \
 -1 /myfastq_path/file1.fastq \
@@ -168,7 +168,7 @@ where paired-end reads in ``SRRXXXXXXX.sra`` are split and stored into **``SRRXX
 
 ## 2. Creating the fragment-end (FEND) bed file
 
-The fragment-end (FEND) bed file is used to normalize the data and it contains restriction site coordinates and optional additional information related to fragment properties, such as GC content and mappability score (needed only if you wish to normalize your data using the [explicit-factor approach from Yaffe and Tanay](/tutorial/normalization-yaffe-tanay.md). Specifically, for each fragment the GC content of 200 bp upstream and downstream to the restriction site is computed. For the mappability score, the entire genome sequence is split into artificial reads (50 bp reads, starting every 10 bp) and then mapped back to the genome. For each fragment end the mappability score is then defined to be the portion of artificial reads mapped uniquely to the genome (MAPQ > 30) within a 500-bp window upstream and downstream to the fragment. Fragment ends with a mappability score less than 0.5 are then discarded (Yaffe and Tanay, 2011).
+The fragment-end (FEND) bed file is used to generate the observed contact matrices and normalize the data. It contains restriction site coordinates and optional additional information related to fragment properties, such as GC content and mappability score (needed only if you wish to normalize your data using the [explicit-factor approach from Yaffe and Tanay](/tutorial/normalization-yaffe-tanay.md)). Specifically, for each fragment the GC content of 200 bp upstream and downstream to the restriction site is computed. For the mappability score, the entire genome sequence is split into artificial reads (50 bp reads, starting every 10 bp) and then mapped back to the genome. For each fragment end the mappability score is then defined to be the portion of artificial reads mapped uniquely to the genome (MAPQ > 30) within a 500-bp window upstream and downstream to the fragment. Fragment ends with a mappability score less than 0.5 are then discarded (Yaffe and Tanay, 2011).
 
 Since generating the FEND bed file may be time consuming, we provide the most common FEND files available for download (DpnII is the same restriction site than MboI):
 
@@ -192,12 +192,12 @@ Since generating the FEND bed file may be time consuming, we provide the most co
 
 ```unix
 # Make the bash script executable
-chmod u+x /HiCtool-master/scripts/HiCtool_generate_fend_file.sh
+chmod u+x ./HiCtool-master/scripts/HiCtool_generate_fend_file.sh
 
 # Run the script
-/HiCtool-master/scripts/HiCtool_generate_fend_file.sh \
--h /HiCtool-master/scripts/ \
--o your_output_directory \
+./HiCtool-master/scripts/HiCtool_generate_fend_file.sh \
+-h ./HiCtool-master/scripts/ \
+-o /your_output_directory/ \
 -e MboI \
 -g /path_to_the_genome_indexes/index \
 -s hg38 \
@@ -240,12 +240,12 @@ You can decide if adding both the GC content and mappability score information o
 
 ```unix
 # Make the bash script executable
-chmod u+x /HiCtool-master/scripts/HiCtool_fend_file_add_gc_map.sh
+chmod u+x ./HiCtool-master/scripts/HiCtool_fend_file_add_gc_map.sh
 
 # Run the script
-/HiCtool-master/scripts/HiCtool_fend_file_add_gc_map.sh \
--h /HiCtool-master/scripts/ \
--o your_output_directory \
+./HiCtool-master/scripts/HiCtool_fend_file_add_gc_map.sh \
+-h ./HiCtool-master/scripts/ \
+-o /your_output_directory/ \
 -s hg38 \
 -p 32 \
 -b /a_path/gc5Base.bw \

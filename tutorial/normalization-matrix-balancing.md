@@ -25,7 +25,7 @@ The Python script [HiCtool_hifive.py](/scripts/HiCtool_hifive.py) is used to run
 
 For more information about these functions, please see [HiFive’s API documentation](http://bxlab-hifive.readthedocs.org/en/latest/api.html). To run these steps execute the following command on the Unix console (update parameters properly):
 ```unix
-python /HiCtool-master/scripts/HiCtool_hifive.py \
+python ./HiCtool-master/scripts/HiCtool_hifive.py \
 -f restrictionsites.bed \
 --b1 HiCfile_pair1.bam \
 --b2 HiCfile_pair2.bam \
@@ -55,12 +55,12 @@ Especially at higher resolution, the generation of the global observed contact m
 
 To calculate and save the global observed contact matrix use the script [HiCtool_global_map_observed.py](/scripts/HiCtool_global_map_observed.py) and run this command:
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_observed.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_observed.py \
 -i HiC_project_object.hdf5 \
 -o /output_path/ \
 -b 1000000 \
 -s hg38 \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 --save_each 0 \
 -p 24
 ```
@@ -84,10 +84,10 @@ where:
 
 After having generated the global observed contact matrix, it is possible to extract and save to file a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_global_map_analysis.py](/scripts/HiCtool_global_map_analysis.py) as following (here we extract the chr1-chr1 map):
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action extract_single_map \
 -i HiCtool_1mb_matrix_global_observed.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --tab_sep 0 \
@@ -110,10 +110,10 @@ where:
 **Tip!** To extract a single matrix the code loads first the global matrix to the workspace and especially at higher resolution, the loading step of the matrix may require long time. Therefore, if you wish to extract multiple single matrices, it is suggested to extract everything at once, instead of running the command multiple times. See the following example where chr1-chr1, chr1-chr2, chr3-chr4 are extracted.
 
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action extract_single_map \
 -i HiCtool_1mb_matrix_global_observed.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --tab_sep 0 \
@@ -129,15 +129,15 @@ Here we normalize the data using the sequential implementation from Hi-Corrector
 The Hi-Corrector source code ([see here](https://github.com/Zhong-Lab-UCSD/HiCtool#installation)) is already inside ``/HiCtool-master/scripts/``. To normalize the data, run the following command:
 ```unix
 # Make the bash script executable
-chmod u+x /HiCtool-master/scripts/HiCtool_run_ic_mes.sh
+chmod u+x ./HiCtool-master/scripts/HiCtool_run_ic_mes.sh
 
 # Run the script
-/HiCtool-master/scripts/HiCtool_run_ic_mes.sh \
+./HiCtool-master/scripts/HiCtool_run_ic_mes.sh \
 -q 100 \
 -m 32000 \
 -r 3078 \
 -s 17237 \
--h /HiCtool-master/scripts/Hi-Corrector1.2/ \
+-h ./HiCtool-master/scripts/Hi-Corrector1.2/ \
 -i HiCtool_1mb_matrix_global_observed_tab.txt
 ```
 where:
@@ -158,10 +158,10 @@ The **global normalized contact matrix** in tab separated format is saved to you
 
 After having normalized the data, it is possible to extract and save to file a single contact matrix (either intra- or inter-chromosomal) using the function ``extract_single_map`` of [HiCtool_global_map_analysis.py](/scripts/HiCtool_global_map_analysis.py) as following (here we extract the chr1-chr1 map):
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action extract_single_map \
 -i HiCtool_1mb_matrix_global_normalized_tab.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --tab_sep 1 \
@@ -180,10 +180,10 @@ To plot the contact maps we use the function ``plot_map`` of [HiCtool_global_map
 You can visualize either the observed or the normalized data. Here we plot both the global maps at 1 Mb resolution as calculated above.
 ```unix
 # Observed data
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_1mb_matrix_global_observed.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --isGlobal 1 \
@@ -199,10 +199,10 @@ python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 
 ```unix
 # Normalized data
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_1mb_matrix_global_normalized_tab.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --isGlobal 1 \
@@ -245,10 +245,10 @@ A single contact matrix can be plotted by passing as argument the chromosome(s) 
 To plot the **intra-chromosomal heatmap** of chromosome 6 and **inter-chromosomal heatmap** (chr6-chr3), run the following:
 ```unix
 # Observed data
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_1mb_matrix_global_observed.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --isGlobal 1 \
@@ -262,10 +262,10 @@ python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --max_color "#460000"
 
 # Normalized data
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_1mb_matrix_global_normalized_tab.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --isGlobal 1 \
@@ -291,10 +291,10 @@ A histogram of the contact data distribution can be plotted by setting ``--plot_
 
 In addition, only a **region of the heatmap** can be plotted by setting the parameters ``--chr_row_coord`` and ``--chr_col_coord``. These are lists with two integers indicating the start and end coordinate of the chromosome on the rows and on the columns respectively. If several single maps are inputed at once, these parameters can be lists of lists, each with coordinates corresponding to a single heatmap (see below).
 ```unix
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
 -i HiCtool_1mb_matrix_global_normalized_tab.txt \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --isGlobal 1 \
@@ -322,10 +322,10 @@ To plot side-by-side contact maps for two or more samples, we use the function `
 ```unix
 chromosomes=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y]
 
-python /HiCtool-master/scripts/HiCtool_global_map_analysis.py \
+python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_side_by_side_map \
 -i [/GSM1551550/HiCtool_1mb_matrix_global_observed.txt,/HEK293T/HiCtool_1mb_matrix_global_observed.txt] \
--c /HiCtool-master/scripts/chromSizes/ \
+-c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
 --tab_sep 0 \
