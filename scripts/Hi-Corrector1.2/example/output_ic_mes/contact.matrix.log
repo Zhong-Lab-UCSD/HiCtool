@@ -1,0 +1,216 @@
+ic_mes arguments:
+	input file: /mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/Software/Hi-Corrector1.2/example/contact.matrix
+		has header line: 0
+		has header column: 0
+	memory size for this job: 10 MB
+	total_rows: 1000
+	maxiter: 100
+	output file: /mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/Software/Hi-Corrector1.2/example/output_ic_mes/contact.matrix.bias
+All data is divided to 1 parts: 1000
+
+partition sizes (1 partitions): 1000
+
+	Iteration 1:
+		Part 1:	1	1000
+	Iteration 2:
+		Part 1:	1	1000
+	Iteration 3:
+		Part 1:	1	1000
+	Iteration 4:
+		Part 1:	1	1000
+	Iteration 5:
+		Part 1:	1	1000
+	Iteration 6:
+		Part 1:	1	1000
+	Iteration 7:
+		Part 1:	1	1000
+	Iteration 8:
+		Part 1:	1	1000
+	Iteration 9:
+		Part 1:	1	1000
+	Iteration 10:
+		Part 1:	1	1000
+	Iteration 11:
+		Part 1:	1	1000
+	Iteration 12:
+		Part 1:	1	1000
+	Iteration 13:
+		Part 1:	1	1000
+	Iteration 14:
+		Part 1:	1	1000
+	Iteration 15:
+		Part 1:	1	1000
+	Iteration 16:
+		Part 1:	1	1000
+	Iteration 17:
+		Part 1:	1	1000
+	Iteration 18:
+		Part 1:	1	1000
+	Iteration 19:
+		Part 1:	1	1000
+	Iteration 20:
+		Part 1:	1	1000
+	Iteration 21:
+		Part 1:	1	1000
+	Iteration 22:
+		Part 1:	1	1000
+	Iteration 23:
+		Part 1:	1	1000
+	Iteration 24:
+		Part 1:	1	1000
+	Iteration 25:
+		Part 1:	1	1000
+	Iteration 26:
+		Part 1:	1	1000
+	Iteration 27:
+		Part 1:	1	1000
+	Iteration 28:
+		Part 1:	1	1000
+	Iteration 29:
+		Part 1:	1	1000
+	Iteration 30:
+		Part 1:	1	1000
+	Iteration 31:
+		Part 1:	1	1000
+	Iteration 32:
+		Part 1:	1	1000
+	Iteration 33:
+		Part 1:	1	1000
+	Iteration 34:
+		Part 1:	1	1000
+	Iteration 35:
+		Part 1:	1	1000
+	Iteration 36:
+		Part 1:	1	1000
+	Iteration 37:
+		Part 1:	1	1000
+	Iteration 38:
+		Part 1:	1	1000
+	Iteration 39:
+		Part 1:	1	1000
+	Iteration 40:
+		Part 1:	1	1000
+	Iteration 41:
+		Part 1:	1	1000
+	Iteration 42:
+		Part 1:	1	1000
+	Iteration 43:
+		Part 1:	1	1000
+	Iteration 44:
+		Part 1:	1	1000
+	Iteration 45:
+		Part 1:	1	1000
+	Iteration 46:
+		Part 1:	1	1000
+	Iteration 47:
+		Part 1:	1	1000
+	Iteration 48:
+		Part 1:	1	1000
+	Iteration 49:
+		Part 1:	1	1000
+	Iteration 50:
+		Part 1:	1	1000
+	Iteration 51:
+		Part 1:	1	1000
+	Iteration 52:
+		Part 1:	1	1000
+	Iteration 53:
+		Part 1:	1	1000
+	Iteration 54:
+		Part 1:	1	1000
+	Iteration 55:
+		Part 1:	1	1000
+	Iteration 56:
+		Part 1:	1	1000
+	Iteration 57:
+		Part 1:	1	1000
+	Iteration 58:
+		Part 1:	1	1000
+	Iteration 59:
+		Part 1:	1	1000
+	Iteration 60:
+		Part 1:	1	1000
+	Iteration 61:
+		Part 1:	1	1000
+	Iteration 62:
+		Part 1:	1	1000
+	Iteration 63:
+		Part 1:	1	1000
+	Iteration 64:
+		Part 1:	1	1000
+	Iteration 65:
+		Part 1:	1	1000
+	Iteration 66:
+		Part 1:	1	1000
+	Iteration 67:
+		Part 1:	1	1000
+	Iteration 68:
+		Part 1:	1	1000
+	Iteration 69:
+		Part 1:	1	1000
+	Iteration 70:
+		Part 1:	1	1000
+	Iteration 71:
+		Part 1:	1	1000
+	Iteration 72:
+		Part 1:	1	1000
+	Iteration 73:
+		Part 1:	1	1000
+	Iteration 74:
+		Part 1:	1	1000
+	Iteration 75:
+		Part 1:	1	1000
+	Iteration 76:
+		Part 1:	1	1000
+	Iteration 77:
+		Part 1:	1	1000
+	Iteration 78:
+		Part 1:	1	1000
+	Iteration 79:
+		Part 1:	1	1000
+	Iteration 80:
+		Part 1:	1	1000
+	Iteration 81:
+		Part 1:	1	1000
+	Iteration 82:
+		Part 1:	1	1000
+	Iteration 83:
+		Part 1:	1	1000
+	Iteration 84:
+		Part 1:	1	1000
+	Iteration 85:
+		Part 1:	1	1000
+	Iteration 86:
+		Part 1:	1	1000
+	Iteration 87:
+		Part 1:	1	1000
+	Iteration 88:
+		Part 1:	1	1000
+	Iteration 89:
+		Part 1:	1	1000
+	Iteration 90:
+		Part 1:	1	1000
+	Iteration 91:
+		Part 1:	1	1000
+	Iteration 92:
+		Part 1:	1	1000
+	Iteration 93:
+		Part 1:	1	1000
+	Iteration 94:
+		Part 1:	1	1000
+	Iteration 95:
+		Part 1:	1	1000
+	Iteration 96:
+		Part 1:	1	1000
+	Iteration 97:
+		Part 1:	1	1000
+	Iteration 98:
+		Part 1:	1	1000
+	Iteration 99:
+		Part 1:	1	1000
+	Iteration 100:
+		Part 1:	1	1000
+>> ic_mes computation total time: 0:0:16
+Write output to file: /mnt/extraids/OceanStor-SysCmn-2/rcalandrelli/Software/Hi-Corrector1.2/example/output_ic_mes/contact.matrix.bias
+Write time: 0:0:0
+Done.

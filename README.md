@@ -1,4 +1,4 @@
-# HiCtool: a standardized pipeline to process and visualize Hi-C data (v2.0)
+# HiCtool: a standardized pipeline to process and visualize Hi-C data (v2.1)
 
 HiCtool is an open-source bioinformatic tool based on Python, which integrates several software to perform a standardized Hi-C data analysis, from the processing of raw data, to the visualization of heatmaps and the identification of topologically associated domains (TADs).
 
@@ -7,14 +7,13 @@ HiCtool is an open-source bioinformatic tool based on Python, which integrates s
 - [Overview](#overview)
 - [Installation](#installation)
 - [Tutorial](#tutorial)
-- [API documentation](#api-documentation)
 - [Version history](#version-history)
 - [Reference](#reference)
 - [Support](#support)
 
 ## Overview
 
-We implemented a pipeline that is divided into three main sections:
+We implemented a tool that is divided into three main sections:
 
 - Data preprocessing
 - Data normalization and visualization
@@ -24,12 +23,12 @@ HiCtool leads the user step-by-step through a pipeline, which goes from the raw 
 
 HiCtool can implement contact data normalization following two approaches: 
 
-- The explicit-factor correction method reported by [Yaffe and Tanay](https://www.nature.com/articles/ng.947) and performed by the library [HiFive](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0806-y). In this case, only intra-chromosomal analysis is performed, per each chromosome singularly.
-- The matrix balancing approach performed by [Hi-Corrector](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4380031/). In this case, a global analysis is performed including all the chromosomes and both intra- and inter-chromosomal maps.
+- The explicit-factor correction method reported by [Yaffe and Tanay](https://www.nature.com/articles/ng.947) and performed by the library [HiFive](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0806-y). In this case, only intra-chromosomal analysis is performed, per each chromosome singularly and only single heatmaps can be plotted. In addition, there is the possibility to plot topological domains over the heatmap at a resolution of 40kb or lower.
+- The matrix balancing approach performed by [Hi-Corrector](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4380031/). In this case, a global analysis is performed including all the chromosomes and both intra- and inter-chromosomal maps. It is possible to visualize either single intra- and inter-chromosomal heatmap or the global all-by-all chromosomes heatmap (for the global heatmap visualization, resolution could be limited by your hardware). In addition, there is the possibility to plot topological domains over the intra-chromosomal heatmap (resolution of 40kb or lower) or plot the same maps from different samples on a side-by-side view for easy comparison.
 
 ## Installation
 
-HiCtool is in a pipeline format to allow extreme flexibility and easy usage. In order to use HiCtool, you need to install the following Python libraries, packages and software. Everything is open source.
+HiCtool is in a pipeline format based on single unix commands to allow easy usage. In order to use HiCtool, you need to install the following Python libraries, packages and software. Everything is open source. After that, you need the HiCtool source codes. **[Click here to download HiCtool](https://github.com/Zhong-Lab-UCSD/HiCtool/archive/master.zip)**, unzip the file, all the scripts are under the folder ``scripts``. [Hi-Corrector](http://zhoulab.usc.edu/Hi-Corrector/) source code is already inside this folder.
 
 **1. Python libraries [for python>2.7]:**
 
@@ -55,17 +54,23 @@ HiCtool is in a pipeline format to allow extreme flexibility and easy usage. In 
 - [Bowtie 2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
 - [SAMTools](http://samtools.sourceforge.net/)
 - [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump)
-- [Hi-Corrector](http://zhoulab.usc.edu/Hi-Corrector/)
 
 ## Tutorial
 
 We have compiled a full tutorial to show the usage of the pipeline. Please check the [Tutorial Homepage](./tutorial/ReadMe.md).
 
-## API documentation
-
-All the functions used in this documentation are reported with all the input parameters in the [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf).
-
 ## Version history
+
+### Date
+
+- Version 2.1 released:
+
+   - HiCtool is now based only on unix commands. A Python script is given which contains utility functions for I/O of files generated with HiCtool in the Python console.
+   - The entire pre-processing is now performed with a single-command.
+   - Possibility of processing Hi-C data generated with a cocktail of restriction enzymes (i.e. as in the Arima Kit) or with restriction enzymes including "N" in their sequence.
+   - HiCtool includes now additional species besides hg38 and mm10: hg19, mm9, dm6, susScr3, susScr11.
+   - New function to visualize heatmaps from different samples or conditions on a side-by-side view for comparison.
+   - Small bug fixes.
 
 ### March 28, 2019
 
@@ -81,7 +86,7 @@ All the functions used in this documentation are reported with all the input par
 
 ### December 2015 - October 2018
 
-- The initial release of HiCtool came out in late 2015. GITAR manuscript (including HiCtool) published in October 2018.
+- The initial release of HiCtool v1.0 came out in late 2015. GITAR manuscript (including HiCtool) published in October 2018.
 
 ## Reference
 

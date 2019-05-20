@@ -1,51 +1,38 @@
-"""
-Program to add the gc content to the fragment end (fend) files (one per each chromosome).
-"""
+# Add the GC content of 200bp upstream and downstream to the restriction site per each single chromosome.
 
+# Usage: python2.7 HiCtool_add_fend_gc_content.py [-h] [options]
+# Options:
+#  -h, --help                   show this help message and exit
+#  -c CHROMSIZES_PATH           Path to the folder chromSizes with trailing slash at the end.
+#  -s SPECIES                   Species. It has to be one of those present under the chromSizes path. Example: for human hg38 type here "hg38".
+#  -r RESTRICTION_SITES_PATH    Path to the folder with the restriction sites bed files.
+#  -g GC_FILES_PATH             Path to the folder with the GC files, one per each chromosome.
+#  -p THREADS                   Number of parallel threads to use. It has to be less or equal than the number of chromosomes.
+
+# Output files:
+#  Fend bed file with additional GC content information added in two columns: gc_upstream and gc_downstream.
+
+from optparse import OptionParser
 from time import gmtime, strftime
+import pybedtools
+import numpy as np
+import os
+import pandas as pd
+from multiprocessing import Pool
 
-### Input variables to be updated before running the script
+parameters = {'chromSizes_path': None,
+              'species': None,
+              'restrictionsites_path': None,
+              'gc_files_path': None,
+              'threads': None}
 
-# 1) List of chromosomes of the species you are using
-chr_list = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y']
-
-# 2) Path of the fend files, one per chromosome
-restrictionsites_path='insert_path_here'
-
-# 3) Path of the files with the gc content information (one per each chromosome) and named as chr1.txt, chr2.txt, etc.
-gc_files_path='insert_path_here'
-
-# 4) Path to save the output fend files with gc content added
-output_path='insert_path_here'
-
-# 5) Filename to be used for fend files with gc content (the chromosome label is automatically added per each file)
-restrictionsites_gc_filename='restrictionsites_gc'
-
-# 6) Number of threads to be used
-threads = len(chr_list) # (under the assumption that you have at least 24 threads!)        
-
-print "Adding GC content information in parallel using " + str(threads) + " threads..."
-print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 def add_gc_content(chromosome):
-    """
-        Add for each fragment of the FEND file the GC content of 200bp upstream and 
-        downstream to the restriction site per a single chromosome. 
-        Arguments:
-            chromosome (str): chromosome number (example for chromosome 1: '1').
-        Returns: None.
-        Output:
-            Fend bed file with additional GC content information added in two columns: 
-            gc_upstream and gc_downstream.
-    """
-
-    import pybedtools
-    import numpy as np
-    import os
-    import pandas as pd
+    output_path = parameters['restrictionsites_path']
+    gc_files_path = parameters['gc_files_path']
     
     content = []
-    with open(restrictionsites_path + 'chr' + chromosome + '.bed') as f:
+    with open(output_path + 'chr' + chromosome + '.bed') as f:
         for line in f:
             content.append(line.strip().split())
     content = np.array(content)
@@ -73,7 +60,7 @@ def add_gc_content(chromosome):
     a_up = pybedtools.example_bedtool(output_path + 'chr' + chromosome + '_upstream.bed')
     a_down = pybedtools.example_bedtool(output_path + 'chr' + chromosome + '_downstream.bed')
 
-    result = pd.read_table(restrictionsites_path + 'chr' + chromosome + '.bed', header=None)
+    result = pd.read_table(output_path + 'chr' + chromosome + '.bed', header=None)
     result.columns = ['chr', 'start','stop','name','score','strand']
     result['gc_upstream'] = '' # adding a field to store the upstream GC content
     result['gc_downstream'] = '' # adding a field to store the upstream GC content
@@ -111,20 +98,76 @@ def add_gc_content(chromosome):
         r1 += 1
 
     result.score = 1
-    result.to_csv(path_or_buf=output_path + 'chr' + chromosome + '_' + restrictionsites_gc_filename + '.bed',sep='\t',header=False,index=False)
+    result.to_csv(path_or_buf=output_path + 'chr' + chromosome + '_gc.bed',sep='\t',header=False,index=False)
 
     os.remove(output_path + 'chr' + chromosome + '_upstream.bed')
     os.remove(output_path + 'chr' + chromosome + '_downstream.bed')
     os.remove(output_path + 'upstream_intersect_chr' + chromosome + '.bed')
     os.remove(output_path + 'downstream_intersect_chr' + chromosome + '.bed')
-    print "GC content information for chromosome " + chromosome + " complete."
+    print "GC content information for chr" + chromosome + " complete."
     
-    
-# Multiprocessing code execution
-from multiprocessing import Pool
 
 if __name__ == '__main__':
-    pool = Pool(processes=threads)             
-    pool.map(add_gc_content, chr_list)
     
-print "End: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    usage = 'Usage: python2.7 HiCtool_add_fend_gc_content.py [-h] [options]'
+    parser = OptionParser(usage = 'python2.7 %prog -c chromSizes_path -s species -r restriction_sites_path -g gc_files_path -p threads')
+    parser.add_option('-c', dest='chromSizes_path', type='string', help='Path to the folder chromSizes with trailing slash at the end.')
+    parser.add_option('-s', dest='species', type='string', help='Species. It has to be one of those present under the chromSizes path. Example: for human hg38 type here "hg38".')
+    parser.add_option('-r', dest='restrictionsites_path', type='string', help='Path to the folder with the restriction sites bed files.')
+    parser.add_option('-g', dest='gc_files_path', type='string', help='Path to the folder with the GC files, one per each chromosome.')
+    parser.add_option('-p', dest='threads', type='string', help='Number of parallel threads to use. It has to be less or equal than the number of chromosomes.')
+    (options, args) = parser.parse_args( )
+
+    if options.chromSizes_path == None:
+        parser.error('-h for help or provide the chromSizes path!')
+    else:
+        pass
+    if options.species == None:
+        parser.error('-h for help or provide the species!')
+    else:
+        pass
+    if options.restrictionsites_path == None:
+        parser.error('-h for help or provide the restrictionsites bed files path!')
+    else:
+        pass
+    if options.gc_files_path == None:
+        parser.error('-h for help or provide the path to the files with GC content information!')
+    else:
+        pass
+    if options.threads == None:
+        parser.error('-h for help or provide the number of threads!')
+    else:
+        pass
+    
+    parameters['chromSizes_path'] = options.chromSizes_path
+    parameters['species'] = options.species
+    parameters['restrictionsites_path'] = options.restrictionsites_path
+    parameters['gc_files_path'] = options.gc_files_path
+    parameters['threads'] = options.threads
+    
+    if parameters['species'] + ".chrom.sizes" not in os.listdir(parameters['chromSizes_path']):
+        available_species = ', '.join([x.split('.')[0] for x in  os.listdir(parameters['chromSizes_path'])])
+        parser.error('Wrong species inserted! Check the species spelling or insert an available species: ' + available_species + '. If your species is not listed, please contact Riccardo Calandrelli at <rcalandrelli@eng.ucsd.edu>.')
+    
+    chromosomes = open(parameters['chromSizes_path'] + parameters['species'] + '.chrom.sizes', 'r')
+    chromosomes_list = []
+    while True:
+        try:
+            line2list = next(chromosomes).split('\n')[0].split('\t')
+            chromosomes_list.append(line2list[0])
+        except StopIteration:
+            break
+    
+    threads = int(parameters['threads'])
+    
+    if threads > len(chromosomes_list):
+        parser.error("Input a number of threads less or equal than the number of chromosomes (" + str(len(chromosomes_list)) + ").")
+    else:
+        pass
+    
+    print "Adding GC content information in parallel using " + parameters['threads'] + " threads..."
+    print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    pool = Pool(processes=threads)             
+    pool.map(add_gc_content, chromosomes_list)
+    print "End: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    
