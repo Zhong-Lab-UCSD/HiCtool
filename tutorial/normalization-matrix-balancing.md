@@ -324,7 +324,7 @@ chromosomes=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y]
 
 python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_side_by_side_map \
--i [/GSM1551550/HiCtool_1mb_matrix_global_observed.txt,/HEK293T/HiCtool_1mb_matrix_global_observed.txt] \
+-i [./HiCtool_1mb_matrix_global_observed.txt,./HEK293T/HiCtool_1mb_matrix_global_observed.txt] \
 -c ./HiCtool-master/scripts/chromSizes/ \
 -b 1000000 \
 -s hg38 \
