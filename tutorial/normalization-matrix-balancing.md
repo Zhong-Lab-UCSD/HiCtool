@@ -1,6 +1,6 @@
 # Data normalization with the matrix balancing approach of Hi-Corrector
 
-This pipeline illustrates the procedure to generate and normalize a **global Hi-C contact map** (intra- and inter-chromosomal interactions) following the matrix balancing approach of [Hi-Corrector](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html). Visualization functionalities are also implemented.
+This pipeline illustrates the procedure to generate and normalize a **global Hi-C contact map** (intra- and inter-chromosomal interactions) following the matrix balancing approach of [Hi-Corrector](http://www.nature.com/ng/journal/v43/n11/abs/ng.947.html). Several visualization functionalities are also implemented.
 
 ## Table of Contents
 

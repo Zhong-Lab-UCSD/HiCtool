@@ -6,7 +6,7 @@ We provide a series of utility functions included into [HiCtool_utilities.py](/s
 - Loading DI values or HMM states.
 - Loading topological domain coordinates.
 
-These functions will allow you to use HiCtool data for additional analyses, and eventually re-save to file your processed data in order to be plotted using HiCtool. You could even have contact matrices generated with other software, parse them into a numpy matrix format, and then save them using the saving functions in order to be plotted.
+These functions will allow you to use HiCtool data for additional analyses, and eventually re-save to file your processed data in order to be plotted using HiCtool. You could even have contact matrices generated with other software, parse them into a numpy matrix format, and then save them using the saving functions in order to be normalized or plotted for example.
 
 First, open your Python or iPython shell and execute the script:
 ```Python

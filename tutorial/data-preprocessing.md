@@ -1,6 +1,6 @@
 # Data preprocessing
 
-This is the first section of the pipeline and it allows to pre-process the raw Hi-C data (fastq files), in order to generate input files for the normalization step. For more information about the Python functions used here check the [API documentation](https://sysbio.ucsd.edu/public/rcalandrelli/HiCtool_API_documentation.pdf).
+This is the first section of the pipeline and it allows to pre-process the raw Hi-C data (fastq files), in order to generate input files for the normalization step.
 
 ## Table of Contents
 
@@ -229,7 +229,7 @@ The structure of the output directory is the following:
 
 ***
 
-You can decide if adding both the GC content and mappability score information or only one of them. Our suggestion is to add both at this point, so you will have a complete FEND file, then you may decide later on if not considering one of these features for normalization. This process is very time consuming, so we suggest to use the highest number of processors available. Using 24 threads, we took around 18 hours to add the GC content and mappability score information for hg38-MboI. This time may exponentially increase if you are using a mixture of restriction sites in your experiment: for the ARIMA kit cocktail (over 23 millions restriction sites for hg38) we took around ...
+You can decide if adding both the GC content and mappability score information or only one of them. Our suggestion is to add both at this point, so you will have a complete FEND file, then you may decide later on if not considering one of these features for normalization. This process is very time consuming, so we suggest to use the highest number of processors available. Using 24 threads, we took around 18 hours to add the GC content and mappability score information for hg38-MboI. This time will increase if you are using a mixture of restriction sites in your experiment, such as the ARIMA kit cocktail (over 23 millions restriction sites for hg38).
 
 **The update of the FEND file to add GC content and/or mappability score is performed with a single unix command line (replace parameters in the code below accordingly) and comprises the following steps:**
 
