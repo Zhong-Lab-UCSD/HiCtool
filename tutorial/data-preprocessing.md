@@ -65,7 +65,8 @@ chmod u+x ./HiCtool-master/scripts/HiCtool_run_preprocessing.sh
 -2 /myfastq_path/file2.fastq \
 -e MboI \
 -g /path_to_the_genome_indexes/index \
--p 32
+-p 32 \
+-m 50000000
 ```
 where:
 
@@ -76,6 +77,7 @@ where:
 - ``-e``: the restriction enzyme or enzymes passed between square brackets (example: [MboI,Hinfl] for the cocktail of the Arima Kit).
 - ``-g``: Bowtie2 genome indexes. Only the filename should be passed here without extension, in this case ``index``.
 - ``-p``: the number of parallel threads (processors) to use for alignment and preprocessing. The more the fastest the process.
+- ``-m``: if your data are very big, you may encounter a memory error when the fastq files are loaded for pre-truncated and downstream when the paired reads between the two mapped files are selected. Thus, you may use this parameter in order to split the two fastq files into several temporary files with ``-m`` lines each (this means all the lines, i.e. 4 lines per each read), that are pre-truncated separately. The temporary files will be processed with multiple threads if you set ``-p`` greater than 1. Therefore, setting ``-m`` may help to speed up the pre-truncation process. In addition, setting ``-m`` lets the program work with smaller temporary files at the pairing step as well to generate the output bam files.
 
 The structure of the output directory is the following:
 ```unix
@@ -83,8 +85,6 @@ The structure of the output directory is the following:
 	|___ file1.trunc.fastq
 	|___ file2.trunc.fastq
 	|___ pre_truncation_log.txt
-	|___ file1.fastq_truncated_reads.pdf
-	|___ file2.fastq_truncated_reads.pdf
 	|___ HiCfile1_pair1.bam
 	|___ HiCfile2_pair1.bam
 	|___ HiCfile1_log.txt
@@ -103,12 +103,6 @@ SRR1658570_2.fastq
 202095066 reads (length = 101 bp); of these:
 28681691 (14.2%) contained a potential ligation junction and have been truncated.
 ```
-- ``file1.fastq_truncated_reads.pdf`` and ``file2.fastq_truncated_reads.pdf`` are plots of the length distribution of the truncated reads, for both the fastq files:
-
-![](/figures/SRR1658570_1.fastq_truncated_reads.png)
-
-![](/figures/SRR1658570_2.fastq_truncated_reads.png)
-
 - ``HiCfile_pair1.bam`` and ``HiCfile_pair2.bam`` that are the bam files of the pre-truncated first and second reads in the pairs respectively, generated after alignment and filtering.
 - ``HiCfile1_log.txt`` and ``HiCfile2_log.txt`` are the log files with alignment and filtering statistics for the first and second reads in the pairs respectively.
 ```unix
