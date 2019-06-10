@@ -6,6 +6,7 @@ This is the first section of the pipeline and it allows to pre-process the raw H
 
 1. [Preprocessing the data](#1-preprocessing-the-data)
    - [1.1. Downloading the raw data from GEO](#11-downloading-the-raw-data-from-geo)
+   - [1.2. Generating the read pairs bedpe file](#12-generating-the-read-pairs-bedpe-file)
 2. [Creating the fragment-end (FEND) bed file](#2-creating-the-fragment-end-fend-bed-file)
 
 ## 1. Preprocessing the data
@@ -159,6 +160,19 @@ where paired-end reads in ``SRRXXXXXXX.sra`` are split and stored into **``SRRXX
 
 **Note!** To produce our final results, use this GEO accession number: **[GSM1551550](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1551550)**.
 
+### 1.2. Generating the read pairs bedpe file
+
+This is section allows to generate the bedpe read pairs file (see [here](https://bedtools.readthedocs.io/en/latest/content/general-usage.html) the bedpe format specifications). Note that **this file is not required** in order to proceed with this pipeline but may be useful for other types of analyses.
+
+In order to generate the bedpe file, use the following unix code after having generated the two bam files above:
+```unix
+bedtools bamtobed -i HiCfile_pair1.bam | sort -k 4,4 > HiCfile_pair1.bed
+bedtools bamtobed -i HiCfile_pair2.bam | sort -k 4,4 > HiCfile_pair2.bed
+paste HiCfile_pair1.bed HiCfile_pair2.bed | awk -v OFS='\t' '{print $1, $2, $3, $7, $8, $9, $4, ".", $6, $12}' > HiCfile_paired.bedpe
+
+rm HiCfile_pair1.bed
+rm HiCfile_pair2.bed
+```
 
 ## 2. Creating the fragment-end (FEND) bed file
 
