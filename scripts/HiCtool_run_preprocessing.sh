@@ -1,4 +1,4 @@
-while getopts h:o:1:2:e:g:p:m: option
+while getopts h:o:1:2:e:g:p:c: option
 do
 case "${option}"
 in
@@ -9,7 +9,7 @@ o) outputPath=${OPTARG};; # The path where to save the output files.
 e) restrictionEnzyme=${OPTARG};; # The restriction enzyme or enzymes passed between square brackets (example: [enzyme1,enzyme2]).
 g) genomeIndex=${OPTARG};; # The Bowtie2 genome indexes of the reference genome (only filename without extension).
 p) threads=${OPTARG};; # The number of parallel threads to use for alignment and pre-processing. The more the fastest the process.
-m) max_lines=${OPTARG};; # The maximum number of lines per each temporary fastq file in order to avoid memory errors. Each temporary file is processed by a separate processor if multiple threads are used.
+c) chunk_size=${OPTARG};; # The number of lines per each temporary fastq file in order to avoid memory errors and multiprocessing to speed up the process. Each temporary file is processed by a separate processor if multiple threads are used.
 esac
 done
 
@@ -27,9 +27,9 @@ echo -n "Calculating total lines of the fastq files ... "
 fastq_lines=`wc -l $fastq1 | awk '{print $1}'`
 echo "Done!"
 
-if [ -z $max_lines ]
+if [ -z $chunk_size ]
 then
-	echo "max_lines not declared."
+	echo "chunk_size not declared."
 	python $hictoolPath"HiCtool_pre_truncation.py" -i [$fastq1,$fastq2] -e $restrictionEnzyme -p $threads
 
 	tot_reads_1=$(awk -F'\t' '{sum+=$1;} END{print sum;}' "${fastq1%%.*}_log.txt")
@@ -49,9 +49,9 @@ then
 	rm "${fastq1%%.*}_log.txt"
 	rm "${fastq2%%.*}_log.txt"
 
-elif ! [ -z $max_lines ] && [ $max_lines -ge $fastq_lines ]
+elif ! [ -z $chunk_size ] && [ $chunk_size -ge $fastq_lines ]
 then
-	echo "max_lines not consider because greater that the total lines of the fastq file."
+	echo "chunk_size not consider because greater that the total lines of the fastq file."
 	python $hictoolPath"HiCtool_pre_truncation.py" -i [$fastq1,$fastq2] -e $restrictionEnzyme -p $threads
 
 	tot_reads_1=$(awk -F'\t' '{sum+=$1;} END{print sum;}' "${fastq1%%.*}_log.txt")
@@ -71,38 +71,38 @@ then
 	rm "${fastq1%%.*}_log.txt"
 	rm "${fastq2%%.*}_log.txt"
 
-elif ! [ -z $max_lines ] && [ $max_lines -lt $fastq_lines ]
+elif ! [ -z $chunk_size ] && [ $chunk_size -lt $fastq_lines ]
 then
-	echo -n "Using max_lines to split the fastq files ... "
-	if (( $max_lines % 4 )) ; then
-		max_lines=`expr $max_lines - $(($max_lines % 4))`
+	echo -n "Using chunk_size to split the fastq files ... "
+	if (( $chunk_size % 4 )) ; then
+		chunk_size=`expr $chunk_size - $(($chunk_size % 4))`
 	fi
 	# Splitting the first fastq file
-	k=$max_lines
+	k=$chunk_size
 	count=1
 	while [ $k -lt $fastq_lines ]
 	do
-		start=`expr $k - $max_lines + 1`
+		start=`expr $k - $chunk_size + 1`
 		quit=`expr $k + 1`
 		sed -n "$start,"$k"p;"$quit"q" $fastq1 > "${fastq1%%.*}_temp_"$count".fastq"
 		count=`expr $count + 1`
-		k=`expr $k + $max_lines`
+		k=`expr $k + $chunk_size`
 	done
-	start=`expr $k - $max_lines + 1`
+	start=`expr $k - $chunk_size + 1`
 	sed -n "$start,"$fastq_lines"p" $fastq1 > "${fastq1%%.*}_temp_"$count".fastq"
 
 	# Splitting the second fastq file
-	k=$max_lines
+	k=$chunk_size
 	count=1
 	while [ $k -lt $fastq_lines ]
 	do
-		start=`expr $k - $max_lines + 1`
+		start=`expr $k - $chunk_size + 1`
 		quit=`expr $k + 1`
 		sed -n "$start,"$k"p;"$quit"q" $fastq2 > "${fastq2%%.*}_temp_"$count".fastq"
 		count=`expr $count + 1`
-		k=`expr $k + $max_lines`
+		k=`expr $k + $chunk_size`
 	done
-	start=`expr $k - $max_lines + 1`
+	start=`expr $k - $chunk_size + 1`
 	sed -n "$start,"$fastq_lines"p" $fastq2 > "${fastq2%%.*}_temp_"$count".fastq"
 	echo "Done!"
 
@@ -153,18 +153,26 @@ echo -n "Aligning "$fastq2_trunc" ... "
 echo "Done!"
 
 # extracting the headers and read filtering
-echo -n "Filtering HiCfile1.sam ... "
+echo "Filtering and deduplicating HiCfile1.sam ... "
 samtools view -H HiCfile1.sam > header1.txt
-samtools view -F 4 -q 30 HiCfile1.sam > HiCfile1_hq.sam
+samtools view -u -h -F 4 -q 30 HiCfile1.sam | \
+samtools sort -@ $threads -n - -o - | \
+samtools fixmate -m - - | \
+samtools sort -@ $threads - -o - | \
+samtools markdup - HiCfile1_hq_nodup.bam
 echo "Done!"
-echo -n "Filtering HiCfile2.sam ... "
+echo "Filtering and deduplicating HiCfile2.sam ... "
 samtools view -H HiCfile2.sam > header2.txt
-samtools view -F 4 -q 30 HiCfile2.sam > HiCfile2_hq.sam
+samtools view -u -h -F 4 -q 30 HiCfile2.sam | \
+samtools sort -@ $threads -n - -o - | \
+samtools fixmate -m - - | \
+samtools sort -@ $threads - -o - | \
+samtools markdup - HiCfile2_hq_nodup.bam
 echo "Done!"
 
 echo -n "Building log files ... "
-n1=`wc -l HiCfile1_hq.sam | awk '{print $1}'`
-n2=`wc -l HiCfile2_hq.sam | awk '{print $1}'`
+n1=`samtools view HiCfile1_hq_nodup.bam | wc -l | awk '{print $1}'`
+n2=`samtools view HiCfile2_hq_nodup.bam | wc -l | awk '{print $1}'`
 
 nt1=`wc -l HiCfile1.sam | awk '{print $1}'`
 h1=`wc -l header1.txt | awk '{print $1}'`
@@ -177,82 +185,87 @@ ntot2=`expr $nt2 - $h2`
 perc1=$(awk -v n1=$n1 -v ntot1=$ntot1 'BEGIN { print 100*n1/ntot1 }' | cut -c1-5)
 perc2=$(awk -v n2=$n2 -v ntot2=$ntot2 'BEGIN { print 100*n2/ntot2 }' | cut -c1-5)
 
-printf "\n----------\n"$ntot1" reads; of these:\n  "$n1" ("$perc1"%%) aligned with MAPQ>=30" >> HiCfile1_log.txt
-printf "\n----------\n"$ntot2" reads; of these:\n  "$n2" ("$perc2"%%) aligned with MAPQ>=30" >> HiCfile2_log.txt
+printf "\n----------\n"$ntot1" reads; of these:\n  "$n1" ("$perc1"%%) aligned with MAPQ>=30 and are deduplicated" >> HiCfile1_log.txt
+printf "\n----------\n"$ntot2" reads; of these:\n  "$n2" ("$perc2"%%) aligned with MAPQ>=30 and are deduplicated" >> HiCfile2_log.txt
 echo "Done!"
 
 rm HiCfile1.sam
 rm HiCfile2.sam
 
-echo -n "Selecting paired reads ... "
-awk '{print $1}' HiCfile1_hq.sam | sort > readnames1.txt
-awk '{print $1}' HiCfile2_hq.sam | sort > readnames2.txt
+samtools view HiCfile1_hq_nodup.bam > HiCfile1_hq_nodup.sam
+samtools view HiCfile2_hq_nodup.bam > HiCfile2_hq_nodup.sam
+rm HiCfile1_hq_nodup.bam
+rm HiCfile2_hq_nodup.bam
+
+echo "Selecting paired reads ... "
+awk '{print $1}' HiCfile1_hq_nodup.sam | sort > readnames1.txt
+awk '{print $1}' HiCfile2_hq_nodup.sam | sort > readnames2.txt
 comm -12 readnames1.txt readnames2.txt > paired_reads.txt
 echo "Done!"
 
-if [ -z $max_lines ]
+if [ -z $chunk_size ]
 then
 	# Select reads of the first sam file that are paires with the second sam file
 	echo -n "Extracting paired reads from the first sam file and convert it to bam format ..."
-	grep -Fwf paired_reads.txt HiCfile1_hq.sam | \
+	grep -Fwf paired_reads.txt HiCfile1_hq_nodup.sam | \
 	cat header1.txt - | \
 	samtools view -b -@ $threads - > HiCfile_pair1.bam
-	rm HiCfile1_hq.sam
+	rm HiCfile1_hq_nodup.sam
 	echo "Done!"
 
 	# Select reads of the second sam file that are paired with the first sam file
 	echo -n "Extracting paired reads from the second sam file and convert it to bam format ..."
-	grep -Fwf paired_reads.txt HiCfile2_hq.sam | \
+	grep -Fwf paired_reads.txt HiCfile2_hq_nodup.sam | \
 	cat header2.txt - | \
 	samtools view -b -@ $threads - > HiCfile_pair2.bam
-	rm HiCfile2_hq.sam
+	rm HiCfile2_hq_nodup.sam
 	echo "Done!"
 
-elif ! [ -z $max_lines ] && [ $max_lines -ge $fastq_lines ]
+elif ! [ -z $chunk_size ] && [ $chunk_size -ge $fastq_lines ]
 then
 	# Select reads of the first sam file that are paires with the second sam file
 	echo -n "Extracting paired reads from the first sam file and convert it to bam format ..."
-	grep -Fwf paired_reads.txt HiCfile1_hq.sam | \
+	grep -Fwf paired_reads.txt HiCfile1_hq_nodup.sam | \
 	cat header1.txt - | \
 	samtools view -b -@ $threads - > HiCfile_pair1.bam
-	rm HiCfile1_hq.sam
+	rm HiCfile1_hq_nodup.sam
 	echo "Done!"
 
 	# Select reads of the second sam file that are paired with the first sam file
 	echo -n "Extracting paired reads from the second sam file and convert it to bam format ..."
-	grep -Fwf paired_reads.txt HiCfile2_hq.sam | \
+	grep -Fwf paired_reads.txt HiCfile2_hq_nodup.sam | \
 	cat header2.txt - | \
 	samtools view -b -@ $threads - > HiCfile_pair2.bam
-	rm HiCfile2_hq.sam
+	rm HiCfile2_hq_nodup.sam
 	echo "Done!"
 
-elif ! [ -z $max_lines ] && [ $max_lines -lt $fastq_lines ]
+elif ! [ -z $chunk_size ] && [ $chunk_size -lt $fastq_lines ]
 then
 
 	# Splitting the paired reads file
-	echo -n "Using max_lines to split the paired read IDs file ..."
+	echo -n "Using chunk_size to split the paired read IDs file ..."
 	paired_reads=paired_reads.txt
 	paired_reads_lines=`wc -l $paired_reads | awk '{print $1}'`
-	max_lines_paired_reads=`expr $max_lines / 5`
-	k=$max_lines_paired_reads
+	chunk_size_paired_reads=`expr $chunk_size / 5`
+	k=$chunk_size_paired_reads
 	count=1
 	while [ $k -lt $paired_reads_lines ]
 	do
-		start=`expr $k - $max_lines_paired_reads + 1`
+		start=`expr $k - $chunk_size_paired_reads + 1`
 		quit=`expr $k + 1`
 		sed -n "$start,"$k"p;"$quit"q" $paired_reads > "paired_reads_temp_"$count".txt"
 		count=`expr $count + 1`
-		k=`expr $k + $max_lines_paired_reads`
+		k=`expr $k + $chunk_size_paired_reads`
 	done
-	start=`expr $k - $max_lines_paired_reads + 1`
+	start=`expr $k - $chunk_size_paired_reads + 1`
 	sed -n "$start,"$paired_reads_lines"p" $paired_reads > "paired_reads_temp_"$count".txt"
 	echo "Done!"
 	
 	# Search for paired reads from each temporary file
 	echo "Extracting paired reads into temporary sam files and merging ..."
 	for i in "paired_reads_temp"*; do
-		grep -Fwf $i HiCfile1_hq.sam > "HiCfile1_${i%%.*}.sam"
-		grep -Fwf $i HiCfile2_hq.sam > "HiCfile2_${i%%.*}.sam"
+		grep -Fwf $i HiCfile1_hq_nodup.sam > "HiCfile1_${i%%.*}.sam"
+		grep -Fwf $i HiCfile2_hq_nodup.sam > "HiCfile2_${i%%.*}.sam"
 	done
 
 	cat "HiCfile1_paired_reads_temp"* > HiCfile1_paired.sam
@@ -273,8 +286,8 @@ then
 	rm HiCfile2_paired.sam
 	echo "Done!"
 
-	rm HiCfile1_hq.sam
-	rm HiCfile2_hq.sam
+	rm HiCfile1_hq_nodup.sam
+	rm HiCfile2_hq_nodup.sam
 
 fi
 

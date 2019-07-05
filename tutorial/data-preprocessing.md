@@ -53,6 +53,7 @@ bowtie2-build hg38.fa index
 1. Pre-truncation of the reads that contain potential ligation junctions to keep the longest piece without a junction sequence ([Ay et al., 2015](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0745-7)).
 2. Independent mapping of the read pairs to the reference genome to avoid any proximity constraint.
 3. Removing the unmapped reads and selecting reads that were uniquely mapped with a MAPQ >= 30, i.e. the estimated probability of mapping error is <= 0.1%.
+4. Deduplicating aligned reads. (Note that PCR duplicates were previously removed in the following section, while now this step has been also added here to allow the extraction of deduplicated data already from the bam or bedpe files).
 
 ```unix
 # Make the bash script executable
@@ -67,7 +68,7 @@ chmod u+x ./HiCtool-master/scripts/HiCtool_run_preprocessing.sh
 -e MboI \
 -g /path_to_the_genome_indexes/index \
 -p 32 \
--m 50000000
+-c 50000000
 ```
 where:
 
@@ -78,7 +79,7 @@ where:
 - ``-e``: the restriction enzyme or enzymes passed between square brackets (example: [MboI,Hinfl] for the cocktail of the Arima Kit).
 - ``-g``: Bowtie2 genome indexes. Only the filename should be passed here without extension, in this case ``index``.
 - ``-p``: the number of parallel threads (processors) to use for alignment and preprocessing. The more the fastest the process.
-- ``-m``: if your data are very big, you may encounter a memory error when the fastq files are loaded for pre-truncated and downstream when the paired reads between the two mapped files are selected. Thus, you may use this parameter in order to split the two fastq files into several temporary files with ``-m`` lines each (this means all the lines, i.e. 4 lines per each read), that are pre-truncated separately. The temporary files will be processed with multiple threads if you set ``-p`` greater than 1. Therefore, setting ``-m`` may help to speed up the pre-truncation process. In addition, setting ``-m`` lets the program work with smaller temporary files at the pairing step as well to generate the output bam files.
+- ``-c``: chunk size. If your data are very big, you may encounter a memory error when the fastq files are loaded for pre-truncated and downstream when the paired reads between the two mapped files are selected. Thus, you may use this parameter in order to split the two fastq files into several temporary files with ``-c`` lines each (this means all the lines, i.e. 4 lines per each read), that are pre-truncated separately. The temporary files will be processed with multiple threads if you set ``-p`` greater than 1. Therefore, setting ``-c`` may help to speed up the pre-truncation process. In addition, setting ``-c`` lets the program work with smaller temporary files at the pairing step as well to generate the output bam files.
 
 The structure of the output directory is the following:
 ```unix
@@ -99,50 +100,47 @@ The structure of the output directory is the following:
 ```unix
 SRR1658570_1.fastq
 202095066 reads (length = 101 bp); of these:
-29851195 (14.78%) contained a potential ligation junction and have been truncated.
+  29851195 (14.78%) contained a potential ligation junction and have been truncated.
 SRR1658570_2.fastq
 202095066 reads (length = 101 bp); of these:
-28681691 (14.2%) contained a potential ligation junction and have been truncated.
+  28681691 (14.2%) contained a potential ligation junction and have been truncated.
 ```
 - ``HiCfile_pair1.bam`` and ``HiCfile_pair2.bam`` that are the bam files of the pre-truncated first and second reads in the pairs respectively, generated after alignment and filtering.
 - ``HiCfile1_log.txt`` and ``HiCfile2_log.txt`` are the log files with alignment and filtering statistics for the first and second reads in the pairs respectively.
 ```unix
 HiCfile1_log.txt
+
 202095066 reads; of these:
-202095066 (100.00%) were unpaired; of these:
-5770798 (2.86%) aligned 0 times
-156759009 (77.57%) aligned exactly 1 time
-39565259 (19.58%) aligned >1 times
+  202095066 (100.00%) were unpaired; of these:
+    5770798 (2.86%) aligned 0 times
+	156759009 (77.57%) aligned exactly 1 time
+	39565259 (19.58%) aligned >1 times
 97.14% overall alignment rate
 
 ----------
 202095066 reads; of these:
-172973813 (85.59%) aligned with MAPQ>=30; of these:
-143415284 (82.91%) were paired and saved into HiCfile_pair1.bam
-
+  172969992 (85.58%) aligned with MAPQ>=30 and are deduplicated; of these:
+    143408614 (82.90%) were paired and saved into HiCfile_pair1.bam
+```
+```unix
 HiCfile2_log.txt
+
 202095066 reads; of these:
-202095066 (100.00%) were unpaired; of these:
-13381441 (6.62%) aligned 0 times
-149852422 (74.15%) aligned exactly 1 time
-38861203 (19.23%) aligned >1 times
+  202095066 (100.00%) were unpaired; of these:
+    13381441 (6.62%) aligned 0 times
+    149852422 (74.15%) aligned exactly 1 time
+    38861203 (19.23%) aligned >1 times
 93.38% overall alignment rate
 
 ----------
 202095066 reads; of these:
-161438783 (79.88%) aligned with MAPQ>=30; of these:
-143415284 (88.83%) were paired and saved into HiCfile_pair2.bam
+  161435108 (79.88%) aligned with MAPQ>=30 and are deduplicated; of these:
+    143408614 (88.83%) were paired and saved into HiCfile_pair2.bam
 ```
 
 ### 1.1. Downloading the raw data from GEO
 
-The source data in sra format are downloaded via GEO accession number using the command ``fastq-dump`` of [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump).
-
-Before proceeding, you may need to [setup the output directory](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration) where the sra files will be saved. After having installed SRA Toolkit, go to the path where the software has been installed, under the subfolder ``/bin``, and run the following command line:
-```unix
-./vdb-config -i
-```
-This will open an interface that will allow you to setup/change your output directory.
+The source data in sra format are downloaded via GEO accession number using the command ``fastq-dump`` of [SRA Toolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=fastq-dump) and coverted to fastq format.
 
 To download the data related to a GEO accession number, go to the bottom of that page and click on the SRA number under the section “Relations”. After that, under the section “Runs” you will find the SRR files, then run the following:
 ```unix
@@ -150,7 +148,7 @@ fastq-dump SRRXXXXXXX --split-3
 ```
 where ``SRRXXXXXXX`` has to be replaced with the specific number of the run you want to download (**[SRR1658570](https://www.ncbi.nlm.nih.gov/sra?term=SRX764936) in this documentation**).
 
-To be more specific, this code will either download the SRA file under the output directory you have set with the interface above, but it will also convert the SRA file into fastq files and dump each read into separate files in the current working directory, to produce:
+To be more specific, this code will either download the SRA file under the output directory of the SRA Toolkit installation folder (see here to [setup a custom output directory](https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration)), but it will also convert the SRA file into fastq files and dump each read into separate files in the current working directory (the files you will need), to produce:
 
 - ``SRRXXXXXXX_1.fastq``
 - ``SRRXXXXXXX_2.fastq``
