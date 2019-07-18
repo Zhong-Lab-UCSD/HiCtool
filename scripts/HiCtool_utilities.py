@@ -173,12 +173,9 @@ def save_matrix_tab(input_matrix, output_filename):
     with open (output_filename, 'w') as f:
             for i in xrange(len(input_matrix)):
                 row = [str(j) for j in input_matrix[i]]
-                if i != len(input_matrix) - 1:
-                    f.write('\t'.join(row) + '\n')
-                else:
-                    f.write('\t'.join(row))
+				f.write('\t'.join(row) + '\n')
 
-                    
+
 def load_matrix_tab(input_file):
     """
     Load a contact matrix saved in a tab separated format using the function
