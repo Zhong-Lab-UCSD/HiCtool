@@ -195,8 +195,7 @@ def save_matrix_tab(input_matrix, output_filename):
     with open (output_filename, 'w') as f:
             for i in xrange(len(input_matrix)):
                 row = [str(j) for j in input_matrix[i]]
-				f.write('\t'.join(row) + '\n')
-
+                f.write('\t'.join(row) + '\n')
 
 def load_matrix_tab(input_file):
     """
