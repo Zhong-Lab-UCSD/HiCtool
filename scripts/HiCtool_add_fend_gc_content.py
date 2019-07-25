@@ -26,55 +26,34 @@ parameters = {'chromSizes_path': None,
               'gc_files_path': None,
               'threads': None}
 
-
 def add_gc_content(chromosome):
     output_path = parameters['restrictionsites_path']
     gc_files_path = parameters['gc_files_path']
     
-    content = []
-    with open(output_path + 'chr' + chromosome + '.bed') as f:
-        for line in f:
-            content.append(line.strip().split())
-    content = np.array(content)
-
-    content[:,4] = np.arange(content.shape[0])
-    pos = np.int_(((np.int_(content[:,1]))+3)/5)*5
-    
     # Building a bed file from restrictionsites with start coordinate as 200 bp upstream of each position and end coordinate as position.
-    content[:,1] = pos-200
-    content[:,2] = pos
-    content[np.int_(content[:,1]) <= 0,1] = 0
-
-    with open(output_path + 'chr' + chromosome + '_upstream.bed', 'w') as f:
-        for x in content.tolist():
-            f.write("%s\n" % '\t'.join(x))
-
-    # Building a bed file from restrictionsites with start coordinate as position and end coordinate as 200 bp downstream of each position.
-    content[:,1] = pos
-    content[:,2] = pos+200
-
-    with open(output_path + 'chr' + chromosome + '_downstream.bed', 'w') as f:
-        for x in content.tolist():
-            f.write("%s\n" % '\t'.join(x))    
+    upstream = pd.read_csv(output_path + 'chr' + chromosome + '.bed', sep = '\t', header = None)
+    upstream.iloc[:,4] = range(upstream.shape[0])
+    upstream.iloc[:,2] = upstream.iloc[:,1]
+    upstream.iloc[:,1] = upstream.iloc[:,1] - 200
+    upstream.loc[upstream.loc[:,1] < 0, 1] = 0
+    a_up = pybedtools.BedTool.from_dataframe(upstream)
     
-    a_up = pybedtools.example_bedtool(output_path + 'chr' + chromosome + '_upstream.bed')
-    a_down = pybedtools.example_bedtool(output_path + 'chr' + chromosome + '_downstream.bed')
+    # Building a bed file from restrictionsites with start coordinate as position and end coordinate as 200 bp downstream of each position.
+    downstream = pd.read_csv(output_path + 'chr' + chromosome + '.bed', sep = '\t', header = None)
+    downstream.iloc[:,4] = range(downstream.shape[0])
+    downstream.iloc[:,1] = downstream.iloc[:,2]
+    downstream.iloc[:,2] = downstream.iloc[:,2] + 200
+    a_down = pybedtools.BedTool.from_dataframe(downstream)
 
-    result = pd.read_table(output_path + 'chr' + chromosome + '.bed', header=None)
+    result = pd.read_csv(output_path + 'chr' + chromosome + '.bed', header=None, sep='\t')
     result.columns = ['chr', 'start','stop','name','score','strand']
     result['gc_upstream'] = '' # adding a field to store the upstream GC content
     result['gc_downstream'] = '' # adding a field to store the upstream GC content
     
     b = pybedtools.example_bedtool(gc_files_path + 'chr' + chromosome + '.txt')
 
-    aup_and_b = a_up.intersect(b,wa=True,wb=True)
-    adown_and_b = a_down.intersect(b,wa=True,wb=True)
-    
-    aup_and_b.saveas(output_path + 'upstream_intersect_chr' + chromosome + '.bed')
-    adown_and_b.saveas(output_path + 'downstream_intersect_chr' + chromosome + '.bed')
-
-    aup_and_b = pd.read_table(output_path + 'upstream_intersect_chr' + chromosome + '.bed', header=None)
-    adown_and_b = pd.read_table(output_path + 'downstream_intersect_chr' + chromosome + '.bed', header=None)
+    aup_and_b = a_up.intersect(b,wa=True,wb=True).to_dataframe()
+    adown_and_b = a_down.intersect(b,wa=True,wb=True).to_dataframe()
     
     aup_and_b.columns = ['chr','start','stop','name','index','strand','chr_gc','start_gc','stop_gc','gc_up']
     adown_and_b.columns = ['chr','start','stop','name','index','strand','chr_gc','start_gc','stop_gc','gc_down']
@@ -89,21 +68,17 @@ def add_gc_content(chromosome):
     
     r1 = 0
     for r in np.array(df.ind):
-        if result.ix[r,'strand'] == '+':
-            result.ix[r,'gc_upstream'] = np.array(df.ix[r1,'gc_up']).astype(np.str)
-            result.ix[r,'gc_downstream'] = np.array(df.ix[r1,'gc_down']).astype(np.str)
-        if result.ix[r,'strand'] == '-':
-            result.ix[r,'gc_upstream'] = np.array(df.ix[r1,'gc_down']).astype(np.str)
-            result.ix[r,'gc_downstream'] = np.array(df.ix[r1,'gc_up']).astype(np.str)
+        if result.loc[r,'strand'] == '+':
+            result.loc[r,'gc_upstream'] = np.array(df.loc[r1,'gc_up']).astype(np.str)
+            result.loc[r,'gc_downstream'] = np.array(df.loc[r1,'gc_down']).astype(np.str)
+        if result.loc[r,'strand'] == '-':
+            result.loc[r,'gc_upstream'] = np.array(df.loc[r1,'gc_down']).astype(np.str)
+            result.loc[r,'gc_downstream'] = np.array(df.loc[r1,'gc_up']).astype(np.str)
         r1 += 1
 
     result.score = 1
     result.to_csv(path_or_buf=output_path + 'chr' + chromosome + '_gc.bed',sep='\t',header=False,index=False)
 
-    os.remove(output_path + 'chr' + chromosome + '_upstream.bed')
-    os.remove(output_path + 'chr' + chromosome + '_downstream.bed')
-    os.remove(output_path + 'upstream_intersect_chr' + chromosome + '.bed')
-    os.remove(output_path + 'downstream_intersect_chr' + chromosome + '.bed')
     print "GC content information for chr" + chromosome + " complete."
     
 

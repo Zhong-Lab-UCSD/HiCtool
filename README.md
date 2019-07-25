@@ -1,4 +1,4 @@
-# HiCtool: a standardized pipeline to process and visualize Hi-C data (v2.1)
+# HiCtool: a standardized pipeline to process and visualize Hi-C data (v2.1.1)
 
 HiCtool is an open-source bioinformatic tool based on Python, which integrates several software to perform a standardized Hi-C data analysis, from the processing of raw data, to the visualization of heatmaps and the identification of topologically associated domains (TADs).
 
@@ -7,8 +7,8 @@ HiCtool is an open-source bioinformatic tool based on Python, which integrates s
 - [Overview](#overview)
 - [Installation](#installation)
 - [Tutorial](#tutorial)
-- [Version history](#version-history)
 - [Reference](#reference)
+- [Version history](#version-history)
 - [Support](#support)
 
 ## Overview
@@ -59,7 +59,26 @@ HiCtool is in a pipeline format based on single unix commands to allow easy usag
 
 We have compiled a full tutorial to show the usage of the pipeline. Please check the [Tutorial Homepage](./tutorial/ReadMe.md).
 
+## Reference
+
+HiCtool was developed by Riccardo Calandrelli and Qiuyang Wu from Dr. Sheng Zhong's Lab at University of California, San Diego. 
+
+If you use HiCtool, please cite the paper: 
+
+Calandrelli, R., Wu, Q., Guan, J., & Zhong, S. (2018). GITAR: An open source tool for analysis and visualization of Hi-C data. *Genomics, proteomics & bioinformatics.*
+
 ## Version history
+
+### July 25, 2019
+
+- Version 2.1.1 released:
+
+   - Optimized pre-processing and normalization to allow the analysis of very high depth sequenced files.
+   - Added parameter to allow custom mapped reads filtering at the pre-processing step.
+   - Bedpe file generation step added for pre-processed read pairs.
+   - Deduplication step added in the pre-processing pipeline.
+   - Optimized and faster FEND file generation for adding GC content and mappability score.
+   - Small bug fixes.
 
 ### May 20, 2019
 
@@ -87,14 +106,6 @@ We have compiled a full tutorial to show the usage of the pipeline. Please check
 ### December 2015 - October 2018
 
 - The initial release of HiCtool v1.0 came out in late 2015. GITAR manuscript (including HiCtool) published in October 2018.
-
-## Reference
-
-HiCtool was developed by Riccardo Calandrelli and Qiuyang Wu from Dr. Sheng Zhong's Lab at University of California, San Diego. 
-
-If you use HiCtool, please cite the paper: 
-
-Calandrelli, R., Wu, Q., Guan, J., & Zhong, S. (2018). GITAR: An open source tool for analysis and visualization of Hi-C data. *Genomics, proteomics & bioinformatics.*
 
 ## Support
 

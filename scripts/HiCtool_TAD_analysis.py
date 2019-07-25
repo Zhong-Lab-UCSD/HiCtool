@@ -804,7 +804,7 @@ def full_tad_analysis(input_contact_matrix,
                                             species=species,
                                             bin_size=bin_size,
                                             data_type=data_type,
-                                            save_output=True,
+                                            save_output=False,
                                             save_tab=False)
 
     # DI VALUES

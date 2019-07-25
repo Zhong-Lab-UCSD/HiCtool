@@ -1,4 +1,4 @@
-while getopts h:o:1:2:e:g:p:c: option
+while getopts h:o:1:2:e:q:g:p:c: option
 do
 case "${option}"
 in
@@ -7,6 +7,7 @@ o) outputPath=${OPTARG};; # The path where to save the output files.
 1) fastq1=${OPTARG};; # The fastq file with the first reads of the pairs.
 2) fastq2=${OPTARG};; # The fastq file with the second reads of the pairs.
 e) restrictionEnzyme=${OPTARG};; # The restriction enzyme or enzymes passed between square brackets (example: [enzyme1,enzyme2]).
+q) quality=${OPTARG};; # The MAPQ value to filter mapped reads from SAMTOOLS
 g) genomeIndex=${OPTARG};; # The Bowtie2 genome indexes of the reference genome (only filename without extension).
 p) threads=${OPTARG};; # The number of parallel threads to use for alignment and pre-processing. The more the fastest the process.
 c) chunk_size=${OPTARG};; # The number of lines per each temporary fastq file in order to avoid memory errors and multiprocessing to speed up the process. Each temporary file is processed by a separate processor if multiple threads are used.
@@ -155,19 +156,19 @@ echo "Done!"
 # extracting the headers and read filtering
 echo "Filtering and deduplicating HiCfile1.sam ... "
 samtools view -H HiCfile1.sam > header1.txt
-samtools view -u -h -F 4 -q 30 HiCfile1.sam | \
+samtools view -u -h -F 4 -q $quality HiCfile1.sam | \
 samtools sort -@ $threads -n - -o - | \
 samtools fixmate -m - - | \
 samtools sort -@ $threads - -o - | \
-samtools markdup - HiCfile1_hq_nodup.bam
+samtools markdup -r - HiCfile1_hq_nodup.bam
 echo "Done!"
 echo "Filtering and deduplicating HiCfile2.sam ... "
 samtools view -H HiCfile2.sam > header2.txt
-samtools view -u -h -F 4 -q 30 HiCfile2.sam | \
+samtools view -u -h -F 4 -q $quality HiCfile2.sam | \
 samtools sort -@ $threads -n - -o - | \
 samtools fixmate -m - - | \
 samtools sort -@ $threads - -o - | \
-samtools markdup - HiCfile2_hq_nodup.bam
+samtools markdup -r - HiCfile2_hq_nodup.bam
 echo "Done!"
 
 echo -n "Building log files ... "
@@ -185,8 +186,8 @@ ntot2=`expr $nt2 - $h2`
 perc1=$(awk -v n1=$n1 -v ntot1=$ntot1 'BEGIN { print 100*n1/ntot1 }' | cut -c1-5)
 perc2=$(awk -v n2=$n2 -v ntot2=$ntot2 'BEGIN { print 100*n2/ntot2 }' | cut -c1-5)
 
-printf "\n----------\n"$ntot1" reads; of these:\n  "$n1" ("$perc1"%%) aligned with MAPQ>=30 and are deduplicated" >> HiCfile1_log.txt
-printf "\n----------\n"$ntot2" reads; of these:\n  "$n2" ("$perc2"%%) aligned with MAPQ>=30 and are deduplicated" >> HiCfile2_log.txt
+printf "\n----------\n"$ntot1" reads; of these:\n  "$n1" ("$perc1"%%) aligned with MAPQ>="$quality" and are deduplicated" >> HiCfile1_log.txt
+printf "\n----------\n"$ntot2" reads; of these:\n  "$n2" ("$perc2"%%) aligned with MAPQ>="$quality" and are deduplicated" >> HiCfile2_log.txt
 echo "Done!"
 
 rm HiCfile1.sam

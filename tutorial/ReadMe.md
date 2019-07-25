@@ -1,4 +1,4 @@
-# HiCtool Tutorial (v2.1)
+# HiCtool Tutorial
 
 This is a full tutorial of HiCtool. The tutorial steps have to be followed in sequence. At the normalization step, choose the preferred method.
 

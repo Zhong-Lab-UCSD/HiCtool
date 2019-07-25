@@ -17,30 +17,24 @@ TAD coordinates, as well as DI values and true DI values (HMM states), are calcu
 
 **Note!** Contact data must be at 40 kb bin size to perform TAD analysis!
 
-To perform TAD analysis (calculating DI, HMM states and topological domain coordinates) we use the function ``full_tad_analysis`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py). You can either input a global matrix and perform the analysis for multiple chromosomes at once (only if you normalized your data using the Hi-Corrector approach), or input a single contact matrix and perform the analysis for only that specific chromosome.
+To perform TAD analysis (calculating DI, HMM states and topological domain coordinates) we use the function ``full_tad_analysis`` of [HiCtool_TAD_analysis.py](/scripts/HiCtool_TAD_analysis.py) and each single intra-chromosomal contact matrix as input files.
 
-**Performing the analysis starting from the global matrix for all the chromosomes**
-
-In this case, you should have normalized the data using the Hi-Corrector approach.
-
-**Note!** Since the global matrix at 40kb is pretty big (53 GB for this dataset), it may take sometime to load it. Therefore, it is suggested to run the analysis for all the chromosomes, taking advantage of the matrix already loaded in the workspace (as we do below). However, you may select the chromosomes you want with the parameter ``--chr``.
+Here we take chromosome 6 as example. For this case, you may either have normalized the data using the Hi-Corrector approach (``./normalized_40000/chr6_chr6_40000.txt``) or have used the approach from Yaffe and Tanay (``HiCtool_chr6_40kb_normalized_fend.txt``). In this last case, remember to set ``--tab_sep 0`` below.
 ```unix
-chromosomes=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y]
-
 python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 --action full_tad_analysis \
--i HiCtool_40kb_matrix_global_normalized_tab.txt \
+-i ./normalized_40000/chr6_chr6_40000.txt \
 -c ./HiCtool-master/scripts/chromSizes/ \
 -s hg38 \
---isGlobal 1 \
+--isGlobal 0 \
 --tab_sep 1 \
---chr $chromosomes \
+--chr 6 \
 --data_type normalized
 ```
 where:
 
 - ``--action``: action to perform (here ``full_tad_analysis``).
-- ``-i``: Input global contact matrix file.
+- ``-i``: Input contact matrix file.
 - ``-c``: Path to the folder ``chromSizes`` with trailing slash at the end ``/``.
 - ``-s``: Species name.
 - ``--isGlobal``: 1 if the input matrix is a global matrix, 0 otherwise.
@@ -48,42 +42,26 @@ where:
 - ``--chr``: Chromosome or chromosomes to perform the TAD analysis in a list between square brackets.
 - ``--data_type``: Data type to label your data, here ``normalized``.
 
-This script will produce four output files per each chromosome (here example for a random chromosome R):
+This script will produce three output files:
 
-- ``HiCtool_chrR_40kb_normalized.txt`` which is the single contact matrix in compressed format per each chromosome.
-- ``HiCtool_chrR_DI.txt`` which contains the DI values.
-- ``HiCtool_chrR_hmm_states.txt`` which contains the HMM states extracted from the DI values.
-- ``HiCtool_chrR_topological_domains.txt`` which contains topological domains coordinates in a tab separated format with two columns. Each row is a topological domains, first column is start coordinate, second column is end coordinate.
+- ``HiCtool_chr6_DI.txt`` which contains the DI values.
+- ``HiCtool_chr6_hmm_states.txt`` which contains the HMM states extracted from the DI values.
+- ``HiCtool_chr6_topological_domains.txt`` which contains topological domains coordinates in a tab separated format with two columns. Each row is a topological domains, first column is start coordinate, second column is end coordinate.
 
 **Note!** The end coordinate of each domain is saved as the start position of the last bin (40 kb) belonging to each domain.
 
-**Performing the analysis starting from a single contact matrix**
-
-Here we take chromosome 6 as example. For this case, you may either have normalized the data using the Hi-Corrector approach and [extracted already a single contact matrix](https://github.com/rcalandrelli/HiCtool/blob/master/tutorial/normalization-matrix-balancing.md#21-extracting-single-contact-matrices) (``HiCtool_chr6_40kb_normalized.txt``) or have used the approach from Yaffe and Tanay which gives you already single contact matrices (``HiCtool_chr6_40kb_normalized_fend.txt``).
-```unix
-python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
---action full_tad_analysis \
--i HiCtool_chr6_40kb_normalized.txt \
--c ./HiCtool-master/scripts/chromSizes/ \
--s hg38 \
---isGlobal 0 \
---tab_sep 0 \
---chr 6 \
---data_type normalized
-```
-
-To calculate the **topological domain coordinates for multiple chromosomes starting from single contact matrices** you may use an approach as the following:
+To calculate the **topological domain coordinates for multiple chromosomes** you may use an approach as the following:
 ```unix
 chromosomes=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "X" "Y")
 
 for i in "${chromosomes[@]}"; do
 	python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 	--action full_tad_analysis \
-	-i HiCtool_chr$i_40kb_normalized.txt \
+	-i ./normalized_40000/chr$i_chr$i_40000.txt \
 	-c ./HiCtool-master/scripts/chromSizes/ \
 	-s hg38 \
 	--isGlobal 0 \
-	--tab_sep 0 \
+	--tab_sep 1 \
 	--chr $i \
 	--data_type normalized
 done
@@ -102,12 +80,12 @@ To plot the topological domains on the heatmap, use the function ``plot_map`` of
 ```unix
 python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
--i HiCtool_chr6_40kb_normalized.txt \
+-i ./normalized_40000/chr6_chr6_40000.txt \
 -c ./HiCtool-master/scripts/chromSizes/ \
 -b 40000 \
 -s hg38 \
 --isGlobal 0 \
---tab_sep 0 \
+--tab_sep 1 \
 --data_type normalized \
 --chr_row 6 \
 --chr_col 6 \
@@ -144,12 +122,12 @@ Zoom in on a smaller region (chr6: 50,000,000-54,000,000):
 ```unix
 python ./HiCtool-master/scripts/HiCtool_global_map_analysis.py \
 --action plot_map \
--i HiCtool_chr6_40kb_normalized.txt \
+-i ./normalized_40000/chr6_chr6_40000.txt \
 -c ./HiCtool-master/scripts/chromSizes/ \
 -b 40000 \
 -s hg38 \
 --isGlobal 0 \
---tab_sep 0 \
+--tab_sep 1 \
 --data_type normalized \
 --chr_row 6 \
 --chr_col 6 \
