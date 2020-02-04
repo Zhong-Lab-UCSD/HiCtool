@@ -696,24 +696,39 @@ def plot_map(input_matrix,
             
             if cutoff_type == 'percentile':
                 perc = np.percentile(output_vect[non_zero[0]],cutoff)
+                cutoff_flag = False
             elif cutoff_type == 'contact':
                 perc = cutoff
+                if perc > np.max(matrix_data_full):
+                    print "WARNING! The contact cutoff you have inserted is above the maximum value of the heatmap --> the colorbar will span the values 0-cutoff but the actual contacts on the heatmap will be below the cutoff. Please insert a cutoff below the maximum value " + str(np.max(matrix_data_full)) + " if you wish to put an upper contact cutoff."
+                    cutoff_flag = True
+                else:
+                    cutoff_flag = False
                 
             if cutoff_type != None: 
                 if topological_domains != None:
                     if topological_domains_list[m_index] == '':
                         plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
-                        cbar = plt.colorbar(extend='max')
-                        cbar.cmap.set_over(max_color)
+                        if cutoff_flag == False:
+                            cbar = plt.colorbar(extend='max')
+                            cbar.cmap.set_over(max_color)
+                        else:
+                            cbar = plt.colorbar()
                     else:
                         plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc, vmin=0)
-                        cbar = plt.colorbar(extend='max')
-                        cbar.cmap.set_over(max_color)
+                        if cutoff_flag == False:
+                            cbar = plt.colorbar(extend='max')
+                            cbar.cmap.set_over(max_color)
+                        else:
+                            cbar = plt.colorbar()
                         cbar.cmap.set_under(domain_color)
                 else:
                     plt.imshow(matrix_data_full, cmap=my_cmap, interpolation='nearest', vmax=perc)
-                    cbar = plt.colorbar(extend='max')
-                    cbar.cmap.set_over(max_color)
+                    if cutoff_flag == False:
+                            cbar = plt.colorbar(extend='max')
+                            cbar.cmap.set_over(max_color)
+                    else:
+                        cbar = plt.colorbar()
             else:
                 if topological_domains != None:
                     if topological_domains_list[m_index] == '':
