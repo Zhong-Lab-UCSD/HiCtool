@@ -57,7 +57,7 @@ chromosomes=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "
 for i in "${chromosomes[@]}"; do
 	python ./HiCtool-master/scripts/HiCtool_TAD_analysis.py \
 	--action full_tad_analysis \
-	-i ./normalized_40000/chr$i_chr$i_40000.txt \
+	-i "./normalized_40000/chr"$i"_chr"$i"_40000.txt" \
 	-c ./HiCtool-master/scripts/chromSizes/ \
 	-s hg38 \
 	--isGlobal 0 \
