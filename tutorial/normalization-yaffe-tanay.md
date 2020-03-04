@@ -223,8 +223,7 @@ python /HiCtool-master/scripts/HiCtool_yaffe_tanay.py \
 This part is to plot the heatmap and histogram for the enrichment normalized data ("observed over expected"). The **log2 of the data** is plotted to quantify the positive enrichment (red) and the negative enrichment (blue). Loci (pixels) equal to zero before performing the log2 (deriving from zero observed contacts) are shown in gray. Loci (pixels) where enrichment expected contact was zero before performing the ratio (observed / expected) are shown in black.
 
 To plot and save the heatmap and histogram use the following code:
-```
-unix
+```unix
 python /HiCtool-master/scripts/HiCtool_yaffe_tanay.py \
 --action plot_enrich \
 -i HiCtool_chr6_40kb_normalized_enrich.txt \
