@@ -21,7 +21,7 @@ then
 	a=$(awk '{for(i=1;i<=NF;i++)x+=$i;print x}' $input_mat_file | tail -n 1)
 	row_sum_after_norm=$(( $a / $total_rows ))
 else
-	echo "Using rowsum after normalization equal to "$row_sum_after"."
+	echo "Using rowsum after normalization equal to "$row_sum_after_norm"."
 fi
 
 checkMakeDirectory(){
