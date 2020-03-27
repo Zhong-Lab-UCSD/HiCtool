@@ -69,9 +69,9 @@ then
 		done
 		echo "Done!"
 
-		python $hictoolPath"HiCtool_add_fend_gc_content.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -g $directory"GC_info/" -p $python_threads
+		python2.7 $hictoolPath"HiCtool_add_fend_gc_content.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -g $directory"GC_info/" -p $python_threads
     else
-		python $hictoolPath"HiCtool_add_fend_gc_content.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -g $gc5Base -p $python_threads
+		python2.7 $hictoolPath"HiCtool_add_fend_gc_content.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -g $gc5Base -p $python_threads
 	fi
 fi
 
@@ -88,7 +88,7 @@ then
 	if ! [ -d "$genomeFasta" ]
 	then
 		checkMakeDirectory mappability_info
-		python $hictoolPath"HiCtool_artificial_reads.py" -g $genomeFasta -o $directory"mappability_info/artificial_reads.fastq"
+		python2.7 $hictoolPath"HiCtool_artificial_reads.py" -g $genomeFasta -o $directory"mappability_info/artificial_reads.fastq"
 		
 		echo -n "Mapping artificial reads ... "
 		(bowtie2 -p $threads -x $genomeIndex mappability_info/artificial_reads.fastq -S mappability_info/artificial_reads.sam) 2>mappability_info/artificial_reads.log
@@ -107,9 +107,9 @@ then
 		rm mappability_info/artificial_reads_mapped.txt
 		echo "Done!"
 		
-		python $hictoolPath"HiCtool_add_fend_mappability.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -a $directory"mappability_info/" -p $python_threads
+		python2.7 $hictoolPath"HiCtool_add_fend_mappability.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -a $directory"mappability_info/" -p $python_threads
 	else
-		python $hictoolPath"HiCtool_add_fend_mappability.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -a $genomeFasta -p $python_threads
+		python2.7 $hictoolPath"HiCtool_add_fend_mappability.py" -c $hictoolPath"chromSizes/" -s $species -r $directory -a $genomeFasta -p $python_threads
 	fi
 fi
 

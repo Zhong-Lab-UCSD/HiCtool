@@ -26,7 +26,7 @@ start_time=$(date)
 output_dir=$dir"/observed_"$bin_size"/" # output directory
 checkMakeDirectory $output_dir
 
-python $hictool"HiCtool_global_map_rows.py" \
+python2.7 $hictool"HiCtool_global_map_rows.py" \
 -i $input_file \
 -o $output_dir \
 -b $bin_size \

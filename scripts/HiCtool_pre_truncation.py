@@ -44,7 +44,7 @@ def pre_truncation(input_fastq):
         for i in xrange(1,len(lines),4): # iteration over lines containing the sequence
             for key, value in percents.iteritems():
                 if i/4 == value:
-                    print key + ' completed - ' + input_fastq 
+                    print (key + ' completed - ' + input_fastq)
             # Search for the ligation junction
             for j in restriction_enzymes:
                 match = re.search(re_info[j]['lj'],lines[i])
@@ -75,7 +75,7 @@ def pre_truncation(input_fastq):
         with open (filename + '.trunc.fastq' ,'w') as fout:
             for i in xrange(len(lines)):
                 fout.write(lines[i])
-        print '100% completed - ' + input_fastq 
+        print ('100% completed - ' + input_fastq)
         
         with open (filename + '_log.txt', 'w') as outlog:
             outlog.write(str(len(lines)/4) + "\t" + str(len(lines[1])-1) + "\t" + str(count) + "\n")
@@ -125,19 +125,19 @@ if __name__ == '__main__':
         if threads > len(inputFiles):
             threads = len(inputFiles)
         if len(restriction_enzymes) == 1:
-            print "Pre-truncation in parallel (restriction enzyme: " + restriction_enzymes[0] + ") using " + str(threads) + " threads ..."
+            print ("Pre-truncation in parallel (restriction enzyme: " + restriction_enzymes[0] + ") using " + str(threads) + " threads ...")
         else:
-            print "Pre-truncation in parallel (restriction enzymes: " + ", ".join(restriction_enzymes) + ") using " + str(threads) + " threads ..."
-        print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+            print ("Pre-truncation in parallel (restriction enzymes: " + ", ".join(restriction_enzymes) + ") using " + str(threads) + " threads ...")
+        print ("Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
         pool = Pool(processes=threads)             
         pool.map(pre_truncation, inputFiles)
-        print "End: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        print ("End: " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
     else:
         if len(restriction_enzymes) == 1:
-            print "Pre-truncation (restriction enzyme: " + restriction_enzymes[0] + ") using a single threads ..." 
+            print ("Pre-truncation (restriction enzyme: " + restriction_enzymes[0] + ") using a single threads ...")
         else:
-            print "Pre-truncation (restriction enzymes: " + ", ".join(restriction_enzymes) + ") using a single thread ..." 
-        print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+            print ("Pre-truncation (restriction enzymes: " + ", ".join(restriction_enzymes) + ") using a single thread ...") 
+        print ("Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
         for i in inputFiles:
             pre_truncation(i)
-        print "End: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        print ("End: " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))

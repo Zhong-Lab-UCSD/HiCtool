@@ -22,6 +22,8 @@
 from optparse import OptionParser
 import numpy as np
 import os
+import os.path
+from os import path
 
 parameters = {'action': None,
               'input_file': None,
@@ -423,7 +425,7 @@ def calculate_chromosome_DI(input_contact_matrix,
             DI.append(di)
     
     if save_file == True:
-        save_list(DI,'HiCtool_chr' + a_chr + '_DI.txt')
+        save_list(DI, 'tad_analysis/HiCtool_chr' + a_chr + '_DI.txt')
     
     print "Done!"
     return DI
@@ -488,7 +490,7 @@ def calculate_chromosome_hmm_states(input_file_DI,
     likelystates = likelystates_array.tolist()
     
     if save_file == True:
-        save_list(likelystates, "HiCtool_chr" + a_chr + "_hmm_states.txt")
+        save_list(likelystates, "tad_analysis/HiCtool_chr" + a_chr + "_hmm_states.txt")
     
     print "Done!"
     return likelystates
@@ -602,7 +604,7 @@ def plot_chromosome_DI(input_file_DI,
         plt.grid(plot_grid)
         if plot_legend == True:
             plt.legend(prop={'size': 8})
-        plt.savefig("HiCtool_chr" + a_chr + "_DI.pdf", format = 'pdf')
+        plt.savefig("tad_analysis/HiCtool_chr" + a_chr + "_DI.pdf", format = 'pdf')
         print "Done!"
     
     else:
@@ -631,8 +633,8 @@ def plot_chromosome_DI(input_file_DI,
         neg_DI_true[neg_DI_true != min(DI_part)-15] = np.nan
         
         plt.close("all")
-        plt.bar(x, pos_DI, width, color="r", label="Positive DI")
-        plt.bar(x, neg_DI, width, color="g", label="Negative DI")
+        plt.bar(x, pos_DI, width, color="r", label="Positive DI", linewidth = 0.1)
+        plt.bar(x, neg_DI, width, color="g", label="Negative DI", linewidth = 0.1)
         plt.plot(x, pos_DI_true, marker=">", color="r", label="Positive true DI")
         plt.plot(x, neg_DI_true, marker="<", color="g", label="Negative true DI")
         plt.xlim([x[0]-bin_size*8,x[-1]+bin_size*8])
@@ -643,7 +645,7 @@ def plot_chromosome_DI(input_file_DI,
         plt.grid(plot_grid)
         if plot_legend == True:
             plt.legend(prop={'size': 8})
-        plt.savefig("HiCtool_chr" + a_chr + "_DI_HMM.pdf", format = 'pdf')
+        plt.savefig("tad_analysis/HiCtool_chr" + a_chr + "_DI_HMM.pdf", format = 'pdf')
         print "Done!"
 
 def save_topological_domains(a_matrix, output_file):
@@ -752,7 +754,7 @@ def calculate_chromosome_topological_domains(input_file_hmm,
         p2 = p1 + 1
         n2 = n1 + 1
     
-    save_topological_domains(np.matrix(topological_domains),"HiCtool_chr" + a_chr + "_topological_domains.txt")
+    save_topological_domains(np.matrix(topological_domains), "tad_analysis/HiCtool_chr" + a_chr + "_topological_domains.txt")
     print "Done!"
     return topological_domains
 
@@ -886,6 +888,9 @@ if __name__ == '__main__':
         available_species = ', '.join([x.split('.')[0] for x in  os.listdir(parameters['chromSizes_path'])])
         parser.error('Wrong species inserted! Check the species spelling or insert an available species: ' + available_species + '. If your species is not listed, please contact Riccardo Calandrelli at <rcalandrelli@eng.ucsd.edu>.')
     
+    output_path = "tad_analysis"
+    if not path.exists(output_path):
+        os.mkdir(output_path)
     
     if parameters['action'] == 'full_tad_analysis':
         if options.isGlobal == None:

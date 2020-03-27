@@ -31,7 +31,7 @@ echo "Done!"
 if [ -z $chunk_size ]
 then
 	echo "chunk_size not declared."
-	python $hictoolPath"HiCtool_pre_truncation.py" -i [$fastq1,$fastq2] -e $restrictionEnzyme -p $threads
+	python2.7 $hictoolPath"HiCtool_pre_truncation.py" -i [$fastq1,$fastq2] -e $restrictionEnzyme -p $threads
 
 	tot_reads_1=$(awk -F'\t' '{sum+=$1;} END{print sum;}' "${fastq1%%.*}_log.txt")
 	tot_reads_2=$(awk -F'\t' '{sum+=$1;} END{print sum;}' "${fastq2%%.*}_log.txt")
@@ -53,7 +53,7 @@ then
 elif ! [ -z $chunk_size ] && [ $chunk_size -ge $fastq_lines ]
 then
 	echo "chunk_size not consider because greater that the total lines of the fastq file."
-	python $hictoolPath"HiCtool_pre_truncation.py" -i [$fastq1,$fastq2] -e $restrictionEnzyme -p $threads
+	python2.7 $hictoolPath"HiCtool_pre_truncation.py" -i [$fastq1,$fastq2] -e $restrictionEnzyme -p $threads
 
 	tot_reads_1=$(awk -F'\t' '{sum+=$1;} END{print sum;}' "${fastq1%%.*}_log.txt")
 	tot_reads_2=$(awk -F'\t' '{sum+=$1;} END{print sum;}' "${fastq2%%.*}_log.txt")
@@ -113,7 +113,7 @@ then
 	done
 	temp_fastq="[""${temp_fastq:1}""]"
 
-	python $hictoolPath"HiCtool_pre_truncation.py" -i $temp_fastq -e $restrictionEnzyme -p $threads
+	python2.7 $hictoolPath"HiCtool_pre_truncation.py" -i $temp_fastq -e $restrictionEnzyme -p $threads
 	
 	cat "${fastq1%%.*}_temp_"*".trunc.fastq" > "${fastq1%%.*}.trunc.fastq"
 	cat "${fastq2%%.*}_temp_"*".trunc.fastq" > "${fastq2%%.*}.trunc.fastq"

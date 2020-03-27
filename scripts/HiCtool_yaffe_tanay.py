@@ -2,13 +2,14 @@
 # - Normalize the contact data with Yaffe-Tanay approach (fend and enrichment ("observed / expected")).
 # - Plot normalized fend contact matrix and histogram of contact distribution.
 # - Plot enrichement contact matrix and histogram of contact distribution.
+# - Plot correlation matrix containing the Pearson correlation coeffiecients calculated from the O/E matrix.
 #
 # To use this code, fend correction values must be provided (see HiCtool_hifive.py, -m Yaffe-Tanay)
 
-# Usage: python2.7 HiCtool_yaffe-tanay.py [-h] [options]
+# Usage: python2.7 HiCtool_yaffe_tanay.py [-h] [options]
 # Options:
 #  -h, --help                show this help message and exit
-#  --action                  Action to perform: normalize_fend, plot_map, normalize_enrich, plot_enrich.
+#  --action                  Action to perform: normalize_fend, plot_map, normalize_enrich, plot_enrich, plot_correlation.
 #  -i INPUT_FILE             Input contact matrix for plotting actions, norm binning hdf5 object from HiFive for normalizing actions.
 #  -c CHROMSIZES_PATH        Path to the folder chromSizes with trailing slash at the end.
 #  -b BIN_SIZE               Bin size (resolution) of the contact matrix.
@@ -34,6 +35,8 @@
 from optparse import OptionParser
 import numpy as np
 import os
+import os.path
+from os import path
 from time import gmtime, strftime
 from multiprocessing import Pool
 
@@ -64,8 +67,7 @@ parameters = {'action': None,
 def save_matrix(a_matrix, output_file):
     """
     Save an intra-chromosomal contact matrix in the HiCtool compressed format to txt file.
-    1) The upper-triangular part of the matrix is selected (including the
-    diagonal).
+    1) The upper-triangular part of the matrix is selected (including the diagonal).
     2) Data are reshaped to form a vector.
     3) All the consecutive zeros are replaced with a "0" followed by the
     number of times zeros are repeated consecutively.
@@ -228,13 +230,11 @@ def normalize_chromosome_fend_data(a_chr):
     chromosome = 'chr' + a_chr
     print "Normalizing fend data " + chromosome + " ..."
     
-    if bin_size >= 1000000:
-        bin_size_str = str(bin_size/1000000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'mb_'
-    elif bin_size < 1000000:
-        bin_size_str = str(bin_size/1000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_'    
-    
+    output_path = "yaffe_tanay_" + str(bin_size)
+    if not path.exists(output_path):
+        os.mkdir(output_path)
+    output_filename = chromosome + '_' + str(bin_size) + '_'
+
     chromosomes = open(parameters['chromSizes_path'] + parameters['species'] + '.chrom.sizes', 'r')
     d_chr_dim = {}
     while True:
@@ -273,13 +273,14 @@ def normalize_chromosome_fend_data(a_chr):
     
     observed = heatmap_fend[:,:,0] # observed contact data extracted from the heatmap object
     if save_obs == True:
-        save_matrix(observed, output_filename + 'observed.txt')    
+        save_matrix(observed, output_path + "/" + output_filename + 'observed.txt') 
+
     
     # Expected fend (fend corrections)
     expected_fend = heatmap_fend[:,:,1]/scaling_factor # fend correction values
     if save_expect == True:
-        save_matrix(expected_fend, output_filename + 'expected_fend.txt')
-            
+        save_matrix(expected_fend, output_path + "/" + output_filename + 'expected_fend.txt') 
+ 
     # In the above calls, all valid possible interactions are queried from 
     # chromosome 'chrom' between 'start' and 'stop' parameters. The 'arraytype' 
     # parameter determines what shape of array data are returned in: 'full' 
@@ -299,7 +300,8 @@ def normalize_chromosome_fend_data(a_chr):
             else:
                 normalized_fend[i][j] = float(observed[i][j])/float(expected_fend[i][j])
     
-    save_matrix(normalized_fend, output_filename + 'normalized_fend.txt')
+    save_matrix(normalized_fend, output_path + "/" + output_filename + 'normalized_fend.txt') 
+   
     print "Done!"
     return normalized_fend
 
@@ -351,13 +353,11 @@ def plot_chromosome_data(contact_matrix,
 
     chromosome = 'chr' + a_chr
     
-    if bin_size >= 1000000:
-        bin_size_str = str(bin_size/1000000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'mb_' + data_type
-    elif bin_size < 1000000:
-        bin_size_str = str(bin_size/1000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_' + data_type
-    
+    output_path = "yaffe_tanay_" + str(bin_size)
+    if not path.exists(output_path):
+        os.mkdir(output_path)
+    output_filename = chromosome + '_' + str(bin_size) + '_' + data_type
+
     chromosomes = open(parameters['chromSizes_path'] + parameters['species'] + '.chrom.sizes', 'r')
     d_chr_dim = {}
     while True:
@@ -494,7 +494,7 @@ def plot_chromosome_data(contact_matrix,
     plt.yticks(fontsize=8)
     plt.tick_params(axis='both', which='both', direction='out', top=False, right=False)
     plt.tight_layout()
-    plt.savefig(output_filename + '.pdf', format = 'pdf', dpi=my_dpi)
+    plt.savefig(output_path + "/" + output_filename + '.pdf', format = 'pdf', dpi=my_dpi)
         
     # Plot of the histogram
     if plot_histogram:
@@ -515,7 +515,7 @@ def plot_chromosome_data(contact_matrix,
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
         plt.tight_layout()
-        plt.savefig(output_filename + '_histogram.pdf', format = 'pdf')
+        plt.savefig(output_path + "/" + output_filename + '_histogram.pdf', format = 'pdf')
     print "Done!"
 
 
@@ -531,6 +531,7 @@ def normalize_chromosome_enrich_data(a_chr):
         Normalized enrichment contact matrix.
     Outputs:
         Txt file with the normalized enrichment contact matrix saved in the HiCtool compressed format.
+        Txt file with the Pearson Correlation contact matrix saved in the HiCtool compressed format.
         Txt file with the observed contact matrix saved in the HiCtool compressed format if "save_obs=True".
         Txt file with the expected contact matrix saved in the HiCtool compressed format if "save_expect=True".
         
@@ -546,13 +547,11 @@ def normalize_chromosome_enrich_data(a_chr):
     print "Normalizing enrichment data..."
     chromosome = 'chr' + a_chr
     
-    if bin_size >= 1000000:
-        bin_size_str = str(bin_size/1000000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'mb_'
-    elif bin_size < 1000000:
-        bin_size_str = str(bin_size/1000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_'
-    
+    output_path = "yaffe_tanay_" + str(bin_size)
+    if not path.exists(output_path):
+        os.mkdir(output_path)
+    output_filename = chromosome + '_' + str(bin_size) + '_'
+
     start_pos = 0
     chromosomes = open(parameters['chromSizes_path'] + parameters['species'] + '.chrom.sizes', 'r')
     d_chr_dim = {}
@@ -576,14 +575,14 @@ def normalize_chromosome_enrich_data(a_chr):
     
     # Observed data
     observed = heatmap_enrich[:,:,0] # observed contact data extracted from the heatmap object
-    if save_obs == True: 
-        save_matrix(observed, output_filename + 'observed.txt')            
-            
+    if save_obs == True:
+        save_matrix(observed, output_path + "/" + output_filename + 'observed.txt') 
+     
     # Expected enrichment data (fend corrections and distance property)
     expected_enrich = heatmap_enrich[:,:,1] # expected enrichment contact data extracted from the heatmap object
-    if save_expect == True:  
-        save_matrix(expected_enrich, output_filename + 'expected_enrich.txt')
-    
+    if save_expect == True:
+        save_matrix(expected_enrich, output_path + "/" + output_filename + 'expected_enrich.txt') 
+
     # Normalized enrichment contact matrix
     n = len(expected_enrich)
     normalized_enrich = np.zeros((n,n))
@@ -593,8 +592,14 @@ def normalize_chromosome_enrich_data(a_chr):
                 normalized_enrich[i][j] = -1
             else:
                 normalized_enrich[i][j] = float(observed[i][j])/float(expected_enrich[i][j])
+
+    save_matrix(normalized_enrich, output_path + "/" + output_filename + 'normalized_enrich.txt') 
     
-    save_matrix(normalized_enrich, output_filename + 'normalized_enrich.txt')
+    # normalized_enrich[normalized_enrich == -1] = 0
+    pcc_contact_matrix = np.corrcoef(normalized_enrich)
+    pcc_contact_matrix[np.isnan(pcc_contact_matrix)] = 0
+    save_matrix(pcc_contact_matrix, output_path + "/" + output_filename + 'correlation_matrix.txt') 
+    
     print "Done!"
     return normalized_enrich
 
@@ -616,11 +621,8 @@ def plot_chromosome_enrich_data(contact_matrix,
         "normalize_chromosome_enrich_data" or contact matrix returned by the function "normalize_chromosome_enrich_data".
         a_chr (str): chromosome number (example for chromosome 1: '1').
         bin_size (int): bin size in bp of the contact matrix.
-        full_matrix (bool): if True plot the entire matrix. If False, insert start_coord and end_coord.
         coord (list): list with two integers start and end coordinate for the plot in bp.
         species (str): 'hg38' or 'mm10' or any other species label in string format.
-        custom_species_sizes (dict): dictionary containing the sizes of the chromosomes of your custom species. The keys of the dictionary are chromosomes in string
-        format (example for chromosome 1: '1'), the values are chromosome lengths as integers.
         cutoff_max (float): log2 upper cutoff for the colorbar (every enrichment value above cutoff_max 
         is plotted in red). Set to None to do not have any cutoff.
         cutoff_min (float): log2 lower cutoff (negative value) for the colorbar (every enrichment value 
@@ -642,13 +644,10 @@ def plot_chromosome_enrich_data(contact_matrix,
     import copy
 
     chromosome = 'chr' + a_chr
-    
-    if bin_size >= 1000000:
-        bin_size_str = str(bin_size/1000000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'mb_normalized_enrich'
-    elif bin_size < 1000000:
-        bin_size_str = str(bin_size/1000)
-        output_filename = 'HiCtool_' + chromosome + '_' + bin_size_str + 'kb_normalized_enrich'
+    output_path = "yaffe_tanay_" + str(bin_size)
+    if not path.exists(output_path):
+        os.mkdir(output_path)
+    output_filename = chromosome + '_' + str(bin_size) + '_normalized_enrich'
     
     chromosomes = open(parameters['chromSizes_path'] + parameters['species'] + '.chrom.sizes', 'r')
     d_chr_dim = {}
@@ -817,10 +816,10 @@ def plot_chromosome_enrich_data(contact_matrix,
     plt.yticks(fontsize=8)
     plt.tick_params(axis='both', which='both', direction='out', top=False, right=False)
     plt.tight_layout()
-    plt.savefig(output_filename + '.pdf', format = 'pdf', dpi = my_dpi)
+    plt.savefig(output_path + "/" + output_filename + '.pdf', format = 'pdf', dpi = my_dpi)
     
     # Plot the histogram
-    if plot_histogram:        
+    if plot_histogram == 1:        
         histogram = []
         k = 1
         for i in xrange(n):
@@ -839,7 +838,185 @@ def plot_chromosome_enrich_data(contact_matrix,
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
         plt.tight_layout()
-        plt.savefig(output_filename + '_histogram.pdf', format = 'pdf')
+        plt.savefig(output_path + "/" + output_filename + '_histogram.pdf', format = 'pdf')
+    print "Done!"
+    
+    
+def plot_chromosome_correlation_data(correlation_matrix,
+                                     a_chr,
+                                     bin_size,
+                                     coord=None, 
+                                     species='hg38',
+                                     my_dpi=1000):
+    """
+    Plot the Pearson Correlation matrix of the "observed / expected" contact map.
+    Arguments:
+        correlation_matrix (str): txt file of the pearson correlation matrix generated with the function 
+        "normalize_chromosome_enrich_data".
+        a_chr (str): chromosome number (example for chromosome 1: '1').
+        bin_size (int): bin size in bp of the contact matrix.
+        coord (list): list with two integers start and end coordinate for the plot in bp.
+        species (str): 'hg38' or 'mm10' or any other species label in string format.
+        my_dpi (int): resolution of the contact map in dpi.
+    Outputs:
+        Pearson correlation matrix saved to pdf format.
+    """                                       
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import math
+    from numpy import ma
+    from matplotlib import cbook
+    from matplotlib.colors import Normalize
+
+    chromosome = 'chr' + a_chr
+    output_path = "yaffe_tanay_" + str(bin_size)
+    if not path.exists(output_path):
+        os.mkdir(output_path)
+    output_filename = chromosome + '_' + str(bin_size) + '_correlation_matrix'
+    
+    chromosomes = open(parameters['chromSizes_path'] + parameters['species'] + '.chrom.sizes', 'r')
+    d_chr_dim = {}
+    while True:
+        try:
+            line2list = next(chromosomes).split('\n')[0].split('\t')
+            d_chr_dim[line2list[0]] = int(line2list[1])/bin_size
+        except StopIteration:
+            break
+    
+    end_pos = d_chr_dim[a_chr]*bin_size
+    
+    # Plotting the correlation data
+    matrix_data_full = load_matrix(correlation_matrix)
+    print "Plotting " + correlation_matrix + "..."
+
+    # Selecting a part
+    if coord != None:
+        if len(coord) != 2:
+            print "ERROR! Both start and end coordinate has to be declared! Otherwise leave both undeclared to plot the entire contact matrix."
+            return
+        else:
+            print "Selecting part [" + str(coord[0]) + "-" + str(coord[1]) + "] ..."
+            output_filename += "_" + str(coord[0]) + "_" + str(coord[1]) 
+            start_bin = coord[0]/bin_size
+            end_bin = coord[1]/bin_size
+        
+            if coord[0] >= coord[1]:
+                print "ERROR! Start coordinate should be lower than end coordinate"
+                return
+            
+            if start_bin >= end_bin:
+                print "ERROR! Start coordinate should be much lower than the end coordinate given the bin size"
+                return
+        
+            if coord[1] > end_pos:
+                print "ERROR! End coordinate is larger than chromosome size " + str(end_pos) + " bp"
+                return
+    else: # Full contact matrix
+        start_bin = 0
+        end_bin = d_chr_dim[a_chr]
+    
+    matrix_data_full = matrix_data_full[start_bin:end_bin+1,start_bin:end_bin+1]
+    n = len(matrix_data_full)
+    
+    # Heatmap plotting
+    # Defining a class to generate a divergent colorbar with a custom midpoint
+    class MidPointNorm(Normalize):    
+        def __init__(self, midpoint=0, vmin=None, vmax=None, clip=False):
+            Normalize.__init__(self,vmin, vmax, clip)
+            self.midpoint = midpoint
+    
+        def __call__(self, value, clip=None):
+            if clip is None:
+                clip = self.clip
+    
+            result, is_scalar = self.process_value(value)
+    
+            self.autoscale_None(result)
+            vmin, vmax, midpoint = self.vmin, self.vmax, self.midpoint
+    
+            if not (vmin < midpoint < vmax):
+                raise ValueError("midpoint must be between maxvalue and minvalue.")       
+            elif vmin == vmax:
+                result.fill(0)
+            elif vmin > vmax:
+                raise ValueError("maxvalue must be bigger than minvalue")
+            else:
+                vmin = float(vmin)
+                vmax = float(vmax)
+                if clip:
+                    mask = ma.getmask(result)
+                    result = ma.array(np.clip(result.filled(vmax), vmin, vmax),
+                                      mask=mask)
+    
+                resdat = result.data
+    
+                #First scale to -1 to 1 range, than to from 0 to 1.
+                resdat -= midpoint            
+                resdat[resdat>0] /= abs(vmax - midpoint)            
+                resdat[resdat<0] /= abs(vmin - midpoint)
+    
+                resdat /= 2.
+                resdat += 0.5
+                result = ma.array(resdat, mask=result.mask, copy=False)                
+    
+            if is_scalar:
+                result = result[0]            
+            return result  
+            
+        def inverse(self, value):
+            if not self.scaled():
+                raise ValueError("Not invertible until scaled")
+            vmin, vmax, midpoint = self.vmin, self.vmax, self.midpoint
+    
+            if cbook.iterable(value):
+                val = ma.asarray(value)
+                val = 2 * (val-0.5)  
+                val[val>0]  *= abs(vmax - midpoint)
+                val[val<0] *= abs(vmin - midpoint)
+                val += midpoint
+                return val
+            else:
+                val = 2 * (val - 0.5)
+                if val < 0: 
+                    return  val*abs(vmin-midpoint) + midpoint
+                else:
+                    return  val*abs(vmax-midpoint) + midpoint
+    
+    def format_e(n):
+        a = '%e' % n
+        return a.split('e')[0].rstrip('0').rstrip('.') + 'e' + a.split('e')[1]
+    
+    if bin_size >= 1000000:
+        bin_size_str = str(bin_size/1000000)
+        my_bin_size = bin_size_str + ' mb'
+    elif bin_size < 1000000:
+        bin_size_str = str(bin_size/1000)
+        my_bin_size = bin_size_str + ' kb'     
+    
+    plt.close("all")
+    #plt.gcf().subplots_adjust(left=0.15)
+    #plt.gcf().subplots_adjust(bottom=0.15)
+    norm = MidPointNorm(midpoint=0, vmin = -1, vmax = 1)
+    plt.imshow(matrix_data_full, cmap='seismic', interpolation='nearest', norm=norm)
+    plt.title('Correlation matrix (' + my_bin_size + ')', fontsize=12)
+    plt.xlabel(chromosome + ' coordinate (bp)', fontsize=10)
+    plt.ylabel(chromosome + ' coordinate (bp)', fontsize=10)
+    cbar = plt.colorbar()
+    cbar.ax.set_ylabel('Pearson correlation', rotation=270, labelpad = 20)
+    if coord != None:
+        ticks = (np.arange(0, n, n/4) * bin_size) + coord[0]
+    else:
+        ticks = (np.arange(0, n, n/4) * bin_size)
+    format_ticks = [format_e(i) for i in ticks.tolist()]
+    plt.xticks(np.arange(0, n, n/4), format_ticks)
+    plt.yticks(np.arange(0, n, n/4), format_ticks)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
+    plt.tick_params(axis='both', which='both', direction='out', top=False, right=False)
+    plt.tight_layout()
+    plt.savefig(output_path + "/" + output_filename + '.pdf', format = 'pdf', dpi = my_dpi)
     print "Done!"
 
 
@@ -847,7 +1024,7 @@ if __name__ == '__main__':
     
     usage = 'Usage: python2.7 HiCtool_yaffe_tanay.py [-h] [options]'
     parser = OptionParser(usage = 'python2.7 %prog --action action -i input_file [options]')
-    parser.add_option('--action', dest='action', type='string', help='Action to perform: normalize_fend, plot_map, normalize_enrich, plot_enrich')
+    parser.add_option('--action', dest='action', type='string', help='Action to perform: normalize_fend, plot_map, normalize_enrich, plot_enrich, plot_correlation')
     parser.add_option('-i', dest='input_file', type='string', help='Input contact matrix for plotting actions, norm binning hdf5 object from HiFive for normalizing actions.')
     parser.add_option('-c', dest='chromSizes_path', type='string', help='Path to the folder chromSizes with trailing slash at the end.')
     parser.add_option('-b', dest='bin_size', type='int', help='Bin size (resolution) for the analysis.')
@@ -871,7 +1048,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args( )
     
     if options.action == None:
-        parser.error('-h for help or provide the action command (normalize_fend, plot_map, normalize_enrich, plot_enrich)!')
+        parser.error('-h for help or provide the action command (normalize_fend, plot_map, normalize_enrich, plot_enrich, plot_correlation)!')
     else:
         pass
     if options.input_file == None:
@@ -941,7 +1118,7 @@ if __name__ == '__main__':
         
         if len(chr_list) > 1:
             if parameters['processors'] != None and parameters['processors'] > 1:
-                print "Normalizing fend data in parallel for chromosomes " + parameters['chr'] + " in parallel using " + str(parameters['processors']) + " threads..."
+                print "Normalizing fend data in parallel for chromosomes " + parameters['chr'] + " using " + str(parameters['processors']) + " threads..."
                 print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
                 pool = Pool(processes=parameters['processors'])             
                 pool.map(normalize_chromosome_fend_data, chr_list)
@@ -961,7 +1138,7 @@ if __name__ == '__main__':
         
         if len(chr_list) > 1:
             if parameters['processors'] > 1:
-                print "Normalizing enrichment data in parallel for chromosomes " + parameters['chr'] + " in parallel using " + str(parameters['processors']) + " threads..."
+                print "Normalizing enrichment data in parallel for chromosomes " + parameters['chr'] + " using " + str(parameters['processors']) + " threads..."
                 print "Start: " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
                 pool = Pool(processes=parameters['processors'])             
                 pool.map(normalize_chromosome_enrich_data, chr_list)
@@ -1039,4 +1216,22 @@ if __name__ == '__main__':
                                     cutoff_max,
                                     cutoff_min,
                                     parameters['my_dpi'],
-                                    bool(parameters['plot_histogram']))
+                                    parameters['plot_histogram'])
+    
+    elif parameters['action']  == "plot_correlation":
+        
+        chr_list = map(str, parameters['chr'].strip('[]').split(','))
+        if len(chr_list) > 1:
+            parser.error("Insert a single chromosome to be plotted.")
+            
+        if parameters['coord'] != None:
+            coord = map(int, parameters['coord'].strip('[]').split(','))
+        else:
+            coord = None
+        
+        plot_chromosome_correlation_data(parameters['input_file'],
+                                         chr_list[0],
+                                         parameters['bin_size'],
+                                         coord, 
+                                         parameters['species'],
+                                         parameters['my_dpi'])

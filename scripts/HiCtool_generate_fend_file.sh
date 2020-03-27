@@ -39,7 +39,7 @@ checkMakeDirectory $directory
 echo "Start fend file generation: $(date)"
 cd $directory
 
-python $hictoolPath"HiCtool_build_enzyme_fastq.py" -e $restrictionEnzyme
+python2.7 $hictoolPath"HiCtool_build_enzyme_fastq.py" -e $restrictionEnzyme
 
 echo -n "Aligning restriction sites for "$restrictionEnzyme" ... "
 (bowtie2 -p $threads -k 10000000 -x $genomeIndex -U restriction_enzyme.fastq -S restrictionsites.sam) 2>restrictionsites_log.txt
