@@ -69,7 +69,7 @@ Calandrelli, R., Wu, Q., Guan, J., & Zhong, S. (2018). GITAR: An open source too
 
 ## Version history
 
-### March xx, 2020
+### March 27, 2020
 
 - Version 2.2 released:
 
