@@ -1,8 +1,10 @@
 # A/B compartment analysis
 
-This section allows to calculate the principal components (PCs) of the Pearson correlation matrix that can be used to delineate A/B compartments in Hi-C data at low resolution (usually 1 mb or 500 kb). It is possible to calculate both PC1 and PC2. Usually, the sign of the eigenvector (PC1) indicates the compartment.
+This section allows to calculate the principal components (PCs) of the Pearson correlation matrix that can be used to delineate A/B compartments in Hi-C data at low resolution (usually 1 Mb or 500 kb). It is possible to calculate both PC1 and PC2. Usually, the sign of the eigenvector (PC1) indicates the compartment.
 
-Note that comparing PC values (either PC1 or PC2) between experiments may not be appropriate. While PC1 usually correlates with active and inactive compartments, the nature of this association may be different among experiments. Instead, it is always recommended to compare interaction profiles of a specific genomic locus towards the other loci.
+Note that comparing PC values (either PC1 or PC2) between experiments may not be appropriate. While PC1 usually correlates with active and inactive compartments, the nature of this association (i.e. which PC sign (+,-) is associated to active or inactive regions) may be different among experiments. Instead, it is always recommended to compare interaction profiles of a specific genomic locus towards the other loci. 
+
+In order to directly compare eigenvectors among two experiments, first you should make sure that the association between PC1 and active and inactive compartments is the same for both the experiments. Usually, "A compartments" (positive PC values) are considered associated to gene rich and active genomic regions, while "B compartments" (negative PC values) to gene poor and inactive regions. In order for the sign of the eigenvalues to match our hypothesis, you could calculate the correlation of the eigenvector (separately per each chromosome) with a gene density track at the same resolution (1 Mb for example). If the correlation is positive, the eigenvector is left as it was, otherwise the sign of its values should be flipped.
 
 ## Table of contents
 
@@ -32,8 +34,7 @@ where:
 - ``-s``: Species name.
 - ``--chr``: The chromosome to be used.
 - ``--pc``: Which principal component to be returned (either ``PC1`` or ``PC2``).
-
-By default HiCtool will try to assign positive PC values to active zones, which it may be done by flipping the sign of the eigenvector if needed. The user may decide to change this default behavior by using the parameter ``--flip``. Set ``--flip -1`` if you wish to flip PC values anyways, ``--flip 1`` if you want to force no flipping.
+- ``--flip``: Set to ``-1`` if you wish to flip PC values.
 
 The output is a txt file with the values of the principal component selected, in this case ``chr6_1000000_PC1.txt`` inside the folder ``./yaffe_tanay_1000000/``.
 

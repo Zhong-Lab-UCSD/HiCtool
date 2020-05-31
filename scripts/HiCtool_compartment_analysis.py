@@ -16,7 +16,7 @@
 #  --chr                     Single chromosome for PC calculation or plotting, or list of chromosomes between square brackets for PC calculation of multiple chromosomes at once.
 #  --full_chromosome         Insert 1 to plot PC values for the entire chromosome, 0 otherwise.
 #  --pc                      Which principal component to be used for compartment analysis: PC1 or PC2.
-#  --flip                    By default HiCtool will try to assign positive PC values to active zones (leave this parameter as None). Set to -1 if you wish to flip PC values anyways, 1 if you want to force no flipping.
+#  --flip                    Set to -1 if you wish to flip PC values anyways, otherwise leave this parameter as None.
 #  --coord                   List of two integers with start and end coordinates to plot PC values only for a specific region.
 #  --plot_grid               If action is "plot_pc", insert 1 to plot the grid, 0 otherwise.
 #  --plot_axis               If action is "plot_pc", insert 1 to plot the axis, 0 otherwise.
@@ -105,11 +105,7 @@ def calculate_pc(a_chr):
     principalDf = pd.DataFrame(data = principalComponents, columns = ['PC1', 'PC2'])
     compartments = principalDf[pc]
     # Checking if active zones correspond to positive PC
-    if flip == None:
-        corr_coeff = np.corrcoef(compartments,input_correlation_matrix[0])[0,1]
-        if corr_coeff > 0:
-            compartments = compartments * -1
-    elif flip == -1: # forcing flipping of the PC values
+    if flip == -1:
         compartments = compartments * -1
     
     # Save pc values to output file
@@ -225,7 +221,7 @@ if __name__ == '__main__':
     parser.add_option('--chr', dest='chr', type='str', help='Single chromosome for PC calculation or plotting, or list of chromosomes between square brackets for PC calculation of multiple chromosomes at once.')  
     parser.add_option('--full_chromosome', dest='full_chromosome', type='int', default=1, help='Insert 1 to plot PC values for the entire chromosome, 0 otherwise.')      
     parser.add_option('--pc', dest='pc', type='str', help='Which principal component to be used for compartment analysis: PC1 or PC2.')  
-    parser.add_option('--flip', dest='flip', type='int', help='By default HiCtool will try to assign positive PC values to active zones (leave this parameter as None). Set to -1 if you wish to flip PC values anyways, 1 if you want to force no flipping.')  
+    parser.add_option('--flip', dest='flip', type='int', help='Set to -1 if you wish to flip PC values anyways, otherwise leave this parameter as None.')  
     parser.add_option('--coord', dest='coord', type='str', help='List of two integers with start and end coordinates to plot PC values only for a specific region.')  
     parser.add_option('--plot_grid', dest='plot_grid', type='int', default=0, help='If action is "plot_pc", insert 1 to plot the grid, 0 otherwise.')  
     parser.add_option('--plot_axis', dest='plot_axis', type='int', default=0, help='If action is "plot_pc", insert 1 to plot the axis, 0 otherwise.')  
